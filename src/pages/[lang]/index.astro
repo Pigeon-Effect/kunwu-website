@@ -5,6 +5,7 @@ import Photo from '../../components/Photo.astro';
 import DayRing from '../../components/DayRing.astro';
 import { fromPrice, formatPrice } from '../../config/booking';
 import { masterEarlyYears, masterSideKickPortrait } from '../../data/photos';
+import { sketches } from '../../data/sketches';
 import { getLangStaticPaths, intlLocale, localePath, splitId, useT, type Lang } from '../../i18n/utils';
 
 export const getStaticPaths = getLangStaticPaths;
@@ -121,9 +122,9 @@ const programs = (await getCollection('programs', (e) => splitId(e.id).lang === 
   <!-- Photo strip: uneven widths -->
   <section class="wrap pb-20 sm:pb-28" aria-label={t.home.photosTitle}>
     <div class="grid grid-cols-2 gap-3 sm:grid-cols-[5fr_3fr_4fr] sm:gap-4">
-      <Photo alt={t.home.photo1} ratio="4/3" class="col-span-2 sm:col-span-1" sizes="(min-width: 40rem) 40vw, 100vw" />
-      <Photo alt={t.home.photo2} ratio="3/4" sizes="(min-width: 40rem) 25vw, 50vw" />
-      <Photo alt={t.home.photo3} ratio="1/1" sizes="(min-width: 40rem) 33vw, 50vw" />
+      <Photo src={sketches['morning-stance'].src} alt={sketches['morning-stance'].alt[lang]} class="col-span-2 sm:col-span-1" sizes="(min-width: 40rem) 40vw, 100vw" />
+      <Photo src={sketches['shared-meal'].src} alt={sketches['shared-meal'].alt[lang]} sizes="(min-width: 40rem) 25vw, 50vw" />
+      <Photo src={sketches['forms-practice'].src} alt={sketches['forms-practice'].alt[lang]} sizes="(min-width: 40rem) 33vw, 50vw" />
     </div>
   </section>
 </Base>

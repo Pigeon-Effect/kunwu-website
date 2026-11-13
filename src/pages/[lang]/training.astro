@@ -4,6 +4,7 @@ import Base from '../../layouts/Base.astro';
 import PageHead from '../../components/PageHead.astro';
 import Photo from '../../components/Photo.astro';
 import { getBooking, formatPrice } from '../../config/booking';
+import { programSketches } from '../../data/sketches';
 import { fill, getLangStaticPaths, intlLocale, localePath, splitId, useT, weeksLabel, type Lang } from '../../i18n/utils';
 
 export const getStaticPaths = getLangStaticPaths;
@@ -64,7 +65,7 @@ const programs = await Promise.all(
           </div>
 
           <aside class="space-y-8">
-            <Photo alt={fill(t.training.photoPh, { program: data.title })} ratio="4/3" sizes="(min-width: 64rem) 26rem, 100vw" />
+            <Photo src={programSketches[data.program].src} alt={programSketches[data.program].alt[lang]} sizes="(min-width: 64rem) 26rem, 100vw" />
             <div>
               <h3 class="text-xl">{t.training.durationsTitle}</h3>
               <table class="mt-4 w-full text-left">

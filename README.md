@@ -13,6 +13,7 @@ Astro 7 · Tailwind CSS 4 · TypeScript (strict). Zero external requests – see
 | `npm run preview` | serve `dist/` |
 | `npm run placeholders` | list all missing content (`[PLACEHOLDER: …]`) |
 | `npm run icons` | regenerate favicons / touch icons / social image from `src/assets/brand/*.svg` |
+| `npm run sketches` | regenerate the pencil sketches (`scripts/sketches/scenes.mjs` → `src/assets/sketches/`); `-- --only id1,id2 --preview sheet.jpg` for a contact sheet |
 
 ### Windows with Smart App Control
 
@@ -36,7 +37,8 @@ npm install --no-save --force @astrojs/compiler-binding-wasm32-wasi@0.5.3
 | Programs | `src/content/programs/{en,zh}/*.md` |
 | FAQ | `src/content/faq/{en,zh}/*.md` |
 | UI text | `src/i18n/{en,zh}.json` (zh is type-checked against en) |
-| Gallery photos | drop into `src/assets/photos/gallery/`, alt texts in `src/data/gallery.ts` |
+| Pencil sketches (stand in for photos) | `src/data/sketches.ts` (alt texts), drawn by `scripts/sketches/` |
+| Gallery photos | drop into `src/assets/photos/gallery/`, alt texts in `src/data/gallery.ts` – they replace the sketchbook automatically |
 | Video clips | `public/videos/` + `src/data/videos.ts` |
 | Logos | `src/assets/brand/` (see README there) |
 

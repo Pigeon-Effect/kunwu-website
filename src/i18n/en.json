@@ -80,10 +80,7 @@
     "programsTitle": "Four ways to train",
     "programsLede": "Accommodation and meals are part of every program.",
     "programsLink": "Programs and prices",
-    "photosTitle": "At the school",
-    "photo1": "Morning stance training",
-    "photo2": "A shared meal in the dining hall",
-    "photo3": "Forms practice in the afternoon"
+    "photosTitle": "At the school"
   },
   "master": {
     "title": "The master",
@@ -98,16 +95,14 @@
     "scheduleNote": "[PLACEHOLDER: draft schedule – the real times will follow from the school]",
     "livingTitle": "Where you live",
     "livingText": "[PLACEHOLDER: rooms – single or shared, bathroom, heating and air conditioning, laundry, Wi-Fi.]",
-    "livingPh": "A student room",
     "foodTitle": "What you eat",
     "foodText": "[PLACEHOLDER: meals per day, typical dishes, vegetarian options, where meals are eaten.]",
-    "foodPh": "Lunch in the dining hall",
     "restTitle": "Rest days",
     "restText": "[PLACEHOLDER: how many rest days per week, and what students usually do with them.]",
-    "restPh": "Heze on a rest day",
     "galleryTitle": "Photos",
     "galleryLede": "Training, meals and quiet moments at the school.",
-    "galleryPh": "Gallery photo",
+    "sketchbookTitle": "Sketchbook",
+    "sketchbookLede": "Pencil sketches of training and everyday life at the school.",
     "videosTitle": "Short clips",
     "videosLede": "Short clips from training. Longer videos on our channel.",
     "videoPh": "Video clip",
@@ -140,8 +135,7 @@
     "duration": "Duration",
     "price": "Price",
     "pricePh": "[PLACEHOLDER: price]",
-    "bookThis": "Book {program}",
-    "photoPh": "{program} training"
+    "bookThis": "Book {program}"
   },
   "book": {
     "title": "Book your training",

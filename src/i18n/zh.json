@@ -80,10 +80,7 @@
     "programsTitle": "四种修习方式",
     "programsLede": "所有项目均包含住宿与餐食。",
     "programsLink": "课程与价格",
-    "photosTitle": "在学校",
-    "photo1": "清晨练马步",
-    "photo2": "在食堂一起用餐",
-    "photo3": "下午练习套路"
+    "photosTitle": "在学校"
   },
   "master": {
     "title": "师傅",
@@ -98,16 +95,14 @@
     "scheduleNote": "[PLACEHOLDER: 作息时间为草稿，以学校提供的为准]",
     "livingTitle": "住宿",
     "livingText": "[PLACEHOLDER: 房间——单人间或多人间、卫生间、暖气与空调、洗衣、无线网络。]",
-    "livingPh": "学员宿舍",
     "foodTitle": "饮食",
     "foodText": "[PLACEHOLDER: 每天几餐、常见菜品、素食选择、在哪里用餐。]",
-    "foodPh": "在食堂吃午饭",
     "restTitle": "休息日",
     "restText": "[PLACEHOLDER: 每周休息几天，学员通常如何度过。]",
-    "restPh": "休息日的菏泽",
     "galleryTitle": "照片",
     "galleryLede": "训练、用餐和学校里安静的时刻。",
-    "galleryPh": "图库照片",
+    "sketchbookTitle": "素描本",
+    "sketchbookLede": "学校里的训练与日常，铅笔素描。",
     "videosTitle": "短视频",
     "videosLede": "训练片段。更多视频请看我们的频道。",
     "videoPh": "视频片段",
@@ -140,8 +135,7 @@
     "duration": "时长",
     "price": "价格",
     "pricePh": "[PLACEHOLDER: 价格]",
-    "bookThis": "报名{program}",
-    "photoPh": "{program}训练"
+    "bookThis": "报名{program}"
   },
   "book": {
     "title": "报名训练",
