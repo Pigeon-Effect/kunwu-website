@@ -4,6 +4,7 @@ import Base from '../../layouts/Base.astro';
 import Photo from '../../components/Photo.astro';
 import DayRing from '../../components/DayRing.astro';
 import { fromPrice, formatPrice } from '../../config/booking';
+import { masterEarlyYears, masterSideKickPortrait } from '../../data/photos';
 import { getLangStaticPaths, intlLocale, localePath, splitId, useT, type Lang } from '../../i18n/utils';
 
 export const getStaticPaths = getLangStaticPaths;
@@ -28,7 +29,13 @@ const programs = (await getCollection('programs', (e) => splitId(e.id).lang === 
         <a href="#day" class="py-2">{t.home.heroSecondary}</a>
       </div>
     </div>
-    <Photo alt={t.home.heroPhoto} ratio="4/5" eager sizes="(min-width: 64rem) 30rem, 100vw" />
+    <Photo
+      src={masterSideKickPortrait.src}
+      alt={masterSideKickPortrait.alt[lang]}
+      eager
+      sizes="(min-width: 64rem) 30rem, 100vw"
+      widths={[480, 720, 960, 1280, 1760]}
+    />
   </section>
 
   <!-- The day ring -->
@@ -47,7 +54,15 @@ const programs = (await getCollection('programs', (e) => splitId(e.id).lang === 
 
   <!-- The master -->
   <section class="wrap grid items-center gap-10 py-16 sm:py-24 md:grid-cols-[0.8fr_1.2fr] md:gap-16" aria-labelledby="master-title">
-    <Photo alt={t.master.portraitPh} ratio="3/4" sizes="(min-width: 48rem) 26rem, 100vw" />
+    <Photo
+      src={masterEarlyYears.src}
+      alt={masterEarlyYears.alt[lang]}
+      print
+      caption={masterEarlyYears.caption?.[lang]}
+      captionZh={lang === 'en' ? masterEarlyYears.caption?.zh : undefined}
+      sizes="(min-width: 48rem) 22rem, 90vw"
+      class="mx-auto w-full max-w-[22rem] md:mx-0"
+    />
     <div>
       <p class="text-gold-deep">{t.home.masterKicker}</p>
       <h2 id="master-title" class="mt-3">

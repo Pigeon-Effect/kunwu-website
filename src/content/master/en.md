@@ -8,7 +8,6 @@ credentials:
   - First-class coaching certificate in Wushu, Chinese Wushu Association
   - 6th Duan, awarded by the Shaolin Wushu Association and its Expert Committee
   - Has performed in and choreographed several kung fu films
-portraitAlt: "[PLACEHOLDER: alt text for the portrait of Master Shi Yanpeng]"
 ---
 
 Master Shi Yanpeng is a 34th-generation lay disciple of the Shaolin Temple on Mount Song, China. He has devoted his life to preserving and passing on the substance and the precepts of authentic Shaolin martial arts.

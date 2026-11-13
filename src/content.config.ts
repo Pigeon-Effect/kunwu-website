@@ -12,7 +12,6 @@ const master = defineCollection({
     nameZh: z.string(),
     lineage: z.string(),
     credentials: z.array(z.string()),
-    portraitAlt: z.string(),
   }),
 });
 

@@ -2,6 +2,7 @@
 /**
  * A photo, or – while no photo exists – a clearly marked placeholder of the same shape.
  * Real photos: put them in src/assets/photos/, import them and pass as `src`.
+ * `print` presents the photo as an old paper print (border, soft shadow, caption inside).
  */
 import { Picture } from 'astro:assets';
 import type { ImageMetadata } from 'astro';
@@ -9,43 +10,66 @@ import type { ImageMetadata } from 'astro';
 interface Props {
   src?: ImageMetadata | null | undefined;
   alt: string;
-  /** CSS aspect ratio, e.g. "4/5" */
+  /** CSS aspect ratio, e.g. "4/5"; defaults to the photo's own ratio (or 4/3 for placeholders) */
   ratio?: string;
   sizes?: string;
   widths?: number[];
   eager?: boolean;
+  print?: boolean;
+  caption?: string | undefined;
+  /** Chinese caption shown next to the English one */
+  captionZh?: string | undefined;
   class?: string;
 }
 
 const {
   src,
   alt,
-  ratio = '4/3',
+  ratio = src ? `${src.width}/${src.height}` : '4/3',
   sizes = '(min-width: 72rem) 36rem, 100vw',
   widths = [480, 720, 960, 1280],
   eager = false,
+  print = false,
+  caption,
+  captionZh,
   class: className = '',
 } = Astro.props;
+
 // An alt text that is itself still a placeholder must not be nested inside the photo placeholder.
 const label = alt.replace(/\[PLACEHOLDER:\s*([^\]]*)\]/g, '$1');
+const usableWidths = src ? [...new Set([...widths.filter((w) => w < src.width), src.width])] : [];
 ---
 
-{
-  src ? (
-    <Picture
-      src={src}
-      alt={alt}
-      formats={['avif', 'webp']}
-      widths={widths.filter((w) => w <= src.width)}
-      sizes={sizes}
-      loading={eager ? 'eager' : 'lazy'}
-      fetchpriority={eager ? 'high' : 'auto'}
-      class:list={['h-auto w-full min-w-0 object-cover', className]}
-      style={`aspect-ratio:${ratio}`}
-    />
-  ) : (
-    <div class:list={['ph-photo w-full min-w-0', className]} style={`aspect-ratio:${ratio}`} role="img" aria-label={label}>
-      <span aria-hidden="true">[PLACEHOLDER: photo – {label}]</span>
-    </div>
-  )
-}
+<figure class:list={['min-w-0', print && 'print', className]}>
+  {
+    src ? (
+      <Picture
+        src={src}
+        alt={alt}
+        formats={['avif', 'webp']}
+        widths={usableWidths}
+        sizes={sizes}
+        loading={eager ? 'eager' : 'lazy'}
+        fetchpriority={eager ? 'high' : 'auto'}
+        class="block h-auto w-full object-cover"
+        style={`aspect-ratio:${ratio}`}
+      />
+    ) : (
+      <div class="ph-photo w-full" style={`aspect-ratio:${ratio}`} role="img" aria-label={label}>
+        <span aria-hidden="true">[PLACEHOLDER: photo – {label}]</span>
+      </div>
+    )
+  }
+  {
+    (caption || captionZh) && (
+      <figcaption class="flex items-baseline justify-between gap-4">
+        {caption && <span>{caption}</span>}
+        {captionZh && (
+          <span class="cjk font-normal tracking-[0.2em] text-gold-deep" lang="zh-Hans">
+            {captionZh}
+          </span>
+        )}
+      </figcaption>
+    )
+  }
+</figure>

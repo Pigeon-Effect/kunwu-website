@@ -3,6 +3,7 @@ import { getEntry, render } from 'astro:content';
 import Base from '../../layouts/Base.astro';
 import PageHead from '../../components/PageHead.astro';
 import Photo from '../../components/Photo.astro';
+import { masterEarlyYears, masterSideKick } from '../../data/photos';
 import { getLangStaticPaths, localePath, useT, type Lang } from '../../i18n/utils';
 
 export const getStaticPaths = getLangStaticPaths;
@@ -20,7 +21,16 @@ const m = entry.data;
 
   <div class="wrap grid gap-12 pb-20 md:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)] md:gap-16 sm:pb-28">
     <div class="md:sticky md:top-8 md:self-start">
-      <Photo alt={m.portraitAlt} ratio="4/5" eager sizes="(min-width: 48rem) 28rem, 100vw" />
+      <Photo
+        src={masterEarlyYears.src}
+        alt={masterEarlyYears.alt[lang]}
+        print
+        eager
+        caption={masterEarlyYears.caption?.[lang]}
+        captionZh={lang === 'en' ? masterEarlyYears.caption?.zh : undefined}
+        sizes="(min-width: 48rem) 24rem, 90vw"
+        class="mx-auto w-full max-w-[24rem] md:mx-0"
+      />
     </div>
 
     <article>
@@ -44,7 +54,12 @@ const m = entry.data;
       </div>
 
       <div class="mt-12">
-        <Photo alt={t.master.actionPh} ratio="16/9" sizes="(min-width: 48rem) 40rem, 100vw" />
+        <Photo
+          src={masterSideKick.src}
+          alt={masterSideKick.alt[lang]}
+          sizes="(min-width: 72rem) 40rem, (min-width: 48rem) 55vw, 100vw"
+          widths={[640, 960, 1280, 1920]}
+        />
       </div>
 
       <div class="mt-12 flex flex-wrap items-center gap-6">

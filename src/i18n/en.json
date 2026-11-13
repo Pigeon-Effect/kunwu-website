@@ -22,7 +22,10 @@
   "common": {
     "bookCta": "Book your training",
     "readMore": "Read more",
-    "weeks": { "one": "1 week", "other": "{n} weeks" },
+    "weeks": {
+      "one": "1 week",
+      "other": "{n} weeks"
+    },
     "from": "from",
     "placeholderBadge": "Draft",
     "draftNotice": "[PLACEHOLDER: durations and prices are drafts and not yet confirmed by the school]"
@@ -62,10 +65,12 @@
     }
   },
   "home": {
-    "heroTitle": ["Shaolin kung fu,", "lived every day."],
+    "heroTitle": [
+      "Shaolin kung fu,",
+      "lived every day."
+    ],
     "heroLede": "Train, eat and live at the school with Master Shi Yanpeng, 34th-generation lay disciple of the Shaolin Temple, in Heze, Shandong.",
     "heroSecondary": "See a day at the school",
-    "heroPhoto": "Students training in the courtyard in the early morning",
     "dayTitle": "One day, one rhythm",
     "dayLede": "Students live at the school. The day follows the same rhythm as the taiji: effort and rest, morning and night.",
     "dayLink": "Daily life at the school",
@@ -84,8 +89,6 @@
     "title": "The master",
     "lede": "Master Shi Yanpeng teaches at Kunwu in person. Who he is, and what he passes on.",
     "credentialsTitle": "Lineage and qualifications",
-    "portraitPh": "Portrait of Master Shi Yanpeng",
-    "actionPh": "Master Shi Yanpeng demonstrating a form",
     "toTraining": "Train with him"
   },
   "daily": {

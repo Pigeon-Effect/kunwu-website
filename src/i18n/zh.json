@@ -22,7 +22,10 @@
   "common": {
     "bookCta": "报名训练",
     "readMore": "了解更多",
-    "weeks": { "one": "1 周", "other": "{n} 周" },
+    "weeks": {
+      "one": "1 周",
+      "other": "{n} 周"
+    },
     "from": "起",
     "placeholderBadge": "草稿",
     "draftNotice": "[PLACEHOLDER: 时长与价格为草稿，尚待学校确认]"
@@ -62,10 +65,12 @@
     }
   },
   "home": {
-    "heroTitle": ["少林功夫，", "日日修行。"],
+    "heroTitle": [
+      "少林功夫，",
+      "日日修行。"
+    ],
     "heroLede": "跟随少林寺第三十四代俗家弟子释延朋师傅，在山东菏泽同吃、同住、同练。",
     "heroSecondary": "看看学校的一天",
-    "heroPhoto": "清晨，学员在院子里训练",
     "dayTitle": "一日一节奏",
     "dayLede": "学员住在学校里。一天的节奏如同太极：动与静，昼与夜。",
     "dayLink": "学校的日常生活",
@@ -84,8 +89,6 @@
     "title": "师傅",
     "lede": "释延朋师傅亲自在坤武授课。他是谁，他传承的是什么。",
     "credentialsTitle": "传承与资历",
-    "portraitPh": "释延朋师傅肖像",
-    "actionPh": "释延朋师傅演练套路",
     "toTraining": "跟他学习"
   },
   "daily": {
