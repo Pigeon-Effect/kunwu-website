@@ -2,28 +2,35 @@
 @import '@fontsource/marcellus/latin-400.css';
 
 /* ------------------------------------------------------------------
-   Design tokens – derived from the brand emblem
-   (black/white taiji, gold ring, plum-blossom red, rice-paper cream)
+   Colour code – five colours, each with exactly one job
+     墨 ink        text
+     宣 paper      page background (warm rice-paper white)
+     朱 vermilion  the only action / accent colour: buttons, seals, "now"
+     金 gold       lines and ornaments – never body text
+     米 rice       tinted sections
+   The plum-blossom red lives only inside the logo.
    ------------------------------------------------------------------ */
 @theme {
   --color-*: initial;
-  --color-ink: #000000;
-  --color-ink-text: #16130f;
-  --color-ink-soft: #4a443b; /* secondary text, 9.4:1 on paper */
-  --color-paper: #ffffff;
-  --color-rice: #faf5dc;
-  --color-rice-deep: #f1e8c2;
-  --color-gold: #b08a3e; /* hairlines, rings – never text (3.2:1) */
-  --color-gold-deep: #8a6a2c; /* small gold text, links (5.0:1) */
-  --color-gold-pale: #e6d6ad;
-  --color-blossom: #e2674a; /* accents only – never text (3.4:1) */
-  --color-blossom-deep: #b4442a; /* red text if ever needed (5.5:1) */
+  --color-ink: #171411;
+  --color-ink-soft: #4a443b; /* secondary text, 9:1 on paper */
+  --color-paper: #fbf8f1;
+  --color-white: #ffffff;
+  --color-rice: #f3ecd9;
+  --color-vermilion: #c23b22; /* 5.0:1 on paper – ok for text and as button background */
+  --color-vermilion-deep: #9e2f1b;
+  --color-gold: #b08a3e; /* lines only (3.1:1) */
+  --color-gold-deep: #7a5c22; /* small gold text (5.8:1 on paper, 5.2:1 on rice) */
+  --color-gold-pale: #e4d5ae;
+  --color-black: #000000;
   --color-transparent: transparent;
   --color-current: currentColor;
 
   --font-sans: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'PingFang SC',
     'Hiragino Sans GB', 'Microsoft YaHei', 'Noto Sans CJK SC', sans-serif;
   --font-cjk: 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'Noto Sans CJK SC', sans-serif;
+  /* Kai (regular script) for inscriptions and seals – system fonts only, falls back to the CJK stack */
+  --font-kai: 'Kaiti SC', 'STKaiti', 'KaiTi', 'BiauKai', 'AR PL UKai CN', 'PingFang SC', 'Microsoft YaHei', serif;
   --font-display: 'Marcellus', 'Iowan Old Style', 'Palatino Linotype', Palatino, Georgia, serif;
 
   --breakpoint-xs: 26rem;
@@ -34,6 +41,7 @@
     -webkit-text-size-adjust: 100%;
     text-size-adjust: 100%;
     scroll-padding-top: 5rem;
+    background: var(--color-paper);
   }
 
   @media (prefers-reduced-motion: no-preference) {
@@ -44,7 +52,7 @@
 
   body {
     background: var(--color-paper);
-    color: var(--color-ink-text);
+    color: var(--color-ink);
     font-family: var(--font-sans);
     font-size: 1.0625rem;
     line-height: 1.65;
@@ -58,7 +66,6 @@
     letter-spacing: 0.01em;
   }
 
-  /* Display type: Marcellus for Latin; system CJK (bold) for Chinese. */
   .font-display,
   h1,
   h2,
@@ -66,21 +73,17 @@
     font-family: var(--font-display);
     font-weight: 400;
     line-height: 1.15;
-    letter-spacing: 0;
     text-wrap: balance;
   }
 
-  :lang(zh-Hans) :is(.font-display, h1, h2, h3) {
-    font-family: var(--font-cjk);
-    font-weight: 600;
-    line-height: 1.35;
-    letter-spacing: 0.04em;
-  }
-
-  /* Chinese characters inside English pages (e.g. 释延朋) */
   .cjk {
     font-family: var(--font-cjk);
     font-weight: 600;
+  }
+
+  .kai {
+    font-family: var(--font-kai);
+    font-weight: 400;
   }
 
   a {
@@ -92,17 +95,17 @@
   }
 
   a:hover {
-    text-decoration-color: var(--color-ink-text);
+    text-decoration-color: var(--color-vermilion);
   }
 
   :focus-visible {
-    outline: 2px solid var(--color-gold-deep);
+    outline: 2px solid var(--color-vermilion);
     outline-offset: 3px;
     border-radius: 2px;
   }
 
   ::selection {
-    background: var(--color-rice-deep);
+    background: var(--color-rice);
   }
 
   summary {
@@ -111,78 +114,6 @@
 }
 
 @layer components {
-  /* Long-form text (master bio, program descriptions, FAQ answers) */
-  .prose-kw {
-    max-width: 38rem;
-  }
-  .prose-kw > * + * {
-    margin-top: 1.1em;
-  }
-  .prose-kw h2 {
-    font-size: 1.6rem;
-    margin-top: 2.2em;
-  }
-  .prose-kw h3 {
-    font-size: 1.25rem;
-    margin-top: 1.8em;
-  }
-  .prose-kw ul,
-  ul.prose-kw {
-    list-style: none;
-    padding: 0;
-  }
-  .prose-kw ul > li,
-  ul.prose-kw > li {
-    position: relative;
-    padding-left: 1.4em;
-  }
-  .prose-kw ul > li + li,
-  ul.prose-kw > li + li {
-    margin-top: 0.4em;
-  }
-  .prose-kw ul > li::before,
-  ul.prose-kw > li::before {
-    content: '';
-    position: absolute;
-    left: 0.2em;
-    top: 0.7em;
-    width: 0.45em;
-    height: 0.45em;
-    border: 1px solid var(--color-gold);
-    border-radius: 50%;
-  }
-  .prose-kw strong {
-    font-weight: 600;
-  }
-
-  /* Buttons – ink, calm, with a gold ring on hover */
-  .btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.6em;
-    padding: 0.8em 1.4em;
-    border-radius: 999px;
-    background: var(--color-ink);
-    color: var(--color-paper);
-    font-weight: 500;
-    line-height: 1.2;
-    text-decoration: none;
-    box-shadow: 0 0 0 0 var(--color-gold);
-    transition: box-shadow 160ms ease;
-  }
-  .btn:hover {
-    box-shadow: 0 0 0 3px var(--color-gold);
-  }
-  .btn-quiet {
-    background: transparent;
-    color: var(--color-ink-text);
-    box-shadow: inset 0 0 0 1px var(--color-gold);
-  }
-  .btn-quiet:hover {
-    box-shadow: inset 0 0 0 2px var(--color-ink-text);
-  }
-
-  /* Page container */
   .wrap {
     width: 100%;
     max-width: 72rem;
@@ -195,52 +126,28 @@
     }
   }
 
-  /* The ring motif as a divider: a gold line ending in a small open circle */
-  .ring-rule {
-    display: flex;
-    align-items: center;
+  /* 回纹 – the Chinese key fret, as a thin gold band. The one recurring divider. */
+  .fret {
+    height: 10px;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='10' viewBox='0 0 14 10'%3E%3Cpath d='M0 9.5H14M1.5 9.5V.5h10V7h-7V3h4v2' fill='none' stroke='%23B08A3E' stroke-width='1'/%3E%3C/svg%3E");
+    background-repeat: repeat-x;
+    background-position: left bottom;
   }
-  .ring-rule::before {
-    content: '';
-    width: 3.5rem;
-    height: 1px;
-    background: var(--color-gold);
-  }
-  .ring-rule::after {
-    content: '';
-    width: 0.65rem;
-    height: 0.65rem;
-    border: 1px solid var(--color-gold);
-    border-radius: 50%;
+  .fret-short {
+    width: 7rem;
   }
 
-  /* Active navigation item: a single blossom dot */
-  .nav-link {
-    position: relative;
-    text-decoration: none;
-  }
-  .nav-link[aria-current='page']::after {
-    content: '';
-    position: absolute;
-    left: 50%;
-    bottom: -0.55rem;
-    width: 0.35rem;
-    height: 0.35rem;
-    margin-left: -0.175rem;
-    border-radius: 50%;
-    background: var(--color-blossom);
-  }
-  .nav-link:hover {
-    color: var(--color-ink);
-    text-decoration: underline;
-    text-decoration-color: var(--color-gold);
+  /* 月洞门 – moon-gate frame: arched top, gold contour set off the image */
+  .moon-gate {
+    border-radius: 9999px 9999px 0 0;
+    outline: 1px solid var(--color-gold);
+    outline-offset: 7px;
   }
 
-  /* Gold hairline rule */
-  .rule {
-    border: 0;
-    height: 1px;
-    background: var(--color-gold);
+  /* A plain photo with the same gold contour */
+  .framed {
+    outline: 1px solid var(--color-gold);
+    outline-offset: 7px;
   }
 
   /* An old photo print: paper border, hairline edge, soft shadow, caption on the paper */
@@ -257,17 +164,97 @@
     color: var(--color-ink-soft);
   }
 
-  /* ---------- Placeholders: impossible to miss, easy to grep ---------- */
+  /* Long-form text */
+  .prose-kw {
+    max-width: 38rem;
+  }
+  .prose-kw > * + * {
+    margin-top: 1.1em;
+  }
+  .prose-kw ul,
+  ul.prose-kw {
+    list-style: none;
+    padding: 0;
+  }
+  .prose-kw ul > li,
+  ul.prose-kw > li {
+    position: relative;
+    padding-left: 1.3em;
+  }
+  .prose-kw ul > li + li,
+  ul.prose-kw > li + li {
+    margin-top: 0.45em;
+  }
+  /* list marker: a tiny vermilion lozenge */
+  .prose-kw ul > li::before,
+  ul.prose-kw > li::before {
+    content: '';
+    position: absolute;
+    left: 0.15em;
+    top: 0.68em;
+    width: 0.38em;
+    height: 0.38em;
+    background: var(--color-vermilion);
+    transform: rotate(45deg);
+  }
+
+  /* Buttons: vermilion = action. Quiet = ink outline. */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6em;
+    padding: 0.78em 1.5em;
+    border-radius: 2px;
+    background: var(--color-vermilion);
+    color: var(--color-paper);
+    font-weight: 500;
+    line-height: 1.2;
+    letter-spacing: 0.02em;
+    text-decoration: none;
+    transition: background-color 160ms ease;
+  }
+  .btn:hover {
+    background: var(--color-vermilion-deep);
+  }
+  .btn-quiet {
+    background: transparent;
+    color: var(--color-ink);
+    box-shadow: inset 0 0 0 1px var(--color-ink);
+  }
+  .btn-quiet:hover {
+    background: var(--color-ink);
+    color: var(--color-paper);
+  }
+
+  /* Navigation: active item gets a short vermilion bar */
+  .nav-link {
+    position: relative;
+    text-decoration: none;
+    padding-block: 0.4rem;
+  }
+  .nav-link::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    bottom: -0.1rem;
+    width: 0;
+    height: 2px;
+    background: var(--color-vermilion);
+    transition:
+      width 160ms ease,
+      left 160ms ease;
+  }
+  .nav-link:hover::after,
+  .nav-link[aria-current='page']::after {
+    left: calc(50% - 0.6rem);
+    width: 1.2rem;
+  }
+
+  /* Placeholders: impossible to miss, easy to grep */
   .ph {
-    background: repeating-linear-gradient(
-      -45deg,
-      #fff6d6,
-      #fff6d6 6px,
-      #fbecc0 6px,
-      #fbecc0 12px
-    );
-    color: #5b3a12;
-    outline: 1px dashed var(--color-blossom-deep);
+    background: #fff3d6;
+    color: #6b3a10;
+    outline: 1px dashed var(--color-vermilion);
     outline-offset: 1px;
     padding: 0 0.25em;
     border-radius: 2px;
@@ -279,21 +266,27 @@
     -webkit-box-decoration-break: clone;
     box-decoration-break: clone;
   }
-
   .ph-photo {
     display: grid;
     place-items: center;
     padding: 1.25rem;
     text-align: center;
-    background:
-      radial-gradient(circle at 50% 50%, transparent 0 34%, rgb(176 138 62 / 0.18) 34% 34.5%, transparent 34.5%),
-      repeating-linear-gradient(-45deg, var(--color-rice), var(--color-rice) 10px, #f6eecb 10px, #f6eecb 20px);
-    border: 1px solid var(--color-gold-pale);
+    background: var(--color-rice);
+    border: 1px dashed var(--color-gold);
     color: var(--color-ink-soft);
     font-size: 0.875rem;
     line-height: 1.4;
     overflow-wrap: anywhere;
   }
+}
+
+/* Unlayered on purpose: must beat the generated `font-display` utility.
+   On Chinese pages, display type uses the system CJK stack (Marcellus has no CJK glyphs). */
+:lang(zh-Hans) :is(.font-display, h1, h2, h3):not(:lang(en)) {
+  font-family: var(--font-cjk);
+  font-weight: 600;
+  line-height: 1.35;
+  letter-spacing: 0.04em;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -304,11 +297,4 @@
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
   }
-}
-
-/* Unlayered on purpose: must beat the generated `font-display` utility.
-   On Chinese pages, display type uses the system CJK stack (Marcellus has no CJK glyphs). */
-:lang(zh-Hans) .font-display:not(:lang(en)) {
-  font-family: var(--font-cjk);
-  font-weight: 600;
 }

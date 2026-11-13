@@ -3,7 +3,9 @@
  * The day ring (日晷) – the site's one memorable element.
  * A 24-hour dial: noon at the top, midnight at the bottom, time runs clockwise.
  * Day half = paper (yang), night half = ink (yin); training blocks are gold arcs.
- * A small script adds a blossom dot for the current time in Heze (UTC+8).
+ * Around it: the twelve double hours (十二时辰), 子 at midnight, 午 at noon.
+ * A small script adds a vermilion marker for the current time in Heze (UTC+8)
+ * and lights up the current double hour.
  * The SVG is decorative; the ordered list next to it is the real content.
  */
 import { schedule, toMinutes, SCHEDULE_CONFIRMED, type BlockKind } from '../data/schedule';
@@ -44,7 +46,7 @@ const arc = (startMin: number, endMin: number, r: number, gapDeg = 0.8) => {
 const strokeFor: Record<BlockKind, { color: string; width: number; opacity: number } | null> = {
   training: { color: 'var(--color-gold)', width: BAND - 6, opacity: 1 },
   practice: { color: 'var(--color-gold)', width: BAND - 14, opacity: 1 },
-  meal: { color: 'var(--color-blossom-deep)', width: 4, opacity: 0.9 },
+  meal: { color: 'var(--color-gold-pale)', width: 5, opacity: 1 },
   rest: null,
 };
 
@@ -59,9 +61,14 @@ const ticks = Array.from({ length: 24 }, (_, h) => {
   const [x2, y2] = pt(angleOf(h * 60), R_OUT + (major ? 11 : 7));
   return { x1, y1, x2, y2, major };
 });
-const labels = [0, 6, 12, 18].map((h) => {
-  const [x, y] = pt(angleOf(h * 60), R_OUT + 24);
-  return { x, y: y + 4, text: `${String(h).padStart(2, '0')}:00` };
+/** 十二时辰: each branch is centred on an even hour – 子 = 23–01, 丑 = 01–03 … 午 = 11–13 … */
+const branches = [...'子丑寅卯辰巳午未申酉戌亥'].map((ch, i) => {
+  const [x, y] = pt(angleOf(i * 120), R_OUT + 24);
+  return { x, y: y + 5.5, ch, i };
+});
+const hourLabels = [0, 6, 12, 18].map((h) => {
+  const [x, y] = pt(angleOf(h * 60), R_IN - 13);
+  return { x, y: y + 3.5, text: String(h).padStart(2, '0') };
 });
 
 const halfAnnulus = `M${-R_OUT} 0A${R_OUT} ${R_OUT} 0 0 0 ${R_OUT} 0L${R_IN} 0A${R_IN} ${R_IN} 0 0 1 ${-R_IN} 0Z`;
@@ -99,14 +106,21 @@ const halfAnnulus = `M${-R_OUT} 0A${R_OUT} ${R_OUT} 0 0 0 ${R_OUT} 0L${R_IN} 0A$
       ))
     }
     {
-      labels.map((l) => (
-        <text x={l.x} y={l.y} text-anchor="middle" font-size="11" fill="var(--color-ink-soft)" font-family="var(--font-sans)">
+      branches.map((b) => (
+        <text x={b.x} y={b.y} text-anchor="middle" font-size="15" fill="var(--color-ink)" font-family="var(--font-kai)" data-shichen={b.i}>
+          {b.ch}
+        </text>
+      ))
+    }
+    {
+      hourLabels.map((l) => (
+        <text x={l.x} y={l.y} text-anchor="middle" font-size="9.5" fill="var(--color-ink-soft)" font-family="var(--font-sans)">
           {l.text}
         </text>
       ))
     }
 
-    <text y="-6" text-anchor="middle" font-size={lang === 'zh' ? 19 : 21} fill="var(--color-ink-text)" class="font-display">
+    <text y="-6" text-anchor="middle" font-size={lang === 'zh' ? 19 : 21} fill="var(--color-ink)" class="font-display">
       {t.ring.title}
     </text>
     <text y="18" text-anchor="middle" font-size="11.5" fill="var(--color-gold-deep)" font-family="var(--font-sans)" data-ring-clock>
@@ -115,8 +129,8 @@ const halfAnnulus = `M${-R_OUT} 0A${R_OUT} ${R_OUT} 0 0 0 ${R_OUT} 0L${R_IN} 0A$
 
     <!-- "now" marker, positioned by script -->
     <g data-ring-marker class="hidden">
-      <line x1="0" y1={-(R_IN - 10)} x2="0" y2={-(R_OUT + 2)} stroke="var(--color-blossom)" stroke-width="1.5"></line>
-      <circle cy={-R_MID} r="7" fill="var(--color-blossom)" stroke="var(--color-paper)" stroke-width="2"></circle>
+      <line x1="0" y1={-(R_IN - 10)} x2="0" y2={-(R_OUT + 2)} stroke="var(--color-vermilion)" stroke-width="1.5"></line>
+      <circle cy={-R_MID} r="7" fill="var(--color-vermilion)" stroke="var(--color-paper)" stroke-width="2"></circle>
     </g>
   </svg>
 
@@ -136,14 +150,14 @@ const halfAnnulus = `M${-R_OUT} 0A${R_OUT} ${R_OUT} 0 0 0 ${R_OUT} 0L${R_IN} 0A$
                   'mr-2 inline-block h-2.5 w-2.5 translate-y-[-1px] rounded-full align-middle',
                   b.kind === 'training' && 'bg-gold',
                   b.kind === 'practice' && 'border-2 border-gold',
-                  b.kind === 'meal' && 'scale-75 bg-blossom-deep',
+                  b.kind === 'meal' && 'border border-gold bg-gold-pale',
                   b.kind === 'rest' && 'border border-ink-soft/50',
                 ]}
               />
               {b.label[lang]}
               <span class="sr-only"> ({t.ring.kinds[b.kind]})</span>
             </span>
-            <span class="hidden rounded-full bg-blossom px-2 py-0.5 text-xs font-medium text-ink group-data-now:inline">
+            <span class="hidden rounded-sm bg-vermilion px-2 py-0.5 text-xs font-medium text-paper group-data-now:inline">
               {t.ring.now}
             </span>
           </li>
@@ -170,6 +184,11 @@ const halfAnnulus = `M${-R_OUT} 0A${R_OUT} ${R_OUT} 0 0 0 ${R_OUT} 0L${R_IN} 0A$
 
       const clock = root.querySelector('[data-ring-clock]');
       if (clock) clock.textContent = `${root.dataset.clockLabel ?? ''} ${pad(Math.floor(mins / 60))}:${pad(mins % 60)}`;
+
+      const branch = Math.floor(((mins + 60) % 1440) / 120);
+      root.querySelectorAll('[data-shichen]').forEach((el) => {
+        el.setAttribute('fill', Number(el.getAttribute('data-shichen')) === branch ? 'var(--color-vermilion)' : 'var(--color-ink)');
+      });
 
       root.querySelectorAll<HTMLElement>('li[data-start]').forEach((li) => {
         const s = Number(li.dataset.start);

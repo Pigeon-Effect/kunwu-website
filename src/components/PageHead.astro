@@ -1,14 +1,23 @@
 ---
+import Inscription from './Inscription.astro';
+
 interface Props {
   title: string;
   lede?: string;
+  /** vertical Chinese inscription, one string per column */
+  inscription: string[];
+  seal: string;
 }
-const { title, lede } = Astro.props;
+const { title, lede, inscription, seal } = Astro.props;
 ---
 
-<header class="wrap pt-12 pb-10 sm:pt-20 sm:pb-14">
-  <h1 class="text-[2.6rem] sm:text-6xl">{title}</h1>
-  {lede && <p class="mt-5 max-w-2xl text-lg text-ink-soft sm:text-xl">{lede}</p>}
-  <div class="ring-rule mt-8" aria-hidden="true"></div>
-  <slot />
+<header class="wrap grid grid-cols-[1fr_auto] gap-6 pt-12 pb-10 sm:pt-16 sm:pb-14">
+  <div>
+    <h1 class="text-[2.6rem] sm:text-6xl">{title}</h1>
+    {lede && <p class="mt-5 max-w-2xl text-lg text-ink-soft sm:text-xl">{lede}</p>}
+    <div class="fret fret-short mt-8" aria-hidden="true"></div>
+    <slot />
+  </div>
+  <div class="sm:hidden"><Inscription lines={inscription} seal={seal} size="sm" /></div>
+  <div class="mr-2 hidden sm:block"><Inscription lines={inscription} seal={seal} /></div>
 </header>
