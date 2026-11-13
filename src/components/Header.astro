@@ -24,7 +24,7 @@ const current = (key: RouteKey) => (key === route ? 'page' : undefined);
 
 <header class="relative z-40 border-b border-gold-pale bg-paper">
   <div class="wrap flex h-[4.5rem] items-center gap-2.5 sm:gap-4">
-    <a href={localePath(lang)} class="mr-auto flex min-w-0 items-center gap-2.5 whitespace-nowrap no-underline sm:gap-3" aria-label={`${t.site.name} – ${t.nav.home}`}>
+    <a href={localePath(lang)} class="mr-auto flex min-w-0 items-center gap-2.5 whitespace-nowrap no-underline sm:gap-3">
       <Emblem width={44} height={44} aria-hidden="true" class="h-10 w-10 shrink-0 sm:h-11 sm:w-11" />
       <span class="flex flex-col leading-none">
         {
