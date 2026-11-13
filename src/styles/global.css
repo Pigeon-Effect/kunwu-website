@@ -126,18 +126,22 @@
     font-size: 1.25rem;
     margin-top: 1.8em;
   }
-  .prose-kw ul {
+  .prose-kw ul,
+  ul.prose-kw {
     list-style: none;
     padding: 0;
   }
-  .prose-kw ul > li {
+  .prose-kw ul > li,
+  ul.prose-kw > li {
     position: relative;
     padding-left: 1.4em;
   }
-  .prose-kw ul > li + li {
+  .prose-kw ul > li + li,
+  ul.prose-kw > li + li {
     margin-top: 0.4em;
   }
-  .prose-kw ul > li::before {
+  .prose-kw ul > li::before,
+  ul.prose-kw > li::before {
     content: '';
     position: absolute;
     left: 0.2em;

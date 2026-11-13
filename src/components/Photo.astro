@@ -26,6 +26,8 @@ const {
   eager = false,
   class: className = '',
 } = Astro.props;
+// An alt text that is itself still a placeholder must not be nested inside the photo placeholder.
+const label = alt.replace(/\[PLACEHOLDER:\s*([^\]]*)\]/g, '$1');
 ---
 
 {
@@ -42,8 +44,8 @@ const {
       style={`aspect-ratio:${ratio}`}
     />
   ) : (
-    <div class:list={['ph-photo w-full min-w-0', className]} style={`aspect-ratio:${ratio}`} role="img" aria-label={alt}>
-      <span aria-hidden="true">[PLACEHOLDER: photo – {alt}]</span>
+    <div class:list={['ph-photo w-full min-w-0', className]} style={`aspect-ratio:${ratio}`} role="img" aria-label={label}>
+      <span aria-hidden="true">[PLACEHOLDER: photo – {label}]</span>
     </div>
   )
 }

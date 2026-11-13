@@ -23,14 +23,14 @@ const current = (key: RouteKey) => (key === route ? 'page' : undefined);
 ---
 
 <header class="relative z-40 border-b border-gold-pale bg-paper">
-  <div class="wrap flex h-[4.5rem] items-center gap-4">
-    <a href={localePath(lang)} class="mr-auto flex items-center gap-3 no-underline" aria-label={`${t.site.name} – ${t.nav.home}`}>
-      <Emblem width={44} height={44} aria-hidden="true" class="shrink-0" />
+  <div class="wrap flex h-[4.5rem] items-center gap-2.5 sm:gap-4">
+    <a href={localePath(lang)} class="mr-auto flex min-w-0 items-center gap-2.5 whitespace-nowrap no-underline sm:gap-3" aria-label={`${t.site.name} – ${t.nav.home}`}>
+      <Emblem width={44} height={44} aria-hidden="true" class="h-10 w-10 shrink-0 sm:h-11 sm:w-11" />
       <span class="flex flex-col leading-none">
         {
           lang === 'en' ? (
             <>
-              <span class="font-display text-[1.3rem] text-ink">Kunwu Kung Fu</span>
+              <span class="font-display text-[1.15rem] text-ink sm:text-[1.3rem]">Kunwu Kung Fu</span>
               <span class="cjk mt-1 text-[0.8rem] tracking-[0.3em] text-gold-deep" lang="zh-Hans">坤武功夫</span>
             </>
           ) : (
@@ -62,7 +62,7 @@ const current = (key: RouteKey) => (key === route ? 'page' : undefined);
       hreflang={htmlLang[other]}
       lang={htmlLang[other]}
       aria-label={t.nav.switchToLabel}
-      class="rounded-full px-2 py-1 text-[0.95rem] no-underline hover:underline"
+      class="rounded-full px-2 py-1 text-[0.95rem] whitespace-nowrap no-underline hover:underline"
     >
       {t.nav.switchTo}
     </a>
@@ -74,7 +74,7 @@ const current = (key: RouteKey) => (key === route ? 'page' : undefined);
     <!-- Mobile menu: native <details>, works without JavaScript -->
     <details class="group lg:hidden">
       <summary
-        class="flex list-none items-center gap-2 rounded-full px-3 py-2 text-[0.95rem] ring-1 ring-gold [&::-webkit-details-marker]:hidden"
+        class="flex list-none items-center gap-2 rounded-full px-3 py-2 text-[0.95rem] whitespace-nowrap ring-1 ring-gold [&::-webkit-details-marker]:hidden"
       >
         <span aria-hidden="true" class="relative block h-3 w-4">
           <span class="absolute top-0 left-0 h-px w-4 bg-ink transition group-open:top-1.5 group-open:rotate-45"></span>

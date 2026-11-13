@@ -7,22 +7,19 @@ import { defineMiddleware } from 'astro:middleware';
  * <script>, <style> and <textarea> is left untouched.
  */
 const PLACEHOLDER = /\[PLACEHOLDER:[^\]<]*\]/g;
-const RAW_TEXT = /^<(title|script|style|textarea)\b/i;
+/** Elements whose content is not markup – set aside before touching anything. */
+const RAW_TEXT = /<(script|style|title|textarea)\b[\s\S]*?<\/\1\s*>/gi;
+const TOKEN = (i: number) => `\u{E000}${i}\u{E000}`;
+const TOKEN_RE = /\u{E000}(\d+)\u{E000}/gu;
 
 export const markPlaceholders = (html: string): string => {
-  let rawUntil: string | null = null;
-  return html
+  const saved: string[] = [];
+  const masked = html.replace(RAW_TEXT, (m) => TOKEN(saved.push(m) - 1));
+  return masked
     .split(/(<[^>]*>)/)
-    .map((part) => {
-      if (part.startsWith('<')) {
-        if (rawUntil && part.toLowerCase().startsWith(`</${rawUntil}`)) rawUntil = null;
-        else if (!rawUntil) rawUntil = RAW_TEXT.exec(part)?.[1]?.toLowerCase() ?? null;
-        return part;
-      }
-      if (rawUntil) return part;
-      return part.replace(PLACEHOLDER, (m) => `<mark class="ph">${m}</mark>`);
-    })
-    .join('');
+    .map((part) => (part.startsWith('<') ? part : part.replace(PLACEHOLDER, (m) => `<mark class="ph">${m}</mark>`)))
+    .join('')
+    .replace(TOKEN_RE, (_, i: string) => saved[Number(i)] ?? '');
 };
 
 export const onRequest = defineMiddleware(async (_context, next) => {
