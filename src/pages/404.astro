@@ -1,0 +1,23 @@
+---
+import Base from '../layouts/Base.astro';
+import { localePath, useT } from '../i18n/utils';
+
+const en = useT('en');
+const zh = useT('zh');
+---
+
+<Base lang="en" title={en.meta.notFound.title} description={en.meta.notFound.description}>
+  <section class="wrap grid min-h-[60vh] content-center gap-12 py-20 md:grid-cols-2">
+    <div>
+      <p class="font-display text-7xl text-gold">404</p>
+      <h1 class="mt-6 text-4xl">{en.notFound.title}</h1>
+      <p class="mt-4 text-ink-soft">{en.notFound.text}</p>
+      <a href={localePath('en')} class="btn mt-8">{en.notFound.home}</a>
+    </div>
+    <div lang="zh-Hans" class="md:pt-[6.5rem]">
+      <p class="cjk text-4xl">{zh.notFound.title}</p>
+      <p class="mt-4 text-ink-soft">{zh.notFound.text}</p>
+      <a href={localePath('zh')} class="btn btn-quiet mt-8">{zh.notFound.home}</a>
+    </div>
+  </section>
+</Base>

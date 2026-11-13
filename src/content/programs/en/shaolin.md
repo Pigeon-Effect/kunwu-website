@@ -5,7 +5,7 @@ nameZh: 少林功夫
 order: 1
 summary: The core of the school. Stances, basic skills, traditional forms and conditioning, taught in the lineage of the Shaolin Temple.
 focus:
-  - Basic skills (基本功): stances, kicks, stretching, footwork
+  - "Basic skills (基本功): stances, kicks, stretching, footwork"
   - Traditional Shaolin forms (套路)
   - Strength, flexibility and stamina conditioning
   - "[PLACEHOLDER: weapons training – which weapons, from which level?]"

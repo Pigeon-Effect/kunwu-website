@@ -62,7 +62,7 @@
     }
   },
   "home": {
-    "heroTitle": "Shaolin kung fu, lived every day.",
+    "heroTitle": ["Shaolin kung fu,", "lived every day."],
     "heroLede": "Train, eat and live at the school with Master Shi Yanpeng, 34th-generation lay disciple of the Shaolin Temple, in Heze, Shandong.",
     "heroSecondary": "See a day at the school",
     "heroPhoto": "Students training in the courtyard in the early morning",

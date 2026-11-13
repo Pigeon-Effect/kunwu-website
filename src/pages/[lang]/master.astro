@@ -1,0 +1,56 @@
+---
+import { getEntry, render } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import PageHead from '../../components/PageHead.astro';
+import Photo from '../../components/Photo.astro';
+import { getLangStaticPaths, localePath, useT, type Lang } from '../../i18n/utils';
+
+export const getStaticPaths = getLangStaticPaths;
+
+const lang = Astro.params.lang as Lang;
+const t = useT(lang);
+const entry = await getEntry('master', lang);
+if (!entry) throw new Error(`Missing src/content/master/${lang}.md`);
+const { Content } = await render(entry);
+const m = entry.data;
+---
+
+<Base lang={lang} title={t.meta.master.title} description={t.meta.master.description} route="master">
+  <PageHead title={t.master.title} lede={t.master.lede} />
+
+  <div class="wrap grid gap-12 pb-20 md:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)] md:gap-16 sm:pb-28">
+    <div class="md:sticky md:top-8 md:self-start">
+      <Photo alt={m.portraitAlt} ratio="4/5" eager sizes="(min-width: 48rem) 28rem, 100vw" />
+    </div>
+
+    <article>
+      <header>
+        <h2>
+          <span class="cjk block text-6xl tracking-[0.12em] text-ink sm:text-7xl" lang="zh-Hans">{m.nameZh}</span>
+          {lang === 'en' && <span class="mt-4 block text-3xl sm:text-4xl">{m.name}</span>}
+        </h2>
+        <p class:list={['text-gold-deep', lang === 'en' ? 'mt-2' : 'mt-4']}>{m.lineage}</p>
+      </header>
+
+      <section class="mt-10 border-y border-gold py-6" aria-labelledby="credentials">
+        <h3 id="credentials" class="text-xl">{t.master.credentialsTitle}</h3>
+        <ul class="prose-kw mt-4">
+          {m.credentials.map((c) => <li>{c}</li>)}
+        </ul>
+      </section>
+
+      <div class="prose-kw mt-10 text-lg">
+        <Content />
+      </div>
+
+      <div class="mt-12">
+        <Photo alt={t.master.actionPh} ratio="16/9" sizes="(min-width: 48rem) 40rem, 100vw" />
+      </div>
+
+      <div class="mt-12 flex flex-wrap items-center gap-6">
+        <a href={localePath(lang, 'book')} class="btn">{t.common.bookCta}</a>
+        <a href={localePath(lang, 'training')}>{t.master.toTraining} →</a>
+      </div>
+    </article>
+  </div>
+</Base>

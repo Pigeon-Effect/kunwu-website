@@ -1,0 +1,117 @@
+---
+/**
+ * Booking: program → duration → Stripe Payment Link.
+ * All prices and links come from src/config/booking.ts. Zero JavaScript.
+ */
+import { getCollection } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import PageHead from '../../components/PageHead.astro';
+import { getBooking, formatPrice, isLiveLink, CURRENCY_CONFIRMED } from '../../config/booking';
+import { fill, getLangStaticPaths, intlLocale, localePath, splitId, useT, weeksLabel, type Lang } from '../../i18n/utils';
+
+export const getStaticPaths = getLangStaticPaths;
+
+const lang = Astro.params.lang as Lang;
+const t = useT(lang);
+const programs = (await getCollection('programs', (e) => splitId(e.id).lang === lang))
+  .sort((a, b) => a.data.order - b.data.order)
+  .map((e) => ({ ...e.data, booking: getBooking(e.data.program) }));
+---
+
+<Base lang={lang} title={t.meta.book.title} description={t.meta.book.description} route="book">
+  <PageHead title={t.book.title} lede={t.book.lede} />
+
+  <section class="wrap pb-12" aria-labelledby="steps-title">
+    <h2 id="steps-title" class="sr-only">{t.book.stepsTitle}</h2>
+    <ol class="grid gap-6 sm:grid-cols-3 sm:gap-8">
+      {
+        t.book.steps.map((step, i) => (
+          <li class="flex gap-4">
+            <span
+              aria-hidden="true"
+              class="font-display grid h-10 w-10 shrink-0 place-items-center rounded-full border border-gold text-lg text-gold-deep"
+            >
+              {i + 1}
+            </span>
+            <span class="pt-1.5 text-ink-soft">{step}</span>
+          </li>
+        ))
+      }
+    </ol>
+  </section>
+
+  <nav aria-label={t.book.jumpLabel} class="wrap pb-6">
+    <ul class="flex flex-wrap gap-x-6 gap-y-2">
+      {programs.map((p) => <li><a href={`#${p.program}`}>{p.title}</a></li>)}
+    </ul>
+  </nav>
+
+  <div class="wrap pb-16">
+    {
+      programs.map((p) => (
+        <section id={p.program} class="border-t border-gold py-10 sm:py-12" aria-labelledby={`${p.program}-book`}>
+          <div class="grid gap-6 md:grid-cols-[16rem_1fr] md:gap-12">
+            <div>
+              <h2 id={`${p.program}-book`} class="text-3xl">
+                {p.title}
+              </h2>
+              {lang === 'en' && (
+                <p class="cjk mt-1 font-normal tracking-[0.15em] text-gold-deep" lang="zh-Hans">
+                  {p.nameZh}
+                </p>
+              )}
+              <p class="mt-3 text-sm">
+                <a href={localePath(lang, 'training', p.program)}>{t.common.readMore}</a>
+              </p>
+            </div>
+
+            <div>
+              <ul class="divide-y divide-gold-pale border-y border-gold-pale">
+                {p.booking.options.map((o) => {
+                  const duration = weeksLabel(lang, o.weeks);
+                  return (
+                    <li id={o.id} class="flex flex-wrap items-center gap-x-6 gap-y-2 py-4">
+                      <span class="min-w-[6rem] text-lg">{duration}</span>
+                      <span class="flex-1 tabular-nums text-ink-soft">
+                        {o.price !== null ? formatPrice(o.price, intlLocale[lang]) : t.training.pricePh}
+                      </span>
+                      {isLiveLink(o.paymentLink) ? (
+                        <a
+                          href={o.paymentLink}
+                          rel="noopener"
+                          class="btn !py-2.5"
+                          aria-label={fill(t.book.payLabel, { program: p.title, duration })}
+                        >
+                          {t.book.pay} →
+                        </a>
+                      ) : (
+                        <span class="rounded-full px-4 py-2.5 text-sm text-ink-soft ring-1 ring-gold-pale ring-inset">
+                          {t.book.notOpen}
+                        </span>
+                      )}
+                    </li>
+                  );
+                })}
+              </ul>
+              {!p.booking.confirmed && <p class="mt-3 text-sm">{t.common.draftNotice}</p>}
+            </div>
+          </div>
+        </section>
+      ))
+    }
+  </div>
+
+  <section class="bg-rice">
+    <div class="wrap grid gap-8 py-12 md:grid-cols-2 md:py-16">
+      <div>
+        <p class="text-lg">{t.book.questionsFirst}</p>
+        <a href={localePath(lang, 'contact')} class="btn btn-quiet mt-5">{t.book.contactLink}</a>
+      </div>
+      <ul class="space-y-2 text-sm text-ink-soft">
+        <li>{t.book.secureNote}</li>
+        {!CURRENCY_CONFIRMED && <li>{t.book.currencyNote}</li>}
+        <li>{t.book.policyNote}</li>
+      </ul>
+    </div>
+  </section>
+</Base>

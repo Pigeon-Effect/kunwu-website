@@ -3,9 +3,9 @@ program: mma
 title: MMA
 nameZh: 综合格斗
 order: 3
-summary: Modern mixed martial arts: striking, takedowns and ground work, built on a kung fu foundation.
+summary: "Modern mixed martial arts: striking, takedowns and ground work, built on a kung fu foundation."
 focus:
-  - Striking: punches, kicks, knees, elbows
+  - "Striking: punches, kicks, knees, elbows"
   - Takedowns and takedown defence
   - Ground work and positional control
   - Sparring with protective equipment

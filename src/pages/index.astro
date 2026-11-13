@@ -1,0 +1,44 @@
+---
+/**
+ * `/` – sends visitors to /zh/ if their browser prefers Chinese, otherwise to /en/.
+ * Without JavaScript: meta refresh to /en/ plus visible links to both.
+ */
+import { localePath } from '../i18n/utils';
+const en = localePath('en');
+const zh = localePath('zh');
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Kunwu Kung Fu · 坤武功夫</title>
+    <meta name="robots" content="noindex" />
+    <link rel="canonical" href={new URL(en, Astro.site).href} />
+    <script is:inline define:vars={{ en, zh }}>
+      var langs = navigator.languages || [navigator.language || ''];
+      var wantsZh = langs.some(function (l) {
+        return /^zh/i.test(l);
+      });
+      location.replace(wantsZh ? zh : en);
+    </script>
+    <meta http-equiv="refresh" content={`1; url=${en}`} />
+    <style>
+      body {
+        font-family: system-ui, 'PingFang SC', 'Microsoft YaHei', sans-serif;
+        display: grid;
+        place-items: center;
+        min-height: 100vh;
+        margin: 0;
+      }
+      a {
+        color: #16130f;
+        margin: 0 0.75em;
+      }
+    </style>
+  </head>
+  <body>
+    <p><a href={en}>English</a> · <a href={zh} lang="zh-Hans">中文</a></p>
+  </body>
+</html>

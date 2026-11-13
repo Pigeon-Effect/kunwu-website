@@ -1,0 +1,114 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import Photo from '../../components/Photo.astro';
+import DayRing from '../../components/DayRing.astro';
+import { fromPrice, formatPrice } from '../../config/booking';
+import { getLangStaticPaths, intlLocale, localePath, splitId, useT, type Lang } from '../../i18n/utils';
+
+export const getStaticPaths = getLangStaticPaths;
+
+const lang = Astro.params.lang as Lang;
+const t = useT(lang);
+const programs = (await getCollection('programs', (e) => splitId(e.id).lang === lang)).sort(
+  (a, b) => a.data.order - b.data.order,
+);
+---
+
+<Base lang={lang} title={t.meta.home.title} description={t.meta.home.description} route="home">
+  <!-- Hero: type and one photo, side by side. No overlay, no text on the image. -->
+  <section class="wrap grid items-center gap-10 pt-10 pb-16 sm:pt-16 lg:grid-cols-[1.15fr_0.85fr] lg:gap-16 lg:pt-20 lg:pb-24">
+    <div>
+      <h1 class="text-[2.75rem] leading-[1.08] sm:text-7xl lg:text-[5rem]">
+        {t.home.heroTitle.map((line) => <span class="block">{line}</span>)}
+      </h1>
+      <p class="mt-7 max-w-xl text-lg text-ink-soft sm:text-xl">{t.home.heroLede}</p>
+      <div class="mt-9 flex flex-wrap items-center gap-x-6 gap-y-4">
+        <a href={localePath(lang, 'book')} class="btn">{t.common.bookCta}</a>
+        <a href="#day" class="py-2">{t.home.heroSecondary}</a>
+      </div>
+    </div>
+    <Photo alt={t.home.heroPhoto} ratio="4/5" eager sizes="(min-width: 64rem) 30rem, 100vw" />
+  </section>
+
+  <!-- The day ring -->
+  <section id="day" class="bg-rice py-16 sm:py-24" aria-labelledby="day-title">
+    <div class="wrap">
+      <div class="mb-10 max-w-2xl">
+        <h2 id="day-title" class="text-4xl sm:text-5xl">{t.home.dayTitle}</h2>
+        <p class="mt-4 text-lg text-ink-soft">{t.home.dayLede}</p>
+      </div>
+      <DayRing lang={lang} id="home-ring" />
+      <p class="mt-10">
+        <a href={localePath(lang, 'dailyLife')}>{t.home.dayLink} →</a>
+      </p>
+    </div>
+  </section>
+
+  <!-- The master -->
+  <section class="wrap grid items-center gap-10 py-16 sm:py-24 md:grid-cols-[0.8fr_1.2fr] md:gap-16" aria-labelledby="master-title">
+    <Photo alt={t.master.portraitPh} ratio="3/4" sizes="(min-width: 48rem) 26rem, 100vw" />
+    <div>
+      <p class="text-gold-deep">{t.home.masterKicker}</p>
+      <h2 id="master-title" class="mt-3">
+        <span class="cjk block text-6xl tracking-[0.12em] text-ink sm:text-7xl" lang="zh-Hans">释延朋</span>
+        {lang === 'en' && <span class="mt-4 block text-3xl">Master Shi Yanpeng</span>}
+      </h2>
+      <p class="mt-6 max-w-xl text-lg text-ink-soft">{t.home.masterLede}</p>
+      <p class="mt-8">
+        <a href={localePath(lang, 'master')}>{t.home.masterLink} →</a>
+      </p>
+    </div>
+  </section>
+
+  <!-- Programs: a typographic list, not a card grid -->
+  <section class="wrap pb-16 sm:pb-24" aria-labelledby="programs-title">
+    <div class="flex flex-wrap items-end justify-between gap-4">
+      <div>
+        <h2 id="programs-title" class="text-4xl sm:text-5xl">{t.home.programsTitle}</h2>
+        <p class="mt-3 text-ink-soft">{t.home.programsLede}</p>
+      </div>
+      <a href={localePath(lang, 'training')}>{t.home.programsLink} →</a>
+    </div>
+    <ul class="mt-10 border-t border-gold">
+      {
+        programs.map((p) => {
+          const price = fromPrice(p.data.program);
+          return (
+            <li class="border-b border-gold">
+              <a
+                href={localePath(lang, 'training', p.data.program)}
+                class="group grid gap-x-8 gap-y-1 py-6 no-underline sm:grid-cols-[15rem_1fr_auto] sm:items-baseline"
+              >
+                <span>
+                  <span class="font-display block text-2xl group-hover:underline group-hover:decoration-gold sm:text-3xl">{p.data.title}</span>
+                  {lang === 'en' && (
+                    <span class="cjk mt-1 block text-sm font-normal tracking-[0.2em] text-gold-deep" lang="zh-Hans">
+                      {p.data.nameZh}
+                    </span>
+                  )}
+                </span>
+                <span class="text-ink-soft">{p.data.summary}</span>
+                <span class="text-sm whitespace-nowrap text-ink-soft">
+                  {price !== null ? `${t.common.from} ${formatPrice(price, intlLocale[lang])}` : t.training.pricePh}
+                </span>
+              </a>
+            </li>
+          );
+        })
+      }
+    </ul>
+    <div class="mt-10">
+      <a href={localePath(lang, 'book')} class="btn">{t.common.bookCta}</a>
+    </div>
+  </section>
+
+  <!-- Photo strip: uneven widths -->
+  <section class="wrap pb-20 sm:pb-28" aria-label={t.home.photosTitle}>
+    <div class="grid grid-cols-2 gap-3 sm:grid-cols-[5fr_3fr_4fr] sm:gap-4">
+      <Photo alt={t.home.photo1} ratio="4/3" class="col-span-2 sm:col-span-1" sizes="(min-width: 40rem) 40vw, 100vw" />
+      <Photo alt={t.home.photo2} ratio="3/4" sizes="(min-width: 40rem) 25vw, 50vw" />
+      <Photo alt={t.home.photo3} ratio="1/1" sizes="(min-width: 40rem) 33vw, 50vw" />
+    </div>
+  </section>
+</Base>

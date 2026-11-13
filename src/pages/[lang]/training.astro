@@ -1,0 +1,98 @@
+---
+import { getCollection, render } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import PageHead from '../../components/PageHead.astro';
+import Photo from '../../components/Photo.astro';
+import { getBooking, formatPrice } from '../../config/booking';
+import { fill, getLangStaticPaths, intlLocale, localePath, splitId, useT, weeksLabel, type Lang } from '../../i18n/utils';
+
+export const getStaticPaths = getLangStaticPaths;
+
+const lang = Astro.params.lang as Lang;
+const t = useT(lang);
+const entries = (await getCollection('programs', (e) => splitId(e.id).lang === lang)).sort(
+  (a, b) => a.data.order - b.data.order,
+);
+const programs = await Promise.all(
+  entries.map(async (entry) => ({
+    data: entry.data,
+    booking: getBooking(entry.data.program),
+    Content: (await render(entry)).Content,
+  })),
+);
+---
+
+<Base lang={lang} title={t.meta.training.title} description={t.meta.training.description} route="training">
+  <PageHead title={t.training.title} lede={t.training.lede}>
+    <nav aria-label={t.book.jumpLabel} class="mt-8">
+      <ul class="flex flex-wrap gap-x-6 gap-y-2">
+        {programs.map((p) => <li><a href={`#${p.data.program}`}>{p.data.title}</a></li>)}
+      </ul>
+    </nav>
+  </PageHead>
+
+  <section class="bg-rice" aria-labelledby="included-title">
+    <div class="wrap grid gap-6 py-12 md:grid-cols-[16rem_1fr] md:py-14">
+      <h2 id="included-title" class="text-2xl sm:text-3xl">{t.training.includedTitle}</h2>
+      <ul class="prose-kw grid gap-x-10 gap-y-2 !max-w-none sm:grid-cols-2 [&>li+li]:!mt-0">
+        {t.training.included.map((item) => <li>{item}</li>)}
+      </ul>
+    </div>
+  </section>
+
+  {
+    programs.map(({ data, booking, Content }, i) => (
+      <section id={data.program} class:list={['wrap py-16 sm:py-24', i > 0 && 'border-t border-gold-pale']} aria-labelledby={`${data.program}-title`}>
+        <div class="grid gap-12 lg:grid-cols-[minmax(0,1.2fr)_minmax(0,0.8fr)] lg:gap-16">
+          <div>
+            <h2 id={`${data.program}-title`} class="flex flex-wrap items-baseline gap-x-4 gap-y-1 text-4xl sm:text-5xl">
+              {data.title}
+              {lang === 'en' && (
+                <span class="cjk text-xl font-normal tracking-[0.15em] text-gold-deep" lang="zh-Hans">
+                  {data.nameZh}
+                </span>
+              )}
+            </h2>
+            <p class="mt-5 max-w-2xl text-lg text-ink-soft">{data.summary}</p>
+            <div class="prose-kw mt-8">
+              <Content />
+            </div>
+            <h3 class="mt-10 text-xl">{t.training.focusTitle}</h3>
+            <ul class="prose-kw mt-4">
+              {data.focus.map((f) => <li>{f}</li>)}
+            </ul>
+          </div>
+
+          <aside class="space-y-8">
+            <Photo alt={fill(t.training.photoPh, { program: data.title })} ratio="4/3" sizes="(min-width: 64rem) 26rem, 100vw" />
+            <div>
+              <h3 class="text-xl">{t.training.durationsTitle}</h3>
+              <table class="mt-4 w-full text-left">
+                <thead class="sr-only">
+                  <tr>
+                    <th scope="col">{t.training.duration}</th>
+                    <th scope="col">{t.training.price}</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {booking.options.map((o) => (
+                    <tr class="border-b border-gold-pale">
+                      <th scope="row" class="py-2.5 font-normal">{weeksLabel(lang, o.weeks)}</th>
+                      <td class="py-2.5 text-right tabular-nums">
+                        {o.price !== null ? formatPrice(o.price, intlLocale[lang]) : t.training.pricePh}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+              {!booking.confirmed && <p class="mt-3 text-sm">{t.common.draftNotice}</p>}
+              <a href={localePath(lang, 'book', data.program)} class="btn mt-6">
+                {fill(t.training.bookThis, { program: data.title })}
+              </a>
+            </div>
+          </aside>
+        </div>
+      </section>
+    ))
+  }
+</Base>
