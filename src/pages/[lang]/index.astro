@@ -3,9 +3,10 @@ import { getCollection } from 'astro:content';
 import Base from '../../layouts/Base.astro';
 import Photo from '../../components/Photo.astro';
 import DayRing from '../../components/DayRing.astro';
+import Seal from '../../components/Seal.astro';
+import Inscription from '../../components/Inscription.astro';
 import { fromPrice, formatPrice } from '../../config/booking';
 import { masterEarlyYears, masterSideKickPortrait } from '../../data/photos';
-import { sketches } from '../../data/sketches';
 import { getLangStaticPaths, intlLocale, localePath, splitId, useT, type Lang } from '../../i18n/utils';
 
 export const getStaticPaths = getLangStaticPaths;
@@ -18,10 +19,10 @@ const programs = (await getCollection('programs', (e) => splitId(e.id).lang === 
 ---
 
 <Base lang={lang} title={t.meta.home.title} description={t.meta.home.description} route="home">
-  <!-- Hero: type and one photo, side by side. No overlay, no text on the image. -->
-  <section class="wrap grid items-center gap-10 pt-10 pb-16 sm:pt-16 lg:grid-cols-[1.15fr_0.85fr] lg:gap-16 lg:pt-20 lg:pb-24">
+  <!-- Hero: type, one photo in a moon-gate arch, an inscription beside it -->
+  <section class="wrap grid items-center gap-12 pt-10 pb-16 sm:pt-16 lg:grid-cols-[1.1fr_0.9fr] lg:gap-14 lg:pt-20 lg:pb-24">
     <div>
-      <h1 class="text-[2.75rem] leading-[1.08] sm:text-7xl lg:text-[5rem]">
+      <h1 class="text-[2.75rem] leading-[1.08] sm:text-7xl lg:text-[4.9rem]">
         {t.home.heroTitle.map((line) => <span class="block">{line}</span>)}
       </h1>
       <p class="mt-7 max-w-xl text-lg text-ink-soft sm:text-xl">{t.home.heroLede}</p>
@@ -30,16 +31,23 @@ const programs = (await getCollection('programs', (e) => splitId(e.id).lang === 
         <a href="#day" class="py-2">{t.home.heroSecondary}</a>
       </div>
     </div>
-    <Photo
-      src={masterSideKickPortrait.src}
-      alt={masterSideKickPortrait.alt[lang]}
-      eager
-      sizes="(min-width: 64rem) 30rem, 100vw"
-      widths={[480, 720, 960, 1280, 1760]}
-    />
+    <div class="flex items-start justify-center gap-6 lg:justify-end">
+      <Photo
+        src={masterSideKickPortrait.src}
+        alt={masterSideKickPortrait.alt[lang]}
+        frame="moon"
+        eager
+        sizes="(min-width: 64rem) 26rem, 90vw"
+        widths={[480, 720, 960, 1280, 1760]}
+        class="w-full max-w-[26rem] p-2"
+      />
+      <div class="hidden pt-10 sm:block">
+        <Inscription lines={['少林功夫', '日日修行']} seal="坤武" />
+      </div>
+    </div>
   </section>
 
-  <!-- The day ring -->
+  <!-- The day ring with the twelve double hours -->
   <section id="day" class="bg-rice py-16 sm:py-24" aria-labelledby="day-title">
     <div class="wrap">
       <div class="mb-10 max-w-2xl">
@@ -54,11 +62,11 @@ const programs = (await getCollection('programs', (e) => splitId(e.id).lang === 
   </section>
 
   <!-- The master -->
-  <section class="wrap grid items-center gap-10 py-16 sm:py-24 md:grid-cols-[0.8fr_1.2fr] md:gap-16" aria-labelledby="master-title">
+  <section class="wrap grid items-center gap-12 py-16 sm:py-24 md:grid-cols-[0.8fr_1.2fr] md:gap-16" aria-labelledby="master-title">
     <Photo
       src={masterEarlyYears.src}
       alt={masterEarlyYears.alt[lang]}
-      print
+      frame="print"
       caption={masterEarlyYears.caption?.[lang]}
       captionZh={lang === 'en' ? masterEarlyYears.caption?.zh : undefined}
       sizes="(min-width: 48rem) 22rem, 90vw"
@@ -77,7 +85,7 @@ const programs = (await getCollection('programs', (e) => splitId(e.id).lang === 
     </div>
   </section>
 
-  <!-- Programs: a typographic list, not a card grid -->
+  <!-- Programs: each marked with its own seal -->
   <section class="wrap pb-16 sm:pb-24" aria-labelledby="programs-title">
     <div class="flex flex-wrap items-end justify-between gap-4">
       <div>
@@ -94,18 +102,12 @@ const programs = (await getCollection('programs', (e) => splitId(e.id).lang === 
             <li class="border-b border-gold">
               <a
                 href={localePath(lang, 'training', p.data.program)}
-                class="group grid gap-x-8 gap-y-1 py-6 no-underline sm:grid-cols-[15rem_1fr_auto] sm:items-baseline"
+                class="group grid grid-cols-[auto_1fr] items-center gap-x-5 gap-y-1 py-6 no-underline sm:grid-cols-[auto_14rem_1fr_auto] sm:gap-x-8"
               >
-                <span>
-                  <span class="font-display block text-2xl group-hover:underline group-hover:decoration-gold sm:text-3xl">{p.data.title}</span>
-                  {lang === 'en' && (
-                    <span class="cjk mt-1 block text-sm font-normal tracking-[0.2em] text-gold-deep" lang="zh-Hans">
-                      {p.data.nameZh}
-                    </span>
-                  )}
-                </span>
+                <Seal text={p.data.seal} size="md" class="row-span-2 sm:row-span-1" />
+                <span class="font-display text-2xl group-hover:text-vermilion sm:text-3xl">{p.data.title}</span>
                 <span class="text-ink-soft">{p.data.summary}</span>
-                <span class="text-sm whitespace-nowrap text-ink-soft">
+                <span class="col-start-2 text-sm whitespace-nowrap text-ink-soft sm:col-start-auto">
                   {price !== null ? `${t.common.from} ${formatPrice(price, intlLocale[lang])}` : t.training.pricePh}
                 </span>
               </a>
@@ -119,12 +121,25 @@ const programs = (await getCollection('programs', (e) => splitId(e.id).lang === 
     </div>
   </section>
 
-  <!-- Photo strip: uneven widths -->
-  <section class="wrap pb-20 sm:pb-28" aria-label={t.home.photosTitle}>
-    <div class="grid grid-cols-2 gap-3 sm:grid-cols-[5fr_3fr_4fr] sm:gap-4">
-      <Photo src={sketches['morning-stance'].src} alt={sketches['morning-stance'].alt[lang]} class="col-span-2 sm:col-span-1" sizes="(min-width: 40rem) 40vw, 100vw" />
-      <Photo src={sketches['shared-meal'].src} alt={sketches['shared-meal'].alt[lang]} sizes="(min-width: 40rem) 25vw, 50vw" />
-      <Photo src={sketches['forms-practice'].src} alt={sketches['forms-practice'].alt[lang]} sizes="(min-width: 40rem) 33vw, 50vw" />
+  <!-- A saying of the martial arts, in vertical script -->
+  <section class="bg-rice" aria-labelledby="saying-title">
+    <div class="fret" aria-hidden="true"></div>
+    <div class="wrap grid items-center gap-12 py-16 sm:py-24 md:grid-cols-[1fr_auto] md:gap-20">
+      <div class="max-w-xl">
+        <h2 id="saying-title" class="text-gold-deep text-base! font-sans! tracking-normal!">{t.home.sayingKicker}</h2>
+        {lang === 'en' && <p class="font-display mt-5 text-3xl leading-snug sm:text-4xl">{t.home.sayingText}</p>}
+        <p class:list={['text-lg text-ink-soft', lang === 'en' ? 'mt-6' : 'mt-5']}>{t.home.sayingNote}</p>
+      </div>
+      <div class="justify-self-center md:justify-self-end" lang="zh-Hans">
+        <p class="sr-only">未曾学艺先学礼，未曾习武先习德。</p>
+        <div class="saying flex flex-row-reverse items-start gap-6" aria-hidden="true">
+          <span class="kai text-[2.4rem] leading-none tracking-[0.28em] text-ink [writing-mode:vertical-rl] sm:text-[2.9rem]">未曾学艺先学礼</span>
+          <div class="flex flex-col items-center">
+            <span class="kai mt-[1.2em] text-[2.4rem] leading-none tracking-[0.28em] text-ink [writing-mode:vertical-rl] sm:text-[2.9rem]">未曾习武先习德</span>
+            <Seal text="武德" size="md" class="mt-5" />
+          </div>
+        </div>
+      </div>
     </div>
   </section>
 </Base>

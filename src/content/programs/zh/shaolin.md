@@ -1,5 +1,6 @@
 ---
 program: shaolin
+seal: 少林
 title: 少林功夫
 nameZh: 少林功夫
 order: 1

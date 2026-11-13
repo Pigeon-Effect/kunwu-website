@@ -19,6 +19,8 @@ const programs = defineCollection({
   loader: glob({ pattern: '{en,zh}/*.md', base: './src/content/programs' }),
   schema: z.object({
     program: z.enum(programIds),
+    /** 1–2 characters for the program's seal */
+    seal: z.string().max(2),
     title: z.string(),
     nameZh: z.string(),
     order: z.number(),

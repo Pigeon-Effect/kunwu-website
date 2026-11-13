@@ -1,5 +1,6 @@
 ---
 program: taichi
+seal: 太极
 title: Tai Chi
 nameZh: 太极拳
 order: 2

@@ -1,5 +1,6 @@
 ---
 program: mma
+seal: 格斗
 title: MMA
 nameZh: 综合格斗
 order: 3

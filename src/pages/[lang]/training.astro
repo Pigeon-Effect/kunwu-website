@@ -2,9 +2,8 @@
 import { getCollection, render } from 'astro:content';
 import Base from '../../layouts/Base.astro';
 import PageHead from '../../components/PageHead.astro';
-import Photo from '../../components/Photo.astro';
 import { getBooking, formatPrice } from '../../config/booking';
-import { programSketches } from '../../data/sketches';
+import Seal from '../../components/Seal.astro';
 import { fill, getLangStaticPaths, intlLocale, localePath, splitId, useT, weeksLabel, type Lang } from '../../i18n/utils';
 
 export const getStaticPaths = getLangStaticPaths;
@@ -24,7 +23,7 @@ const programs = await Promise.all(
 ---
 
 <Base lang={lang} title={t.meta.training.title} description={t.meta.training.description} route="training">
-  <PageHead title={t.training.title} lede={t.training.lede}>
+  <PageHead title={t.training.title} lede={t.training.lede} inscription={['拳不离手']} seal="练">
     <nav aria-label={t.book.jumpLabel} class="mt-8">
       <ul class="flex flex-wrap gap-x-6 gap-y-2">
         {programs.map((p) => <li><a href={`#${p.data.program}`}>{p.data.title}</a></li>)}
@@ -46,6 +45,7 @@ const programs = await Promise.all(
       <section id={data.program} class:list={['wrap py-16 sm:py-24', i > 0 && 'border-t border-gold-pale']} aria-labelledby={`${data.program}-title`}>
         <div class="grid gap-12 lg:grid-cols-[minmax(0,1.2fr)_minmax(0,0.8fr)] lg:gap-16">
           <div>
+            <Seal text={data.seal} size="lg" class="mb-6" />
             <h2 id={`${data.program}-title`} class="flex flex-wrap items-baseline gap-x-4 gap-y-1 text-4xl sm:text-5xl">
               {data.title}
               {lang === 'en' && (
@@ -64,8 +64,7 @@ const programs = await Promise.all(
             </ul>
           </div>
 
-          <aside class="space-y-8">
-            <Photo src={programSketches[data.program].src} alt={programSketches[data.program].alt[lang]} sizes="(min-width: 64rem) 26rem, 100vw" />
+          <aside class="lg:pt-24">
             <div>
               <h3 class="text-xl">{t.training.durationsTitle}</h3>
               <table class="mt-4 w-full text-left">

@@ -4,7 +4,7 @@ import Base from '../../layouts/Base.astro';
 import PageHead from '../../components/PageHead.astro';
 import Photo from '../../components/Photo.astro';
 import { address, contact, mapLink } from '../../config/site';
-import { getLangStaticPaths, localePath, useT, type Lang } from '../../i18n/utils';
+import { getLangStaticPaths, useT, type Lang } from '../../i18n/utils';
 
 export const getStaticPaths = getLangStaticPaths;
 
@@ -13,7 +13,7 @@ const t = useT(lang);
 ---
 
 <Base lang={lang} title={t.meta.contact.title} description={t.meta.contact.description} route="contact">
-  <PageHead title={t.contact.title} lede={t.contact.lede} />
+  <PageHead title={t.contact.title} lede={t.contact.lede} inscription={['有朋自远方来']} seal="坤武" />
 
   <div class="wrap grid gap-12 pb-20 sm:pb-28 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,0.85fr)] lg:gap-16">
     <div class="space-y-12">
@@ -30,11 +30,8 @@ const t = useT(lang);
       </section>
 
       <!-- The Chinese address, large: show it to a taxi driver -->
-      <section class="relative overflow-hidden rounded-[2rem] bg-rice p-7 sm:p-10" aria-labelledby="driver-title">
-        <svg aria-hidden="true" viewBox="0 0 100 100" class="pointer-events-none absolute -top-16 -right-16 h-56 w-56 opacity-60">
-          <circle cx="50" cy="50" r="48" fill="none" stroke="var(--color-gold)" stroke-width="0.6"></circle>
-          <circle cx="50" cy="50" r="44" fill="none" stroke="var(--color-gold)" stroke-width="0.3"></circle>
-        </svg>
+      <section class="relative overflow-hidden bg-rice p-7 sm:p-10" aria-labelledby="driver-title">
+        <div class="fret absolute inset-x-0 top-0" aria-hidden="true"></div>
         <h2 id="driver-title" class="text-2xl">{t.contact.driverTitle}</h2>
         <p class="mt-2 text-ink-soft">{t.contact.driverText}</p>
         <p class="cjk mt-6 text-2xl leading-relaxed tracking-[0.06em] text-ink sm:text-[2rem]" lang="zh-Hans">
@@ -43,7 +40,7 @@ const t = useT(lang);
       </section>
 
       <p class="text-ink-soft">
-        {t.contact.timeNote} <a href={localePath(lang, 'faq', 'arrival')}>{t.contact.arrivalLink} →</a>
+        {t.contact.timeNote}
       </p>
     </div>
 
@@ -64,14 +61,14 @@ const t = useT(lang);
         </p>
       </section>
 
-      <section aria-labelledby="email-title" class="border-t border-gold pt-8">
+      <section aria-labelledby="email-title" class="border-t border-gold-pale pt-8">
         <h2 id="email-title" class="text-3xl">{t.contact.emailTitle}</h2>
         <p class="mt-3 text-lg">
           {contact.email ? <a href={`mailto:${contact.email}`}>{contact.email}</a> : t.contact.emailPh}
         </p>
       </section>
 
-      <section aria-labelledby="phone-title" class="border-t border-gold pt-8">
+      <section aria-labelledby="phone-title" class="border-t border-gold-pale pt-8">
         <h2 id="phone-title" class="text-3xl">{t.contact.phoneTitle}</h2>
         <p class="mt-3 text-lg">
           {contact.phone ? <a href={`tel:${contact.phone.replace(/\s/g, '')}`}>{contact.phone}</a> : t.contact.phonePh}

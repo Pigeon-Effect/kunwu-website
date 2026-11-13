@@ -1,5 +1,6 @@
 ---
 program: wingchun
+seal: 咏春
 title: Wing Chun
 nameZh: 咏春拳
 order: 4

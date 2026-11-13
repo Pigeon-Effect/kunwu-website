@@ -17,7 +17,7 @@
     "menu": "Menu",
     "skip": "Skip to content",
     "switchTo": "中文",
-    "switchToLabel": "阅读中文版"
+    "switchToLabel": "中文 – 阅读中文版"
   },
   "common": {
     "bookCta": "Book your training",
@@ -80,7 +80,10 @@
     "programsTitle": "Four ways to train",
     "programsLede": "Accommodation and meals are part of every program.",
     "programsLink": "Programs and prices",
-    "photosTitle": "At the school"
+    "photosTitle": "At the school",
+    "sayingKicker": "A saying of the martial arts",
+    "sayingText": "Before learning the art, learn courtesy. Before learning to fight, learn virtue.",
+    "sayingNote": "An old saying among martial artists. Martial virtue (武德) is at the heart of how Master Shi Yanpeng teaches."
   },
   "master": {
     "title": "The master",
@@ -101,8 +104,6 @@
     "restText": "[PLACEHOLDER: how many rest days per week, and what students usually do with them.]",
     "galleryTitle": "Photos",
     "galleryLede": "Training, meals and quiet moments at the school.",
-    "sketchbookTitle": "Sketchbook",
-    "sketchbookLede": "Pencil sketches of training and everyday life at the school.",
     "videosTitle": "Short clips",
     "videosLede": "Short clips from training. Longer videos on our channel.",
     "videoPh": "Video clip",
@@ -186,8 +187,7 @@
     "emailPh": "[PLACEHOLDER: email address]",
     "phoneTitle": "Phone",
     "phonePh": "[PLACEHOLDER: phone number]",
-    "timeNote": "Heze is on China Standard Time (UTC+8).",
-    "arrivalLink": "How to get here"
+    "timeNote": "Heze is on China Standard Time (UTC+8)."
   },
   "footer": {
     "contact": "Contact",

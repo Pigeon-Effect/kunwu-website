@@ -6,6 +6,7 @@
 import { getCollection } from 'astro:content';
 import Base from '../../layouts/Base.astro';
 import PageHead from '../../components/PageHead.astro';
+import Seal from '../../components/Seal.astro';
 import { getBooking, formatPrice, isLiveLink, CURRENCY_CONFIRMED } from '../../config/booking';
 import { fill, getLangStaticPaths, intlLocale, localePath, splitId, useT, weeksLabel, type Lang } from '../../i18n/utils';
 
@@ -19,7 +20,7 @@ const programs = (await getCollection('programs', (e) => splitId(e.id).lang === 
 ---
 
 <Base lang={lang} title={t.meta.book.title} description={t.meta.book.description} route="book">
-  <PageHead title={t.book.title} lede={t.book.lede} />
+  <PageHead title={t.book.title} lede={t.book.lede} inscription={['千里之行', '始于足下']} seal="启程" />
 
   <section class="wrap pb-12" aria-labelledby="steps-title">
     <h2 id="steps-title" class="sr-only">{t.book.stepsTitle}</h2>
@@ -27,11 +28,8 @@ const programs = (await getCollection('programs', (e) => splitId(e.id).lang === 
       {
         t.book.steps.map((step, i) => (
           <li class="flex gap-4">
-            <span
-              aria-hidden="true"
-              class="grid h-10 w-10 shrink-0 place-items-center rounded-full border border-gold text-gold-deep tabular-nums"
-            >
-              {i + 1}
+            <span aria-hidden="true" class="kai grid h-10 w-10 shrink-0 place-items-center border border-vermilion text-xl text-vermilion" lang="zh-Hans">
+              {['壹', '贰', '叁'][i]}
             </span>
             <span class="pt-1.5 text-ink-soft">{step}</span>
           </li>
@@ -52,6 +50,7 @@ const programs = (await getCollection('programs', (e) => splitId(e.id).lang === 
         <section id={p.program} class="border-t border-gold py-10 sm:py-12" aria-labelledby={`${p.program}-book`}>
           <div class="grid gap-6 md:grid-cols-[16rem_1fr] md:gap-12">
             <div>
+              <Seal text={p.seal} size="md" class="mb-4" />
               <h2 id={`${p.program}-book`} class="text-3xl">
                 {p.title}
               </h2>
@@ -85,7 +84,7 @@ const programs = (await getCollection('programs', (e) => splitId(e.id).lang === 
                           {t.book.pay} →
                         </a>
                       ) : (
-                        <span class="rounded-full px-4 py-2.5 text-sm text-ink-soft ring-1 ring-gold-pale ring-inset">
+                        <span class="px-4 py-2.5 text-sm text-ink-soft ring-1 ring-gold-pale ring-inset">
                           {t.book.notOpen}
                         </span>
                       )}

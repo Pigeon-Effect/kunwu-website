@@ -17,7 +17,7 @@
     "menu": "菜单",
     "skip": "跳到正文",
     "switchTo": "EN",
-    "switchToLabel": "Read in English"
+    "switchToLabel": "EN – Read in English"
   },
   "common": {
     "bookCta": "报名训练",
@@ -80,7 +80,10 @@
     "programsTitle": "四种修习方式",
     "programsLede": "所有项目均包含住宿与餐食。",
     "programsLink": "课程与价格",
-    "photosTitle": "在学校"
+    "photosTitle": "在学校",
+    "sayingKicker": "武林古训",
+    "sayingText": "未曾学艺先学礼，未曾习武先习德。",
+    "sayingNote": "武德，是释延朋师傅教学的核心。"
   },
   "master": {
     "title": "师傅",
@@ -101,8 +104,6 @@
     "restText": "[PLACEHOLDER: 每周休息几天，学员通常如何度过。]",
     "galleryTitle": "照片",
     "galleryLede": "训练、用餐和学校里安静的时刻。",
-    "sketchbookTitle": "素描本",
-    "sketchbookLede": "学校里的训练与日常，铅笔素描。",
     "videosTitle": "短视频",
     "videosLede": "训练片段。更多视频请看我们的频道。",
     "videoPh": "视频片段",
@@ -186,8 +187,7 @@
     "emailPh": "[PLACEHOLDER: 邮箱地址]",
     "phoneTitle": "电话",
     "phonePh": "[PLACEHOLDER: 电话号码]",
-    "timeNote": "菏泽使用北京时间（UTC+8）。",
-    "arrivalLink": "如何到达"
+    "timeNote": "菏泽使用北京时间（UTC+8）。"
   },
   "footer": {
     "contact": "联系",

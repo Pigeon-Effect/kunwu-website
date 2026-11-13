@@ -13,7 +13,6 @@ Astro 7 · Tailwind CSS 4 · TypeScript (strict). Zero external requests – see
 | `npm run preview` | serve `dist/` |
 | `npm run placeholders` | list all missing content (`[PLACEHOLDER: …]`) |
 | `npm run icons` | regenerate favicons / touch icons / social image from `src/assets/brand/*.svg` |
-| `npm run sketches` | regenerate the pencil sketches (`scripts/sketches/scenes.mjs` → `src/assets/sketches/`); `-- --only id1,id2 --preview sheet.jpg` for a contact sheet |
 
 ### Windows with Smart App Control
 
@@ -37,12 +36,35 @@ npm install --no-save --force @astrojs/compiler-binding-wasm32-wasi@0.5.3
 | Programs | `src/content/programs/{en,zh}/*.md` |
 | FAQ | `src/content/faq/{en,zh}/*.md` |
 | UI text | `src/i18n/{en,zh}.json` (zh is type-checked against en) |
-| Pencil sketches (stand in for photos) | `src/data/sketches.ts` (alt texts), drawn by `scripts/sketches/` |
-| Gallery photos | drop into `src/assets/photos/gallery/`, alt texts in `src/data/gallery.ts` – they replace the sketchbook automatically |
+| Gallery photos | drop into `src/assets/photos/gallery/`, alt texts in `src/data/gallery.ts` – the gallery section appears as soon as there is one photo |
 | Video clips | `public/videos/` + `src/data/videos.ts` |
 | Logos | `src/assets/brand/` (see README there) |
 
-Anything written as `[PLACEHOLDER: …]` is highlighted on the page automatically. A photo slot without a photo renders as a striped placeholder.
+Anything written as `[PLACEHOLDER: …]` is highlighted on the page automatically. Gallery and video sections stay hidden until real content exists.
+
+## Design system
+
+**Colour code** (tokens in `src/styles/global.css`) – each colour has one job:
+
+| | | |
+|---|---|---|
+| 墨 ink | `#171411` | text |
+| 宣 paper | `#FBF8F1` | page background |
+| 朱 vermilion | `#C23B22` | the only action / accent colour: buttons, seals, "now" |
+| 金 gold | `#B08A3E` | lines and ornaments only |
+| 米 rice | `#F3ECD9` | tinted sections |
+
+The plum-blossom red appears only inside the logo.
+
+**Recurring elements**
+
+- 题款 + 印章 – every page head carries a short vertical inscription signed with a seal (`PageHead`, `Inscription`, `Seal`).
+- 回纹 – the Chinese key fret (`.fret`) is the one divider: under the header, above the footer, in page heads.
+- 印 – seals mark programs (少林 · 太极 · 格斗 · 咏春), daily life (住 · 食 · 休); booking steps use 壹 贰 叁.
+- 月洞门 – modern photos sit in a moon-gate arch with a gold contour (`<Photo frame="moon">`); archival photos as paper prints (`frame="print"`).
+- 十二时辰 – the day ring is labelled with the twelve double hours; the current one lights up in vermilion.
+
+Chinese inscriptions and seals use the system Kai (regular script) fonts with the CJK sans stack as fallback – no web fonts.
 
 ## Deployment
 

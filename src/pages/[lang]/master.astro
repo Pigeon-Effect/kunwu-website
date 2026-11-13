@@ -17,14 +17,14 @@ const m = entry.data;
 ---
 
 <Base lang={lang} title={t.meta.master.title} description={t.meta.master.description} route="master">
-  <PageHead title={t.master.title} lede={t.master.lede} />
+  <PageHead title={t.master.title} lede={t.master.lede} inscription={['师承少林']} seal="延朋" />
 
   <div class="wrap grid gap-12 pb-20 md:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)] md:gap-16 sm:pb-28">
     <div class="md:sticky md:top-8 md:self-start">
       <Photo
         src={masterEarlyYears.src}
         alt={masterEarlyYears.alt[lang]}
-        print
+        frame="print"
         eager
         caption={masterEarlyYears.caption?.[lang]}
         captionZh={lang === 'en' ? masterEarlyYears.caption?.zh : undefined}
@@ -57,6 +57,8 @@ const m = entry.data;
         <Photo
           src={masterSideKick.src}
           alt={masterSideKick.alt[lang]}
+          frame="line"
+          class="p-2"
           sizes="(min-width: 72rem) 40rem, (min-width: 48rem) 55vw, 100vw"
           widths={[640, 960, 1280, 1920]}
         />
