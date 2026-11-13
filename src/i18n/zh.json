@@ -1,0 +1,205 @@
+{
+  "site": {
+    "name": "坤武功夫",
+    "fullName": "坤武功夫国际交流中心",
+    "place": "中国山东菏泽"
+  },
+  "nav": {
+    "label": "主导航",
+    "home": "首页",
+    "master": "师傅",
+    "dailyLife": "日常生活",
+    "training": "课程与价格",
+    "trainingShort": "课程",
+    "book": "报名",
+    "faq": "常见问题",
+    "contact": "联系我们",
+    "menu": "菜单",
+    "skip": "跳到正文",
+    "switchTo": "EN",
+    "switchToLabel": "Read in English"
+  },
+  "common": {
+    "bookCta": "报名训练",
+    "readMore": "了解更多",
+    "weeks": { "one": "1 周", "other": "{n} 周" },
+    "from": "起",
+    "placeholderBadge": "草稿",
+    "draftNotice": "[PLACEHOLDER: 时长与价格为草稿，尚待学校确认]"
+  },
+  "meta": {
+    "home": {
+      "title": "坤武功夫 – 山东菏泽少林功夫学校",
+      "description": "跟随少林寺第三十四代俗家弟子释延朋师傅学习少林功夫、太极拳、咏春拳与综合格斗。在山东菏泽的学校同吃、同住、同练。"
+    },
+    "master": {
+      "title": "释延朋师傅 – 坤武功夫",
+      "description": "释延朋师傅是少林寺第三十四代俗家弟子，武术六段。"
+    },
+    "dailyLife": {
+      "title": "学校日常生活 – 坤武功夫",
+      "description": "坤武功夫的一天：训练时间、餐食、休息、住宿、照片与短视频。"
+    },
+    "training": {
+      "title": "课程与价格 – 坤武功夫",
+      "description": "少林功夫、太极拳、综合格斗与咏春拳。时长、价格、住宿与餐食。"
+    },
+    "book": {
+      "title": "报名训练 – 坤武功夫",
+      "description": "选择项目与时长，在线安全付款。"
+    },
+    "faq": {
+      "title": "常见问题 – 坤武功夫",
+      "description": "签证、交通、装备、语言、身体要求以及学校生活。"
+    },
+    "contact": {
+      "title": "联系方式与地址 – 坤武功夫",
+      "description": "坤武功夫位于中国山东省菏泽市。地址、微信与邮箱。"
+    },
+    "notFound": {
+      "title": "页面不存在 – 坤武功夫",
+      "description": "该页面不存在。"
+    }
+  },
+  "home": {
+    "heroTitle": "少林功夫，日日修行。",
+    "heroLede": "跟随少林寺第三十四代俗家弟子释延朋师傅，在山东菏泽同吃、同住、同练。",
+    "heroSecondary": "看看学校的一天",
+    "heroPhoto": "清晨，学员在院子里训练",
+    "dayTitle": "一日一节奏",
+    "dayLede": "学员住在学校里。一天的节奏如同太极：动与静，昼与夜。",
+    "dayLink": "学校的日常生活",
+    "masterKicker": "你的师傅",
+    "masterLede": "少林寺第三十四代俗家弟子，武术六段，武术与咏春拳一级教练。他的课堂上，招式的精准与武德的修养同样重要。",
+    "masterLink": "了解释延朋师傅",
+    "programsTitle": "四种修习方式",
+    "programsLede": "所有项目均包含住宿与餐食。",
+    "programsLink": "课程与价格",
+    "photosTitle": "在学校",
+    "photo1": "清晨练马步",
+    "photo2": "在食堂一起用餐",
+    "photo3": "下午练习套路"
+  },
+  "master": {
+    "title": "师傅",
+    "lede": "释延朋师傅亲自在坤武授课。他是谁，他传承的是什么。",
+    "credentialsTitle": "传承与资历",
+    "portraitPh": "释延朋师傅肖像",
+    "actionPh": "释延朋师傅演练套路",
+    "toTraining": "跟他学习"
+  },
+  "daily": {
+    "title": "日常生活",
+    "lede": "你住在学校里，训练不是日程表上的一项安排，而是一天本身。",
+    "scheduleTitle": "作息时间",
+    "scheduleNote": "[PLACEHOLDER: 作息时间为草稿，以学校提供的为准]",
+    "livingTitle": "住宿",
+    "livingText": "[PLACEHOLDER: 房间——单人间或多人间、卫生间、暖气与空调、洗衣、无线网络。]",
+    "livingPh": "学员宿舍",
+    "foodTitle": "饮食",
+    "foodText": "[PLACEHOLDER: 每天几餐、常见菜品、素食选择、在哪里用餐。]",
+    "foodPh": "在食堂吃午饭",
+    "restTitle": "休息日",
+    "restText": "[PLACEHOLDER: 每周休息几天，学员通常如何度过。]",
+    "restPh": "休息日的菏泽",
+    "galleryTitle": "照片",
+    "galleryLede": "训练、用餐和学校里安静的时刻。",
+    "galleryPh": "图库照片",
+    "videosTitle": "短视频",
+    "videosLede": "训练片段。更多视频请看我们的频道。",
+    "videoPh": "视频片段",
+    "channelPh": "[PLACEHOLDER: 哔哩哔哩 / YouTube 频道链接]"
+  },
+  "ring": {
+    "title": "坤武的一天",
+    "hezeTime": "菏泽时间",
+    "now": "此刻",
+    "listLabel": "作息时间（北京时间，UTC+8）",
+    "kinds": {
+      "training": "训练",
+      "practice": "修习",
+      "meal": "用餐",
+      "rest": "休息"
+    }
+  },
+  "training": {
+    "title": "课程与价格",
+    "lede": "四个项目，一所学校。每次学习均包含训练、住宿与餐食。",
+    "includedTitle": "所有项目均包含",
+    "included": [
+      "每日训练，[PLACEHOLDER: 每周课时]",
+      "学校住宿，[PLACEHOLDER: 房间类型]",
+      "餐食，[PLACEHOLDER: 每天几餐]",
+      "[PLACEHOLDER: 练功服、接机或其他？]"
+    ],
+    "focusTitle": "训练内容",
+    "durationsTitle": "时长与价格",
+    "duration": "时长",
+    "price": "价格",
+    "pricePh": "[PLACEHOLDER: 价格]",
+    "bookThis": "报名{program}",
+    "photoPh": "{program}训练"
+  },
+  "book": {
+    "title": "报名训练",
+    "lede": "选择项目和学习时长，在线安全付款。付款后我们会联系你，安排到达事宜。",
+    "jumpLabel": "项目",
+    "stepsTitle": "报名流程",
+    "steps": [
+      "在下方选择项目和时长。",
+      "通过 Stripe 以银行卡安全付款，收据会发送到你的邮箱。",
+      "我们会在[PLACEHOLDER: 回复时间]内联系你，确认到达日期并解答你的问题。"
+    ],
+    "pay": "付款",
+    "payLabel": "支付{program}，{duration}（打开 Stripe）",
+    "notOpen": "尚未开放",
+    "questionsFirst": "还没决定？欢迎先联系我们，我们乐意帮你选择。",
+    "contactLink": "联系我们",
+    "secureNote": "付款由 Stripe 处理，我们不会看到你的银行卡信息。",
+    "currencyNote": "[PLACEHOLDER: 币种与支持的付款方式（银行卡？微信支付？支付宝？）]",
+    "policyNote": "[PLACEHOLDER: 取消与退款政策]"
+  },
+  "faq": {
+    "title": "常见问题",
+    "lede": "学员来之前常问的问题。",
+    "topics": {
+      "before": "出发之前",
+      "training": "训练",
+      "life": "学校生活",
+      "booking": "报名与付款"
+    },
+    "stillQuestions": "没有找到你的问题？",
+    "contactLink": "联系我们"
+  },
+  "contact": {
+    "title": "联系我们",
+    "lede": "关于训练、行程或住宿，有任何问题都欢迎联系我们。",
+    "addressTitle": "地址",
+    "driverTitle": "给出租车司机看",
+    "driverText": "乘坐出租车或问路时，可出示这个中文地址。",
+    "toConfirm": "[PLACEHOLDER: 地址写法待确认]",
+    "mapLink": "在 OpenStreetMap 中打开",
+    "mapPh": "[PLACEHOLDER: 准确的地图坐标]",
+    "wechatTitle": "微信",
+    "wechatId": "微信号",
+    "wechatIdPh": "[PLACEHOLDER: 微信号]",
+    "wechatQrPh": "微信二维码",
+    "wechatQrAlt": "坤武功夫微信二维码",
+    "emailTitle": "邮箱",
+    "emailPh": "[PLACEHOLDER: 邮箱地址]",
+    "phoneTitle": "电话",
+    "phonePh": "[PLACEHOLDER: 电话号码]",
+    "timeNote": "菏泽使用北京时间（UTC+8）。",
+    "arrivalLink": "如何到达"
+  },
+  "footer": {
+    "contact": "联系",
+    "pages": "页面",
+    "rights": "保留所有权利。"
+  },
+  "notFound": {
+    "title": "该页面不存在。",
+    "text": "页面可能已经移动。请从首页重新开始。",
+    "home": "首页"
+  }
+}

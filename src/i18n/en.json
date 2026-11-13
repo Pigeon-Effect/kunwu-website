@@ -1,0 +1,205 @@
+{
+  "site": {
+    "name": "Kunwu Kung Fu",
+    "fullName": "Kunwu International Kung Fu Training Center",
+    "place": "Heze, Shandong, China"
+  },
+  "nav": {
+    "label": "Main",
+    "home": "Home",
+    "master": "Master",
+    "dailyLife": "Daily life",
+    "training": "Training & prices",
+    "trainingShort": "Training",
+    "book": "Book",
+    "faq": "FAQ",
+    "contact": "Contact",
+    "menu": "Menu",
+    "skip": "Skip to content",
+    "switchTo": "中文",
+    "switchToLabel": "阅读中文版"
+  },
+  "common": {
+    "bookCta": "Book your training",
+    "readMore": "Read more",
+    "weeks": { "one": "1 week", "other": "{n} weeks" },
+    "from": "from",
+    "placeholderBadge": "Draft",
+    "draftNotice": "[PLACEHOLDER: durations and prices are drafts and not yet confirmed by the school]"
+  },
+  "meta": {
+    "home": {
+      "title": "Kunwu Kung Fu – Shaolin kung fu school in Heze, China",
+      "description": "Train Shaolin kung fu, Tai Chi, Wing Chun and MMA with Master Shi Yanpeng, 34th-generation lay disciple of the Shaolin Temple. Live and train at the school in Heze, Shandong."
+    },
+    "master": {
+      "title": "Master Shi Yanpeng – Kunwu Kung Fu",
+      "description": "Master Shi Yanpeng (释延朋) is a 34th-generation lay disciple of the Shaolin Temple and holds the 6th Duan rank."
+    },
+    "dailyLife": {
+      "title": "Daily life at the school – Kunwu Kung Fu",
+      "description": "What a day at Kunwu Kung Fu looks like: training times, meals, rest, accommodation, photos and video clips."
+    },
+    "training": {
+      "title": "Training programs & prices – Kunwu Kung Fu",
+      "description": "Shaolin kung fu, Tai Chi, MMA and Wing Chun. Durations, prices, accommodation and meals."
+    },
+    "book": {
+      "title": "Book your training – Kunwu Kung Fu",
+      "description": "Choose a program and duration and pay securely online."
+    },
+    "faq": {
+      "title": "Questions & answers – Kunwu Kung Fu",
+      "description": "Visa, arrival, equipment, language, health requirements and life at the school."
+    },
+    "contact": {
+      "title": "Contact & address – Kunwu Kung Fu",
+      "description": "Address of Kunwu Kung Fu in Heze, Shandong, China, plus WeChat and email."
+    },
+    "notFound": {
+      "title": "Page not found – Kunwu Kung Fu",
+      "description": "This page does not exist."
+    }
+  },
+  "home": {
+    "heroTitle": "Shaolin kung fu, lived every day.",
+    "heroLede": "Train, eat and live at the school with Master Shi Yanpeng, 34th-generation lay disciple of the Shaolin Temple, in Heze, Shandong.",
+    "heroSecondary": "See a day at the school",
+    "heroPhoto": "Students training in the courtyard in the early morning",
+    "dayTitle": "One day, one rhythm",
+    "dayLede": "Students live at the school. The day follows the same rhythm as the taiji: effort and rest, morning and night.",
+    "dayLink": "Daily life at the school",
+    "masterKicker": "Your teacher",
+    "masterLede": "34th-generation lay disciple of the Shaolin Temple, 6th Duan, first-class coach in Wushu and Wing Chun. In his classes precise technique and martial virtue carry equal weight.",
+    "masterLink": "About Master Shi Yanpeng",
+    "programsTitle": "Four ways to train",
+    "programsLede": "Accommodation and meals are part of every program.",
+    "programsLink": "Programs and prices",
+    "photosTitle": "At the school",
+    "photo1": "Morning stance training",
+    "photo2": "A shared meal in the dining hall",
+    "photo3": "Forms practice in the afternoon"
+  },
+  "master": {
+    "title": "The master",
+    "lede": "Master Shi Yanpeng teaches at Kunwu in person. Who he is, and what he passes on.",
+    "credentialsTitle": "Lineage and qualifications",
+    "portraitPh": "Portrait of Master Shi Yanpeng",
+    "actionPh": "Master Shi Yanpeng demonstrating a form",
+    "toTraining": "Train with him"
+  },
+  "daily": {
+    "title": "Daily life",
+    "lede": "You live at the school, so training is not an appointment in your calendar – it is the day itself.",
+    "scheduleTitle": "The daily schedule",
+    "scheduleNote": "[PLACEHOLDER: draft schedule – the real times will follow from the school]",
+    "livingTitle": "Where you live",
+    "livingText": "[PLACEHOLDER: rooms – single or shared, bathroom, heating and air conditioning, laundry, Wi-Fi.]",
+    "livingPh": "A student room",
+    "foodTitle": "What you eat",
+    "foodText": "[PLACEHOLDER: meals per day, typical dishes, vegetarian options, where meals are eaten.]",
+    "foodPh": "Lunch in the dining hall",
+    "restTitle": "Rest days",
+    "restText": "[PLACEHOLDER: how many rest days per week, and what students usually do with them.]",
+    "restPh": "Heze on a rest day",
+    "galleryTitle": "Photos",
+    "galleryLede": "Training, meals and quiet moments at the school.",
+    "galleryPh": "Gallery photo",
+    "videosTitle": "Short clips",
+    "videosLede": "Short clips from training. Longer videos on our channel.",
+    "videoPh": "Video clip",
+    "channelPh": "[PLACEHOLDER: link to Bilibili / YouTube channel]"
+  },
+  "ring": {
+    "title": "A day at Kunwu",
+    "hezeTime": "Heze time",
+    "now": "Now",
+    "listLabel": "Daily schedule, times in China Standard Time (UTC+8)",
+    "kinds": {
+      "training": "Training",
+      "practice": "Practice",
+      "meal": "Meal",
+      "rest": "Rest"
+    }
+  },
+  "training": {
+    "title": "Training & prices",
+    "lede": "Four programs, one school. Every stay includes training, accommodation and meals.",
+    "includedTitle": "Included in every program",
+    "included": [
+      "Daily training, [PLACEHOLDER: hours per week]",
+      "Accommodation at the school, [PLACEHOLDER: room type]",
+      "Meals, [PLACEHOLDER: how many per day]",
+      "[PLACEHOLDER: uniform, airport pick-up, other items?]"
+    ],
+    "focusTitle": "What you train",
+    "durationsTitle": "Durations and prices",
+    "duration": "Duration",
+    "price": "Price",
+    "pricePh": "[PLACEHOLDER: price]",
+    "bookThis": "Book {program}",
+    "photoPh": "{program} training"
+  },
+  "book": {
+    "title": "Book your training",
+    "lede": "Choose a program and how long you want to stay, then pay securely online. We will contact you afterwards to plan your arrival.",
+    "jumpLabel": "Programs",
+    "stepsTitle": "How it works",
+    "steps": [
+      "Choose a program and duration below.",
+      "Pay securely by card via Stripe. You receive a receipt by email.",
+      "We contact you within [PLACEHOLDER: response time] to confirm your arrival date and answer your questions."
+    ],
+    "pay": "Pay",
+    "payLabel": "Pay for {program}, {duration} (opens Stripe)",
+    "notOpen": "Not open yet",
+    "questionsFirst": "Not sure yet? Write to us first – we are happy to help you choose.",
+    "contactLink": "Contact",
+    "secureNote": "Payments are handled by Stripe. We never see your card details.",
+    "currencyNote": "[PLACEHOLDER: currency and accepted payment methods (card? WeChat Pay? Alipay?)]",
+    "policyNote": "[PLACEHOLDER: cancellation and refund policy]"
+  },
+  "faq": {
+    "title": "Questions & answers",
+    "lede": "What students usually ask before they come.",
+    "topics": {
+      "before": "Before you come",
+      "training": "Training",
+      "life": "Life at the school",
+      "booking": "Booking and payment"
+    },
+    "stillQuestions": "Your question is not here?",
+    "contactLink": "Write to us"
+  },
+  "contact": {
+    "title": "Contact",
+    "lede": "Write to us with any question – about training, travel or your stay.",
+    "addressTitle": "Address",
+    "driverTitle": "For your taxi driver",
+    "driverText": "Show this address in Chinese when you take a taxi or ask for directions.",
+    "toConfirm": "[PLACEHOLDER: address spelling to be confirmed]",
+    "mapLink": "Open in OpenStreetMap",
+    "mapPh": "[PLACEHOLDER: exact map coordinates]",
+    "wechatTitle": "WeChat",
+    "wechatId": "WeChat ID",
+    "wechatIdPh": "[PLACEHOLDER: WeChat ID]",
+    "wechatQrPh": "WeChat QR code",
+    "wechatQrAlt": "WeChat QR code of Kunwu Kung Fu",
+    "emailTitle": "Email",
+    "emailPh": "[PLACEHOLDER: email address]",
+    "phoneTitle": "Phone",
+    "phonePh": "[PLACEHOLDER: phone number]",
+    "timeNote": "Heze is on China Standard Time (UTC+8).",
+    "arrivalLink": "How to get here"
+  },
+  "footer": {
+    "contact": "Contact",
+    "pages": "Pages",
+    "rights": "All rights reserved."
+  },
+  "notFound": {
+    "title": "This page does not exist.",
+    "text": "Perhaps it moved. Start again from the home page.",
+    "home": "Home"
+  }
+}
