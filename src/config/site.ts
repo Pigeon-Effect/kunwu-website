@@ -12,8 +12,6 @@ export interface SiteContact {
   wechatQr: ImageMetadata | null;
   /** Exact coordinates for the OpenStreetMap link – [lat, lon] */
   coordinates: [number, number] | null;
-  /** Plain links only (no embeds) */
-  social: { label: string; url: string }[];
 }
 
 export const contact: SiteContact = {
@@ -22,7 +20,6 @@ export const contact: SiteContact = {
   wechatId: null,
   wechatQr: null,
   coordinates: null,
-  social: [],
 };
 
 /** Address as given in content/master.md. Spelling to be confirmed by the school. */

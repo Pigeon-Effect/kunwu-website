@@ -1,0 +1,109 @@
+---
+import Emblem from '../assets/brand/kunwu-emblem.svg';
+import { localePath, switchLangPath, htmlLang, useT, type Lang, type RouteKey } from '../i18n/utils';
+
+interface Props {
+  lang: Lang;
+  route?: RouteKey | undefined;
+}
+
+const { lang, route } = Astro.props;
+const t = useT(lang);
+const other: Lang = lang === 'en' ? 'zh' : 'en';
+const switchHref = switchLangPath(Astro.url.pathname, other);
+
+const items: { key: RouteKey; label: string }[] = [
+  { key: 'master', label: t.nav.master },
+  { key: 'dailyLife', label: t.nav.dailyLife },
+  { key: 'training', label: t.nav.trainingShort },
+  { key: 'faq', label: t.nav.faq },
+  { key: 'contact', label: t.nav.contact },
+];
+const current = (key: RouteKey) => (key === route ? 'page' : undefined);
+---
+
+<header class="relative z-40 border-b border-gold-pale bg-paper">
+  <div class="wrap flex h-[4.5rem] items-center gap-4">
+    <a href={localePath(lang)} class="mr-auto flex items-center gap-3 no-underline" aria-label={`${t.site.name} – ${t.nav.home}`}>
+      <Emblem width={44} height={44} aria-hidden="true" class="shrink-0" />
+      <span class="flex flex-col leading-none">
+        {
+          lang === 'en' ? (
+            <>
+              <span class="font-display text-[1.3rem] text-ink">Kunwu Kung Fu</span>
+              <span class="cjk mt-1 text-[0.8rem] tracking-[0.3em] text-gold-deep" lang="zh-Hans">坤武功夫</span>
+            </>
+          ) : (
+            <>
+              <span class="font-display text-[1.25rem] text-ink">坤武功夫</span>
+              <span class="mt-1 text-[0.8rem] text-gold-deep" style="font-family: var(--font-display)" lang="en">Kunwu Kung Fu</span>
+            </>
+          )
+        }
+      </span>
+    </a>
+
+    <nav aria-label={t.nav.label} class="hidden lg:block">
+      <ul class="flex items-center gap-7 text-[0.95rem]">
+        {
+          items.map((item) => (
+            <li>
+              <a href={localePath(lang, item.key)} class="nav-link text-ink-text" aria-current={current(item.key)}>
+                {item.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+
+    <a
+      href={switchHref}
+      hreflang={htmlLang[other]}
+      lang={htmlLang[other]}
+      aria-label={t.nav.switchToLabel}
+      class="rounded-full px-2 py-1 text-[0.95rem] no-underline hover:underline"
+    >
+      {t.nav.switchTo}
+    </a>
+
+    <a href={localePath(lang, 'book')} class="btn hidden !py-2.5 text-[0.95rem] sm:inline-flex" aria-current={current('book')}>
+      {t.nav.book}
+    </a>
+
+    <!-- Mobile menu: native <details>, works without JavaScript -->
+    <details class="group lg:hidden">
+      <summary
+        class="flex list-none items-center gap-2 rounded-full px-3 py-2 text-[0.95rem] ring-1 ring-gold [&::-webkit-details-marker]:hidden"
+      >
+        <span aria-hidden="true" class="relative block h-3 w-4">
+          <span class="absolute top-0 left-0 h-px w-4 bg-ink transition group-open:top-1.5 group-open:rotate-45"></span>
+          <span class="absolute top-1.5 left-0 h-px w-4 bg-ink transition group-open:opacity-0"></span>
+          <span class="absolute top-3 left-0 h-px w-4 bg-ink transition group-open:top-1.5 group-open:-rotate-45"></span>
+        </span>
+        {t.nav.menu}
+      </summary>
+      <nav
+        aria-label={t.nav.label}
+        class="absolute inset-x-0 top-full border-b border-gold-pale bg-rice shadow-[0_12px_24px_-16px_rgb(0_0_0/0.25)]"
+      >
+        <ul class="wrap flex flex-col py-4">
+          {
+            [{ key: 'home' as RouteKey, label: t.nav.home }, ...items, { key: 'book' as RouteKey, label: t.nav.book }].map((item) => (
+              <li class="border-b border-gold-pale last:border-0">
+                <a
+                  href={localePath(lang, item.key)}
+                  aria-current={current(item.key)}
+                  class="font-display flex items-center justify-between py-3.5 text-2xl no-underline aria-[current=page]:text-gold-deep"
+                >
+                  {item.label}
+                  <span aria-hidden="true" class="h-2 w-2 rounded-full border border-gold" />
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </nav>
+    </details>
+  </div>
+</header>

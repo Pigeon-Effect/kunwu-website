@@ -1,0 +1,82 @@
+---
+import Emblem from '../assets/brand/kunwu-emblem.svg';
+import { address, contact } from '../config/site';
+import { localePath, useT, type Lang, type RouteKey } from '../i18n/utils';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useT(lang);
+const pages: { key: RouteKey; label: string }[] = [
+  { key: 'master', label: t.nav.master },
+  { key: 'dailyLife', label: t.nav.dailyLife },
+  { key: 'training', label: t.nav.training },
+  { key: 'book', label: t.nav.book },
+  { key: 'faq', label: t.nav.faq },
+  { key: 'contact', label: t.nav.contact },
+];
+const year = new Date().getFullYear();
+---
+
+<footer class="bg-ink text-rice">
+  <div class="wrap grid gap-10 py-14 sm:grid-cols-2 lg:grid-cols-[1.3fr_1.2fr_1fr_0.8fr]">
+    <div class="flex items-start gap-4">
+      <Emblem width={64} height={64} aria-hidden="true" class="shrink-0" />
+      <div>
+        <p class="font-display text-xl text-paper">{t.site.name}</p>
+        <p class="mt-1 text-sm text-gold">{t.site.fullName}</p>
+        <p class="mt-1 text-sm text-gold" lang={lang === 'en' ? 'zh-Hans' : 'en'}>
+          {lang === 'en' ? '坤武功夫国际交流中心' : 'Kunwu International Kung Fu Training Center'}
+        </p>
+      </div>
+    </div>
+
+    <address class="text-sm leading-relaxed not-italic">
+      {(lang === 'zh' ? address.zhLines : address.enLines).map((line) => <span class="block">{line}</span>)}
+      {
+        lang === 'en' && (
+          <span class="cjk mt-3 block font-normal text-gold" lang="zh-Hans">
+            {address.zh}
+          </span>
+        )
+      }
+    </address>
+
+    <div class="text-sm">
+      <p class="text-gold">{t.footer.contact}</p>
+      <ul class="mt-2 space-y-1">
+        <li>{contact.email ? <a href={`mailto:${contact.email}`}>{contact.email}</a> : t.contact.emailPh}</li>
+        <li>
+          {t.contact.wechatId}: {contact.wechatId ?? t.contact.wechatIdPh}
+        </li>
+        <li><a href={localePath(lang, 'contact')}>{t.nav.contact}</a></li>
+      </ul>
+    </div>
+
+    <nav aria-label={t.footer.pages} class="text-sm">
+      <p class="text-gold">{t.footer.pages}</p>
+      <ul class="mt-2 space-y-1">
+        {
+          pages.map((p) => (
+            <li>
+              <a href={localePath(lang, p.key)} class="no-underline hover:underline">
+                {p.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+  </div>
+  <div class="border-t border-white/15">
+    <p class="wrap py-5 text-xs text-rice/75">© {year} {t.site.fullName}. {t.footer.rights}</p>
+  </div>
+</footer>
+
+<style>
+  footer :global(.ph) {
+    color: #5b3a12;
+  }
+</style>

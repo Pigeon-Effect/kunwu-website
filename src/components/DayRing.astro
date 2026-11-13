@@ -1,0 +1,185 @@
+---
+/**
+ * The day ring (日晷) – the site's one memorable element.
+ * A 24-hour dial: noon at the top, midnight at the bottom, time runs clockwise.
+ * Day half = paper (yang), night half = ink (yin); training blocks are gold arcs.
+ * A small script adds a blossom dot for the current time in Heze (UTC+8).
+ * The SVG is decorative; the ordered list next to it is the real content.
+ */
+import { schedule, toMinutes, SCHEDULE_CONFIRMED, type BlockKind } from '../data/schedule';
+import { SCHOOL_UTC_OFFSET_MINUTES } from '../config/site';
+import { useT, type Lang } from '../i18n/utils';
+
+interface Props {
+  lang: Lang;
+  /** heading level / id for the list label */
+  id?: string;
+}
+
+const { lang, id = 'day-ring' } = Astro.props;
+const t = useT(lang);
+
+const R_OUT = 130;
+const R_IN = 108;
+const R_MID = (R_OUT + R_IN) / 2;
+const BAND = R_OUT - R_IN;
+
+const round = (n: number) => Math.round(n * 100) / 100;
+/** degrees clockwise from the top (12:00) */
+const angleOf = (min: number) => ((min / 60 - 12) / 24) * 360;
+const pt = (deg: number, r: number) => {
+  const a = (deg * Math.PI) / 180;
+  return [round(r * Math.sin(a)), round(-r * Math.cos(a))] as const;
+};
+const arc = (startMin: number, endMin: number, r: number, gapDeg = 0.8) => {
+  let s = angleOf(startMin) + gapDeg;
+  let e = angleOf(endMin) - gapDeg;
+  if (e <= s) e += 360;
+  const large = e - s > 180 ? 1 : 0;
+  const [x1, y1] = pt(s, r);
+  const [x2, y2] = pt(e, r);
+  return `M${x1} ${y1}A${r} ${r} 0 ${large} 1 ${x2} ${y2}`;
+};
+
+const strokeFor: Record<BlockKind, { color: string; width: number; opacity: number } | null> = {
+  training: { color: 'var(--color-gold)', width: BAND - 6, opacity: 1 },
+  practice: { color: 'var(--color-gold)', width: BAND - 14, opacity: 1 },
+  meal: { color: 'var(--color-blossom-deep)', width: 4, opacity: 0.9 },
+  rest: null,
+};
+
+const blocks = schedule.map((b) => ({ ...b, s: toMinutes(b.start), e: toMinutes(b.end) }));
+const arcs = blocks
+  .filter((b) => strokeFor[b.kind])
+  .map((b) => ({ d: arc(b.s, b.e, R_MID), ...strokeFor[b.kind]! }));
+
+const ticks = Array.from({ length: 24 }, (_, h) => {
+  const major = h % 6 === 0;
+  const [x1, y1] = pt(angleOf(h * 60), R_OUT + 4);
+  const [x2, y2] = pt(angleOf(h * 60), R_OUT + (major ? 11 : 7));
+  return { x1, y1, x2, y2, major };
+});
+const labels = [0, 6, 12, 18].map((h) => {
+  const [x, y] = pt(angleOf(h * 60), R_OUT + 24);
+  return { x, y: y + 4, text: `${String(h).padStart(2, '0')}:00` };
+});
+
+const halfAnnulus = `M${-R_OUT} 0A${R_OUT} ${R_OUT} 0 0 0 ${R_OUT} 0L${R_IN} 0A${R_IN} ${R_IN} 0 0 1 ${-R_IN} 0Z`;
+---
+
+<div
+  class="grid items-center gap-10 md:grid-cols-[minmax(0,28rem)_minmax(0,1fr)] md:gap-14"
+  data-dayring
+  data-offset={SCHOOL_UTC_OFFSET_MINUTES}
+  data-clock-label={t.ring.hezeTime}
+>
+  <svg
+    viewBox="-170 -170 340 340"
+    class="mx-auto w-full max-w-[24rem] md:max-w-none"
+    aria-hidden="true"
+    focusable="false"
+  >
+    <!-- day half (paper) with gold hairlines, night half (ink) -->
+    <circle r={R_OUT} fill="var(--color-paper)" stroke="var(--color-gold)" stroke-width="1"></circle>
+    <circle r={R_IN} fill="var(--color-paper)" stroke="var(--color-gold)" stroke-width="1"></circle>
+    <path d={halfAnnulus} fill="var(--color-ink)"></path>
+
+    {arcs.map((a) => <path d={a.d} fill="none" stroke={a.color} stroke-width={a.width} stroke-opacity={a.opacity} />)}
+
+    {
+      ticks.map((tk) => (
+        <line
+          x1={tk.x1}
+          y1={tk.y1}
+          x2={tk.x2}
+          y2={tk.y2}
+          stroke={tk.major ? 'var(--color-gold-deep)' : 'var(--color-gold)'}
+          stroke-width={tk.major ? 1.5 : 1}
+        />
+      ))
+    }
+    {
+      labels.map((l) => (
+        <text x={l.x} y={l.y} text-anchor="middle" font-size="11" fill="var(--color-ink-soft)" font-family="var(--font-sans)">
+          {l.text}
+        </text>
+      ))
+    }
+
+    <text y="-6" text-anchor="middle" font-size={lang === 'zh' ? 19 : 21} fill="var(--color-ink-text)" class="font-display">
+      {t.ring.title}
+    </text>
+    <text y="18" text-anchor="middle" font-size="11.5" fill="var(--color-gold-deep)" font-family="var(--font-sans)" data-ring-clock>
+      UTC+8
+    </text>
+
+    <!-- "now" marker, positioned by script -->
+    <g data-ring-marker class="hidden">
+      <line x1="0" y1={-(R_IN - 10)} x2="0" y2={-(R_OUT + 2)} stroke="var(--color-blossom)" stroke-width="1.5"></line>
+      <circle cy={-R_MID} r="7" fill="var(--color-blossom)" stroke="var(--color-paper)" stroke-width="2"></circle>
+    </g>
+  </svg>
+
+  <div>
+    <p id={`${id}-label`} class="sr-only">{t.ring.listLabel}</p>
+    <ol aria-labelledby={`${id}-label`} class="divide-y divide-gold-pale border-y border-gold-pale">
+      {
+        blocks.map((b) => (
+          <li class="group flex items-baseline gap-4 py-2.5" data-start={b.s} data-end={b.e}>
+            <span class="w-[6.5rem] shrink-0 text-sm text-ink-soft tabular-nums">
+              {b.start}–{b.end}
+            </span>
+            <span class="flex-1">
+              <span
+                aria-hidden="true"
+                class:list={[
+                  'mr-2 inline-block h-2.5 w-2.5 translate-y-[-1px] rounded-full align-middle',
+                  b.kind === 'training' && 'bg-gold',
+                  b.kind === 'practice' && 'border-2 border-gold',
+                  b.kind === 'meal' && 'scale-75 bg-blossom-deep',
+                  b.kind === 'rest' && 'border border-ink-soft/50',
+                ]}
+              />
+              {b.label[lang]}
+              <span class="sr-only"> ({t.ring.kinds[b.kind]})</span>
+            </span>
+            <span class="hidden rounded-full bg-blossom px-2 py-0.5 text-xs font-medium text-ink group-data-now:inline">
+              {t.ring.now}
+            </span>
+          </li>
+        ))
+      }
+    </ol>
+    {!SCHEDULE_CONFIRMED && <p class="mt-3 text-sm">{t.daily.scheduleNote}</p>}
+  </div>
+</div>
+
+<script>
+  const pad = (n: number) => String(n).padStart(2, '0');
+
+  function update() {
+    const now = new Date();
+    document.querySelectorAll<HTMLElement>('[data-dayring]').forEach((root) => {
+      const offset = Number(root.dataset.offset ?? 480);
+      const mins = (now.getUTCHours() * 60 + now.getUTCMinutes() + offset) % 1440;
+      const deg = ((mins / 60 - 12) / 24) * 360;
+
+      const marker = root.querySelector('[data-ring-marker]');
+      marker?.setAttribute('transform', `rotate(${deg.toFixed(2)})`);
+      marker?.classList.remove('hidden');
+
+      const clock = root.querySelector('[data-ring-clock]');
+      if (clock) clock.textContent = `${root.dataset.clockLabel ?? ''} ${pad(Math.floor(mins / 60))}:${pad(mins % 60)}`;
+
+      root.querySelectorAll<HTMLElement>('li[data-start]').forEach((li) => {
+        const s = Number(li.dataset.start);
+        const e = Number(li.dataset.end);
+        const on = s <= e ? mins >= s && mins < e : mins >= s || mins < e;
+        li.toggleAttribute('data-now', on);
+      });
+    });
+  }
+
+  update();
+  setInterval(update, 30_000);
+</script>

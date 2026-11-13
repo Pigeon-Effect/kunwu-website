@@ -178,6 +178,60 @@
     box-shadow: inset 0 0 0 2px var(--color-ink-text);
   }
 
+  /* Page container */
+  .wrap {
+    width: 100%;
+    max-width: 72rem;
+    margin-inline: auto;
+    padding-inline: 1.25rem;
+  }
+  @media (min-width: 40rem) {
+    .wrap {
+      padding-inline: 2rem;
+    }
+  }
+
+  /* The ring motif as a divider: a gold line ending in a small open circle */
+  .ring-rule {
+    display: flex;
+    align-items: center;
+  }
+  .ring-rule::before {
+    content: '';
+    width: 3.5rem;
+    height: 1px;
+    background: var(--color-gold);
+  }
+  .ring-rule::after {
+    content: '';
+    width: 0.65rem;
+    height: 0.65rem;
+    border: 1px solid var(--color-gold);
+    border-radius: 50%;
+  }
+
+  /* Active navigation item: a single blossom dot */
+  .nav-link {
+    position: relative;
+    text-decoration: none;
+  }
+  .nav-link[aria-current='page']::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    bottom: -0.55rem;
+    width: 0.35rem;
+    height: 0.35rem;
+    margin-left: -0.175rem;
+    border-radius: 50%;
+    background: var(--color-blossom);
+  }
+  .nav-link:hover {
+    color: var(--color-ink);
+    text-decoration: underline;
+    text-decoration-color: var(--color-gold);
+  }
+
   /* Gold hairline rule */
   .rule {
     border: 0;
@@ -203,6 +257,9 @@
     font-family: var(--font-sans);
     font-weight: 500;
     letter-spacing: 0;
+    overflow-wrap: anywhere;
+    -webkit-box-decoration-break: clone;
+    box-decoration-break: clone;
   }
 
   .ph-photo {
@@ -217,6 +274,7 @@
     color: var(--color-ink-soft);
     font-size: 0.875rem;
     line-height: 1.4;
+    overflow-wrap: anywhere;
   }
 }
 
@@ -228,4 +286,11 @@
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
   }
+}
+
+/* Unlayered on purpose: must beat the generated `font-display` utility.
+   On Chinese pages, display type uses the system CJK stack (Marcellus has no CJK glyphs). */
+:lang(zh-Hans) .font-display:not(:lang(en)) {
+  font-family: var(--font-cjk);
+  font-weight: 600;
 }
