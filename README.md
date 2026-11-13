@@ -48,4 +48,5 @@ Anything written as `[PLACEHOLDER: …]` is highlighted on the page automaticall
 
 Pushing to `main` deploys to GitHub Pages via `.github/workflows/deploy.yml` (enable Pages → Source: GitHub Actions in the repo settings).
 Without a custom domain the site is served at `https://<owner>.github.io/<repo>/`.
+To redeploy without a new commit: Actions → "Deploy to GitHub Pages" → **Run workflow** (on `main`). Do not re-run old runs – they would put an old build online, so the workflow now refuses to deploy any commit that is not the current `main`.
 When the domain is final: add `public/CNAME`, and set the repository variables `SITE_URL=https://<domain>` and `BASE_PATH=/`.

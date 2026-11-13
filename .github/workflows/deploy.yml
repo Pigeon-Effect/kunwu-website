@@ -24,6 +24,15 @@ jobs:
       SITE_URL: ${{ vars.SITE_URL || format('https://{0}.github.io', github.repository_owner) }}
       BASE_PATH: ${{ vars.BASE_PATH || format('/{0}', github.event.repository.name) }}
     steps:
+      # Re-running an old workflow run would deploy an old build over the newer site.
+      # Only the commit that main currently points to may be deployed.
+      - name: Refuse to deploy outdated commits
+        run: |
+          latest=$(git ls-remote "https://github.com/${{ github.repository }}.git" refs/heads/main | cut -f1)
+          if [ "$latest" != "${{ github.sha }}" ]; then
+            echo "::error::This run is for ${{ github.sha }}, but main is at $latest. Deploying it would replace the newer site with an old version. Use 'Run workflow' on main instead of re-running old runs."
+            exit 1
+          fi
       - name: Checkout
         uses: actions/checkout@v7
       - name: Build (astro check + astro build + verify-dist)
