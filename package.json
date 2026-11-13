@@ -12,6 +12,7 @@
     "preview": "astro preview",
     "check": "astro check",
     "icons": "node scripts/build-icons.mjs",
+    "sketches": "node scripts/sketches/build.mjs",
     "verify": "node scripts/verify-dist.mjs",
     "placeholders": "node scripts/list-placeholders.mjs",
     "astro": "astro"
@@ -25,6 +26,8 @@
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.12",
+    "polygon-clipping": "^0.15.7",
+    "roughjs": "^4.6.6",
     "sharp": "^0.35.5",
     "typescript": "^6.0.3"
   }
