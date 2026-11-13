@@ -35,7 +35,6 @@ export const routes = {
   dailyLife: 'daily-life',
   training: 'training',
   book: 'book',
-  faq: 'faq',
   contact: 'contact',
 } as const;
 export type RouteKey = keyof typeof routes;
