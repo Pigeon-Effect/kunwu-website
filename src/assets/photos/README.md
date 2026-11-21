@@ -1,10 +1,11 @@
 # Photos
 
-- `gallery/` – every image here appears automatically in the gallery on the Daily life page
-  (sorted by file name). Add bilingual alt texts in `src/data/gallery.ts`.
-- Other photos (hero, master portrait, rooms, food …): put them here, import them in the page
-  and pass them to `<Photo src={...} alt={...} />`. Without `src`, `<Photo>` renders a marked placeholder.
-- `master/` – photos of Master Shi Yanpeng (originals in `master/originals/`, crops and alt texts in `src/data/photos.ts`).
+- `gallery/` – school and master photos. Register each photo once in `src/data/photos.ts`
+  (both alt texts, `todoReplace` flag), then list its id in `src/data/gallery.ts` to show it in the
+  gallery on the Daily life page. `gallery/originals/` holds untouched files where a copy was trimmed.
+- `master/` – photos of Shi Yanpeng (hidden entry in `src/data/masters.ts`; originals in `master/originals/`).
+- Master portraits and extra photos are chosen in `src/data/masters.ts` (`image`, `imagePosition`, `photos`).
 - `posters/` – poster frames for video clips (see `src/data/videos.ts`).
 
-Originals can be large (JPEG, 2000–3000 px wide is ideal); Astro generates AVIF/WebP in several sizes at build time.
+Originals can be large (JPEG, 2000–3000 px wide is ideal); Astro generates AVIF/WebP in several sizes at
+build time and never wider than the original. Inventory and replacement list: `images.todo.md` in the repo root.

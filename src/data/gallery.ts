@@ -1,8 +1,21 @@
 /**
- * Alt texts for the gallery on the Daily life page, keyed by file name in
- * src/assets/photos/gallery/. Every photo needs both languages.
- *
- * Example:
- *   '01-morning-run.jpg': { en: 'Students running at dawn', zh: '学员清晨跑步' },
+ * Gallery on the Daily life page – photo ids from src/data/photos.ts, in display order.
+ * To add a photo: put it in src/assets/photos/gallery/, register it (with both alt texts) in
+ * photos.ts, then list its id here.
  */
-export const galleryCaptions: Record<string, { en: string; zh: string }> = {};
+import type { PhotoId } from './photos';
+
+// Order chosen so rows come out even at desktop width (two narrow portraits fill the gaps).
+export const gallery: PhotoId[] = [
+  'schoolForecourt',
+  'yansongSwordBamboo',
+  'schoolLake',
+  'yantaoGuandaoTemple',
+  'yansongBlueRobe',
+  'lounge',
+  'schoolFlowerBeds',
+  'diningHall',
+  'yansongGuandaoHall',
+  'guestRoom',
+  'banquetRoom',
+];

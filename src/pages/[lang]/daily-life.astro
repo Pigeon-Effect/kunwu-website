@@ -1,14 +1,13 @@
 ---
-import type { ImageMetadata } from 'astro';
 import { getImage } from 'astro:assets';
 import Base from '../../layouts/Base.astro';
 import PageHead from '../../components/PageHead.astro';
-import Photo from '../../components/Photo.astro';
 import DayRing from '../../components/DayRing.astro';
 import Seal from '../../components/Seal.astro';
 import SectionLabel from '../../components/SectionLabel.astro';
 import { sections } from '../../config/sections';
-import { galleryCaptions } from '../../data/gallery';
+import Gallery from '../../components/Gallery.astro';
+import { gallery } from '../../data/gallery';
 import { videos, channels } from '../../data/videos';
 import { asset, getLangStaticPaths, useT, type Lang } from '../../i18n/utils';
 
@@ -16,18 +15,6 @@ export const getStaticPaths = getLangStaticPaths;
 
 const lang = Astro.params.lang as Lang;
 const t = useT(lang);
-
-// Gallery: every image dropped into src/assets/photos/gallery/ shows up here, sorted by file name.
-// The section only appears once there is at least one photo.
-const files = import.meta.glob<{ default: ImageMetadata }>('/src/assets/photos/gallery/*.{jpg,jpeg,png,webp,avif}', {
-  eager: true,
-});
-const gallery = Object.entries(files)
-  .sort(([a], [b]) => a.localeCompare(b))
-  .map(([path, mod]) => {
-    const name = path.split('/').pop() ?? path;
-    return { src: mod.default, alt: galleryCaptions[name]?.[lang] ?? `[PLACEHOLDER: alt text for ${name}]` };
-  });
 
 const clips = await Promise.all(
   videos.map(async (v) => ({
@@ -69,15 +56,16 @@ const life = [
 
   {
     gallery.length > 0 && (
-      <section class="wrap pb-16 sm:pb-24" aria-labelledby="gallery-title">
-        <h2 id="gallery-title" class="text-4xl sm:text-5xl">
-          {t.daily.galleryTitle}
-        </h2>
-        <p class="mt-3 text-stone">{t.daily.galleryLede}</p>
-        <div class="mt-10 columns-2 gap-4 lg:columns-3 [&>*]:mb-4">
-          {gallery.map((g) => (
-            <Photo src={g.src} alt={g.alt} sizes="(min-width: 64rem) 22rem, 50vw" widths={[360, 540, 720, 1080]} />
-          ))}
+      <section class="border-t border-paper/10 py-20 sm:py-28" aria-labelledby="gallery-title">
+        <div class="wrap">
+          <SectionLabel as="p" decorative lang={lang} {...sections.gallery} label={t.daily.galleryTitle} />
+          <h2 id="gallery-title" class="mt-5 text-4xl sm:text-6xl">
+            {t.daily.galleryTitle}
+          </h2>
+          <p class="mt-4 text-stone">{t.daily.galleryLede}</p>
+          <div class="mt-12">
+            <Gallery ids={gallery} lang={lang} />
+          </div>
         </div>
       </section>
     )
@@ -85,7 +73,7 @@ const life = [
 
   {
     (clips.length > 0 || channels.length > 0) && (
-      <section class="wrap pb-20 sm:pb-28" aria-labelledby="videos-title">
+      <section class="wrap border-t border-paper/10 py-20 sm:py-28" aria-labelledby="videos-title">
         <h2 id="videos-title" class="text-4xl sm:text-5xl">
           {t.daily.videosTitle}
         </h2>
