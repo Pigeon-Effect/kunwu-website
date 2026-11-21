@@ -3,7 +3,7 @@
  * A photo through Astro's image pipeline (AVIF + WebP, several widths, never wider than the
  * original), or – without `src` – a clearly marked placeholder of the same shape.
  *
- * film  = dark overlay + vignette + fine grain (for the soft, low-resolution photos)
+ * aged  = toned like an old print on the same paper (for the soft, low-resolution photos)
  * fill  = cover the positioned parent completely (hero)
  */
 import { Picture } from 'astro:assets';
@@ -19,9 +19,11 @@ interface Props {
   sizes?: string;
   widths?: number[];
   eager?: boolean;
-  film?: boolean;
-  /** overlay strength 0–1 (film only) */
-  shade?: number;
+  /** toned like an old print (sepia, grain, darker edges) */
+  aged?: boolean;
+
+  /** paper wash over the photo 0–1 (aged only) */
+  wash?: number;
   fill?: boolean;
   /** encoder quality 1–100 (Astro default otherwise) */
   quality?: number | undefined;
@@ -38,8 +40,8 @@ const {
   sizes = '(min-width: 72rem) 36rem, 100vw',
   widths = [480, 720, 960, 1280],
   eager = false,
-  film = false,
-  shade,
+  aged = false,
+  wash,
   fill = false,
   quality,
   caption,
@@ -65,13 +67,13 @@ const effectiveSizes =
     : sizes;
 // never upscale: only widths below the original, plus the original itself
 const usableWidths = src ? [...new Set([...widths.filter((w) => w < src.width), src.width])].sort((a, b) => a - b) : [];
-const frameStyle = [fill ? '' : `aspect-ratio:${ratio}`, shade !== undefined ? `--film-shade:${shade}` : '']
+const frameStyle = [fill ? '' : `aspect-ratio:${ratio}`, wash !== undefined ? `--aged-wash:${wash}` : '']
   .filter(Boolean)
   .join(';');
 ---
 
 <figure class:list={['min-w-0', fill && 'absolute inset-0', className]}>
-  <div class:list={['relative overflow-hidden', film && 'film', fill ? 'h-full w-full' : 'w-full']} style={frameStyle || undefined}>
+  <div class:list={['relative overflow-hidden', aged && 'aged', fill ? 'h-full w-full' : 'w-full']} style={frameStyle || undefined}>
     {
       src ? (
         <Picture
@@ -94,5 +96,5 @@ const frameStyle = [fill ? '' : `aspect-ratio:${ratio}`, shade !== undefined ? `
       )
     }
   </div>
-  {caption && <figcaption class="mt-3 text-sm text-stone">{caption}</figcaption>}
+  {caption && <figcaption class="mt-3 text-sm text-ink-soft">{caption}</figcaption>}
 </figure>

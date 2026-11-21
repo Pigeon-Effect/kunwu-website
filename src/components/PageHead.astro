@@ -1,9 +1,9 @@
 ---
 /**
- * Head of an inner page: section label, large title, short lede.
- * `ghost` = one oversized faint hanzi behind the head (use on one page only).
+ * Head of an inner page: section label, large title, a dry brush stroke, short lede.
  */
 import SectionLabel from './SectionLabel.astro';
+import BrushRule from './BrushRule.astro';
 import { sections, type SectionKey } from '../config/sections';
 import type { Lang } from '../i18n/utils';
 
@@ -12,24 +12,15 @@ interface Props {
   section: SectionKey;
   title: string;
   lede?: string;
-  ghost?: string;
 }
-const { lang, section, title, lede, ghost } = Astro.props;
+const { lang, section, title, lede } = Astro.props;
 const s = sections[section];
 ---
 
-<header class="relative overflow-hidden">
-  {
-    ghost && (
-      <span class="ghost-hanzi -top-[0.12em] right-[-0.08em] text-[18rem] sm:text-[26rem]" aria-hidden="true" lang="zh-Hans">
-        {ghost}
-      </span>
-    )
-  }
-  <div class="wrap relative pt-16 pb-14 sm:pt-24 sm:pb-20">
-    <SectionLabel as="p" decorative lang={lang} pinyin={s.pinyin} hanzi={s.hanzi} label={title} />
-    <h1 class="mt-6 max-w-4xl text-[3rem] sm:text-7xl lg:text-[5.5rem]">{title}</h1>
-    {lede && <p class="mt-7 max-w-2xl text-lg text-stone sm:text-xl">{lede}</p>}
-    <slot />
-  </div>
+<header class="wrap relative pt-16 pb-14 sm:pt-24 sm:pb-20">
+  <SectionLabel as="p" decorative lang={lang} pinyin={s.pinyin} hanzi={s.hanzi} label={title} />
+  <h1 class="mt-6 max-w-4xl text-[3rem] sm:text-7xl lg:text-[5.5rem]">{title}</h1>
+  <BrushRule align="start" class="mt-5 -ml-2" />
+  {lede && <p class="mt-6 max-w-2xl text-lg text-ink-soft sm:text-xl">{lede}</p>}
+  <slot />
 </header>

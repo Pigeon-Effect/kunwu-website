@@ -16,22 +16,24 @@
 }
 
 /* ------------------------------------------------------------------
-   Palette – dark, cinematic, one accent.
-     墨 ink        #12100E  background
-     宣 paper      #EFE7D6  text (15.5:1 on ink)
-     石 stone      #8A857B  secondary text (5.2:1 on ink)
-     朱 vermilion  #B8321F  the only accent: seals, hover marks, the one primary button
-                            (paper on vermilion 4.9:1; never small text on ink – 3.2:1)
-   No other colours. No gradients except dark overlays on photos.
+   Palette – old rice paper, ink, cinnabar.
+     宣 paper       #F3ECDF  background (aged xuan paper, with fibres and a soft vignette)
+     宣 paper-deep  #E8DDC8  mounts, quiet sections
+     墨 ink         #1F1C18  text (15:1 on paper)
+     淡墨 ink-soft  #5A5348  secondary text (6.4:1 on paper)
+     淡墨 ink-faint #8C8376  hairlines and ornaments only – never text
+     朱 vermilion   #B0392A  seals, the primary button, hover marks (5.2:1 with paper)
    ------------------------------------------------------------------ */
 @theme {
   --color-*: initial;
-  --color-ink: #12100e;
-  --color-ink-raised: #1a1815; /* a slightly lifted surface, still "ink" */
-  --color-paper: #efe7d6;
-  --color-stone: #8a857b;
-  --color-vermilion: #b8321f;
-  --color-vermilion-deep: #96281a;
+  --color-paper: #f3ecdf;
+  --color-paper-deep: #e8ddc8;
+  --color-ink: #1f1c18;
+  --color-ink-soft: #5a5348;
+  --color-ink-faint: #8c8376;
+  --color-vermilion: #b0392a;
+  --color-vermilion-deep: #8f2b1f;
+  --color-white: #ffffff;
   --color-black: #000000;
   --color-transparent: transparent;
   --color-current: currentColor;
@@ -52,8 +54,20 @@
     -webkit-text-size-adjust: 100%;
     text-size-adjust: 100%;
     scroll-padding-top: 5rem;
-    background: var(--color-ink);
-    color-scheme: dark;
+    background-color: var(--color-paper);
+    /* paper fibres: fine, slightly stretched noise */
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='p'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.55 .09' numOctaves='3' seed='4' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .42 0 0 0 0 .36 0 0 0 0 .27 0 0 0 .13 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23p)'/%3E%3C/svg%3E");
+    color-scheme: light;
+  }
+
+  /* age: the edges of the sheet a little darker and warmer */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    background: radial-gradient(ellipse 120% 90% at 50% 40%, transparent 55%, rgb(150 120 70 / 0.13) 100%);
   }
 
   @media (prefers-reduced-motion: no-preference) {
@@ -63,8 +77,7 @@
   }
 
   body {
-    background: var(--color-ink);
-    color: var(--color-paper);
+    color: var(--color-ink);
     font-family: var(--font-sans);
     font-size: 1.0625rem;
     line-height: 1.7;
@@ -103,7 +116,7 @@
   a {
     color: inherit;
     text-decoration-line: underline;
-    text-decoration-color: rgb(239 231 214 / 0.35);
+    text-decoration-color: rgb(31 28 24 / 0.3);
     text-decoration-thickness: 1px;
     text-underline-offset: 0.3em;
     transition: text-decoration-color 200ms ease;
@@ -114,7 +127,7 @@
   }
 
   :focus-visible {
-    outline: 2px solid var(--color-paper);
+    outline: 2px solid var(--color-vermilion);
     outline-offset: 4px;
     border-radius: 1px;
   }
@@ -135,7 +148,7 @@
 
   hr {
     border: 0;
-    border-top: 1px solid rgb(239 231 214 / 0.12);
+    border-top: 1px solid rgb(31 28 24 / 0.12);
   }
 }
 
@@ -164,7 +177,7 @@
     line-height: 1.4;
     letter-spacing: 0.26em;
     text-transform: uppercase;
-    color: var(--color-stone);
+    color: var(--color-ink-soft);
   }
   .label-hanzi {
     font-family: var(--font-hanzi);
@@ -176,7 +189,7 @@
 
   /* Hairline */
   .rule {
-    border-top: 1px solid rgb(239 231 214 / 0.12);
+    border-top: 1px solid rgb(31 28 24 / 0.12);
   }
 
   /* Long-form text */
@@ -203,7 +216,7 @@
   .marks > li + li {
     margin-top: 0.55em;
   }
-  /* list marker: a small vermilion square, like a tiny seal */
+  /* list marker: a small cinnabar square, like a tiny seal */
   .prose-kw ul > li::before,
   ul.prose-kw > li::before,
   .marks > li::before {
@@ -216,12 +229,13 @@
     background: var(--color-vermilion);
   }
 
-  /* quieter list: a short stone dash instead of the vermilion square */
+  /* quieter list: a small ink dot instead of the cinnabar square */
   .marks-quiet > li::before {
-    top: 0.85em;
-    width: 0.6em;
-    height: 1px;
-    background: var(--color-stone);
+    top: 0.7em;
+    width: 0.38em;
+    height: 0.38em;
+    border-radius: 50%;
+    background: var(--color-ink-soft);
   }
 
   /* Buttons. Vermilion only for the one primary action ("Book your training"). */
@@ -252,12 +266,13 @@
   }
   .btn-ghost {
     background: transparent;
-    color: var(--color-paper);
-    box-shadow: inset 0 0 0 1px rgb(239 231 214 / 0.4);
+    color: var(--color-ink);
+    box-shadow: inset 0 0 0 1px rgb(31 28 24 / 0.45);
   }
   .btn-ghost:hover {
     background: transparent;
-    box-shadow: inset 0 0 0 1px var(--color-paper);
+    box-shadow: inset 0 0 0 1px var(--color-vermilion);
+    color: var(--color-vermilion-deep);
   }
   :lang(zh-Hans) .btn {
     font-size: 0.92rem;
@@ -274,9 +289,9 @@
     letter-spacing: 0.18em;
     text-transform: uppercase;
     text-decoration: none;
-    color: var(--color-paper);
+    color: var(--color-ink);
     padding-block: 0.4rem;
-    border-bottom: 1px solid rgb(239 231 214 / 0.3);
+    border-bottom: 1px solid rgb(31 28 24 / 0.3);
     transition: border-color 200ms ease;
   }
   .more:hover {
@@ -287,43 +302,49 @@
     letter-spacing: 0.15em;
   }
 
-  /* Film treatment for the (low-resolution) photos: dark overlay, vignette and fine grain,
-     so the softness reads as a choice. Applied to a wrapper around the <img>. */
-  .film {
+  /* Aged print: the photos (soft, low resolution) are toned like an old print on the same paper –
+     a little sepia, less saturation, fine grain, darker edges. Applied to a wrapper. */
+  .aged {
     position: relative;
     overflow: hidden;
     isolation: isolate;
-    background: var(--color-ink-raised);
+    background: var(--color-paper-deep);
   }
-  .film::after {
+  .aged img {
+    filter: sepia(0.3) saturate(0.72) contrast(0.94) brightness(1.03);
+  }
+  .aged::after {
     content: '';
     position: absolute;
     inset: 0;
     pointer-events: none;
     background:
-      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .5 0 0 0 0 .5 0 0 0 0 .5 0 0 0 .55 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),
-      radial-gradient(ellipse at center, transparent 55%, rgb(18 16 14 / 0.55) 100%),
-      rgb(18 16 14 / var(--film-shade, 0.22));
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .45 0 0 0 0 .38 0 0 0 0 .28 0 0 0 .32 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),
+      radial-gradient(ellipse at center, transparent 60%, rgb(90 70 40 / 0.28) 100%),
+      rgb(243 236 223 / var(--aged-wash, 0.12));
   }
 
-  /* Oversized, faint hanzi behind a section (used twice on the whole site) */
-  .ghost-hanzi {
-    position: absolute;
-    z-index: 0;
+  /* Mounted like a hanging scroll: a mat of deeper paper and a hairline */
+  .mount {
+    padding: 0.6rem;
+    background: var(--color-paper-deep);
+    box-shadow:
+      inset 0 0 0 1px rgb(31 28 24 / 0.12),
+      0 18px 30px -24px rgb(60 40 10 / 0.45);
+  }
+
+  /* Ink artwork (transparent WebP) sits on the paper as if painted on it */
+  .ink {
+    mix-blend-mode: multiply;
     pointer-events: none;
     user-select: none;
-    font-family: var(--font-hanzi);
-    font-weight: 600;
-    line-height: 1;
-    color: var(--color-paper);
-    opacity: 0.045;
   }
 
   /* Placeholders: impossible to miss, easy to grep */
   .ph {
-    background: #3a2a14;
-    color: #f4d9a6;
-    outline: 1px dashed #d8823f;
+    background: #fbe7c2;
+    color: #6b3a10;
+    outline: 1px dashed var(--color-vermilion);
     outline-offset: 1px;
     padding: 0 0.3em;
     border-radius: 2px;
@@ -341,9 +362,9 @@
     place-items: center;
     padding: 1.25rem;
     text-align: center;
-    background: var(--color-ink-raised);
-    border: 1px dashed rgb(239 231 214 / 0.25);
-    color: var(--color-stone);
+    background: var(--color-paper-deep);
+    border: 1px dashed var(--color-ink-faint);
+    color: var(--color-ink-soft);
     font-size: 0.875rem;
     line-height: 1.4;
     overflow-wrap: anywhere;
@@ -368,15 +389,15 @@
     transform: none;
   }
 
-  .slow-zoom {
-    animation: slow-zoom 22s var(--ease-out-soft) both;
+  /* ink settling into the paper: the hero art fades in slowly, once */
+  .ink-in {
+    animation: ink-in 2.4s var(--ease-out-soft) both;
+    animation-delay: var(--ink-delay, 0ms);
   }
-  @keyframes slow-zoom {
+  @keyframes ink-in {
     from {
-      transform: scale(1.09);
-    }
-    to {
-      transform: scale(1);
+      opacity: 0;
+      filter: blur(6px);
     }
   }
 }

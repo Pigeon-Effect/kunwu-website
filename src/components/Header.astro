@@ -6,6 +6,7 @@
  * Mobile: a full-screen menu from a native <details> – works without JavaScript.
  */
 import Seal from './Seal.astro';
+import InkArt from './InkArt.astro';
 import { localePath, switchLangPath, htmlLang, useT, type Lang, type RouteKey } from '../i18n/utils';
 
 interface Props {
@@ -37,7 +38,7 @@ const langs: { code: Lang; label: string }[] = [
 <header class="site-header" data-overlay={overlay ? '' : undefined} data-header>
   <div class="wrap flex h-[4.5rem] items-center gap-5 lg:gap-10">
     <a href={localePath(lang)} class="mr-auto flex items-center gap-3 no-underline" aria-current={onHome ? 'page' : undefined}>
-      <Seal text="坤" size="xs" />
+      <Seal text="坤武功夫" size="sm" />
       {
         lang === 'zh' ? (
           <span class="font-hanzi text-[1.15rem] tracking-[0.2em]">{t.site.name}</span>
@@ -66,12 +67,12 @@ const langs: { code: Lang; label: string }[] = [
         langs.map((l, i) => (
           <>
             {i > 0 && (
-              <span aria-hidden="true" class="text-stone">
+              <span aria-hidden="true" class="text-ink-soft">
                 /
               </span>
             )}
             {l.code === lang ? (
-              <span class="text-paper" lang={htmlLang[l.code]}>
+              <span class="text-ink" lang={htmlLang[l.code]}>
                 {l.label}
               </span>
             ) : (
@@ -80,7 +81,7 @@ const langs: { code: Lang; label: string }[] = [
                 hreflang={htmlLang[l.code]}
                 lang={htmlLang[l.code]}
                 aria-label={t.nav.switchToLabel}
-                class="text-stone no-underline transition-colors hover:text-paper"
+                class="text-ink-soft no-underline transition-colors hover:text-ink"
               >
                 {l.label}
               </a>
@@ -101,7 +102,8 @@ const langs: { code: Lang; label: string }[] = [
         <span class="sr-only">{t.nav.menu}</span>
       </summary>
       <div class="menu-panel">
-        <nav aria-label={t.nav.label} class="wrap flex min-h-full flex-col pt-28 pb-10">
+        <InkArt name="mountainsStrip" sizes="100vw" widths={[640, 1280]} class="pointer-events-none absolute inset-x-0 bottom-0 h-auto w-full opacity-80" />
+        <nav aria-label={t.nav.label} class="wrap relative flex min-h-full flex-col pt-28 pb-10">
           <ul class="flex flex-col gap-1">
             {
               items.map((item) => (
@@ -116,7 +118,7 @@ const langs: { code: Lang; label: string }[] = [
           <div class="mt-auto pt-12">
             <a href={localePath(lang, 'book')} class="btn w-full">{t.common.bookCta}</a>
             <p class="mt-8 flex items-center gap-3 text-sm tracking-[0.12em]">
-              <span class="text-stone">{t.nav.languageLabel}</span>
+              <span class="text-ink-soft">{t.nav.languageLabel}</span>
               <a href={switchHref} hreflang={htmlLang[other]} lang={htmlLang[other]} aria-label={t.nav.switchToLabel}>
                 {langs.find((l) => l.code === other)?.label}
               </a>
@@ -133,7 +135,7 @@ const langs: { code: Lang; label: string }[] = [
     position: fixed;
     inset: 0 0 auto;
     z-index: 50;
-    color: var(--color-paper);
+    color: var(--color-ink);
   }
   /* background on a pseudo-element: a backdrop-filter on the header itself would trap the
      fixed full-screen menu inside the header box */
@@ -142,10 +144,10 @@ const langs: { code: Lang; label: string }[] = [
     position: absolute;
     inset: 0;
     z-index: -1;
-    background: rgb(18 16 14 / 0.9);
+    background: rgb(243 236 223 / 0.9);
     -webkit-backdrop-filter: blur(10px);
     backdrop-filter: blur(10px);
-    border-bottom: 1px solid rgb(239 231 214 / 0.08);
+    border-bottom: 1px solid rgb(31 28 24 / 0.08);
     transition:
       opacity 400ms ease,
       border-color 400ms ease;
@@ -220,7 +222,7 @@ const langs: { code: Lang; label: string }[] = [
     inset: 0;
     z-index: 55;
     overflow-y: auto;
-    background: var(--color-ink);
+    background: var(--color-paper);
   }
   .menu-link {
     display: block;
@@ -231,7 +233,7 @@ const langs: { code: Lang; label: string }[] = [
     text-decoration: none;
   }
   .menu-link[aria-current='page'] {
-    color: var(--color-stone);
+    color: var(--color-ink-soft);
   }
   @media (prefers-reduced-motion: no-preference) {
     .menu[open] .menu-panel {

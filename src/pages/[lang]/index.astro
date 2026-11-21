@@ -5,11 +5,12 @@ import Photo from '../../components/Photo.astro';
 import Seal from '../../components/Seal.astro';
 import SectionLabel from '../../components/SectionLabel.astro';
 import MasterCard from '../../components/MasterCard.astro';
+import InkArt from '../../components/InkArt.astro';
+import BrushRule from '../../components/BrushRule.astro';
 import { sections } from '../../config/sections';
 import { address, contact, mapLink } from '../../config/site';
 import { fromPrice, formatPrice } from '../../config/booking';
 import { visibleMasters } from '../../data/masters';
-import { photos } from '../../data/photos';
 import { getLangStaticPaths, intlLocale, localePath, splitId, useT, type Lang } from '../../i18n/utils';
 
 export const getStaticPaths = getLangStaticPaths;
@@ -20,61 +21,54 @@ const zh = lang === 'zh';
 const programs = (await getCollection('programs', (e) => splitId(e.id).lang === lang)).sort(
   (a, b) => a.data.order - b.data.order,
 );
-const hero = photos.yantaoGuandaoTemple;
 const saying = ['未曾学艺先学礼', '未曾习武先习德'];
 const sayingEn = useT('en').home.sayingText;
 ---
 
 <Base lang={lang} title={t.meta.home.title} description={t.meta.home.description} route="home" overlayHeader>
-  <!-- 1 · Hero: one photo, the wordmark, one line, one button -->
-  <section class="relative isolate flex h-[100svh] min-h-[38rem] flex-col overflow-hidden" aria-labelledby="hero-title">
-    <div class="slow-zoom absolute inset-0 -z-10">
-      <Photo
-        src={hero.src}
-        alt={t.home.heroAlt}
-        fill
-        film
-        shade={0.38}
-        eager
-        position="50% 42%"
-        sizes="(max-width: 40rem) 42rem, (max-aspect-ratio: 188/100) 188vh, 100vw"
-        widths={[960, 1280, 1600, 1920]}
-        quality={60}
-      />
-    </div>
-    <!-- extra darkening under the header and towards the next section -->
-    <div
-      class="absolute inset-0 -z-10 bg-[linear-gradient(to_bottom,rgb(18_16_14/0.7)_0%,rgb(18_16_14/0.1)_38%,rgb(18_16_14/0.15)_70%,rgb(18_16_14/0.95)_100%)]"
-      aria-hidden="true"
-    >
-    </div>
+  <!-- 1 · Hero: a painting – peaks in the mist, one figure, the title written down the side and sealed -->
+  <section class="hero relative isolate min-h-[100svh] overflow-hidden" aria-labelledby="hero-title">
+    <InkArt
+      name="mountains"
+      sizes="(max-width: 40rem) 220vw, 100vw"
+      widths={[800, 1200, 1600, 2400]}
+      eager
+      class="ink-in absolute inset-x-0 bottom-0 -z-10 h-[78%] w-full object-cover object-[88%_100%] md:object-[50%_100%]"
+    />
+    <InkArt
+      name="figure"
+      alt={t.home.heroAlt}
+      sizes="(min-width: 48rem) 46rem, 90vw"
+      widths={[480, 720, 960, 1180]}
+      eager
+      class="hero-figure ink-in absolute -z-10 h-auto"
+      style="--ink-delay:300ms"
+    />
 
-    <div class="wrap flex flex-1 flex-col items-center pt-[max(6.5rem,14svh)] pb-[max(1.75rem,4.5svh)] text-center">
-      <h1 id="hero-title" class="hero-title">
-        <span class="font-hanzi block text-[clamp(4.2rem,15vw,9.5rem)] leading-none tracking-[0.14em] [margin-right:-0.14em]" lang="zh-Hans">
-          坤武功夫
-        </span>
-        <span class="mt-5 block font-display text-[clamp(1.35rem,3.4vw,2.2rem)] leading-none tracking-[0.34em] uppercase [margin-right:-0.34em]" lang="en">
-          Kunwu Kung Fu
-        </span>
-      </h1>
-      <p class="mt-7 text-[1.05rem] text-paper/85 sm:text-lg">{t.home.tagline}</p>
+    <div class="wrap flex min-h-[100svh] flex-col pt-[max(6.5rem,13svh)] pb-10">
+      <div class="flex items-start gap-6 sm:gap-10">
+        <h1 id="hero-title" class="flex items-start gap-5 sm:gap-8">
+          <span class="hero-hanzi font-hanzi" lang="zh-Hans">坤武功夫</span>
+          <span class="mt-2 block max-w-[13rem] font-display text-[clamp(1.4rem,3vw,2.1rem)] leading-[1.1] tracking-[0.06em] sm:max-w-none" lang="en">
+            Kunwu<br />Kung Fu
+          </span>
+        </h1>
+      </div>
+      <Seal text="坤武功夫" size="lg" class="mt-6 ml-1" />
 
-      <!-- the button sits low, below the figure in the photo -->
-      <a href={localePath(lang, 'book')} class="btn mt-auto">{t.common.bookCta}</a>
+      <div class="mt-auto max-w-sm pt-10">
+        <p class="text-lg text-ink-soft">{t.home.tagline}</p>
+        <a href={localePath(lang, 'book')} class="btn mt-6">{t.common.bookCta}</a>
+      </div>
     </div>
-    <a href="#philosophy" class="scroll-cue absolute right-5 bottom-6 sm:right-10 sm:bottom-10" aria-label={t.nav.philosophy}>
-      <span aria-hidden="true" class="scroll-word">{t.common.scroll}</span>
-      <span class="scroll-line" aria-hidden="true"></span>
-    </a>
   </section>
 
-  <!-- 2 · 武德 Philosophy: the old saying, large; the lineage in one paragraph; a faint 武 behind -->
-  <section id="philosophy" class="relative overflow-hidden py-28 sm:py-44" aria-labelledby="philosophy-label">
-    <span class="ghost-hanzi top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[30rem] sm:text-[44rem]" aria-hidden="true" lang="zh-Hans"
-      >武</span
-    >
-    <div class="wrap relative grid grid-cols-[minmax(0,1fr)] items-center gap-16 md:grid-cols-[minmax(0,1fr)_auto] md:gap-24">
+  <BrushRule class="py-6" />
+
+  <!-- 2 · 武德 Philosophy: the old saying, the lineage, a plum branch reaching in from the corner -->
+  <section id="philosophy" class="relative overflow-hidden py-24 sm:py-36" aria-labelledby="philosophy-label">
+    <InkArt name="plum" sizes="(min-width: 54rem) 28rem, 52vw" widths={[400, 640, 900]} class="plum absolute -z-10 h-auto" />
+    <div class="wrap relative grid grid-cols-[minmax(0,1fr)] items-start gap-16 md:grid-cols-[minmax(0,1fr)_auto] md:gap-24">
       <div>
         <SectionLabel id="philosophy-label" lang={lang} {...sections.philosophy} label={t.nav.philosophy} />
         <figure class="reveal mt-10">
@@ -87,28 +81,32 @@ const sayingEn = useT('en').home.sayingText;
               )
             }
           </blockquote>
-          <figcaption class="mt-6 text-sm tracking-[0.14em] text-stone">— {t.home.sayingSource}</figcaption>
-          {zh && <p class="mt-4 font-display text-xl text-stone italic" lang="en">{sayingEn}</p>}
+          <figcaption class="mt-6 text-sm tracking-[0.14em] text-ink-soft">— {t.home.sayingSource}</figcaption>
+          {zh && <p class="mt-4 font-display text-xl text-ink-soft italic" lang="en">{sayingEn}</p>}
         </figure>
-        <p class="reveal mt-14 max-w-xl text-lg text-stone" style="--reveal-delay:120ms">{t.home.lineageText}</p>
+        <p class="reveal mt-14 max-w-xl text-lg text-ink-soft" style="--reveal-delay:120ms">{t.home.lineageText}</p>
       </div>
 
       <!-- the saying as a vertical inscription, signed with a seal -->
-      <div class="reveal justify-self-center md:justify-self-end" style="--reveal-delay:200ms" lang="zh-Hans" aria-hidden={zh ? 'true' : undefined}>
+      <div class="reveal justify-self-center md:justify-self-end md:pt-56" style="--reveal-delay:200ms" lang="zh-Hans" aria-hidden={zh ? 'true' : undefined}>
         <p class="sr-only">{saying.join('，')}。</p>
         <div class="flex flex-row-reverse items-start gap-7" aria-hidden="true">
           <span class="font-hanzi text-[2.3rem] leading-none tracking-[0.3em] whitespace-nowrap [writing-mode:vertical-rl] sm:text-[2.7rem]">{saying[0]}</span>
           <span class="flex flex-col items-center">
-            <span class="font-hanzi mt-[1.3em] text-[2.3rem] leading-none tracking-[0.3em] whitespace-nowrap [writing-mode:vertical-rl] sm:text-[2.7rem]">{saying[1]}</span>
-            <Seal text="德" size="sm" class="mt-6" />
+            <span class="font-hanzi mt-[1.3em] text-[2.3rem] leading-none tracking-[0.3em] whitespace-nowrap [writing-mode:vertical-rl] sm:text-[2.7rem]"
+              >{saying[1]}</span
+            >
+            <Seal text="德" style="zhu" size="sm" class="mt-6" />
           </span>
         </div>
       </div>
     </div>
   </section>
 
+  <BrushRule />
+
   <!-- 3 · 师资 Masters -->
-  <section id="masters" class="border-t border-paper/10 py-28 sm:py-40" aria-labelledby="masters-label">
+  <section id="masters" class="py-24 sm:py-36" aria-labelledby="masters-label">
     <div class="wrap">
       <SectionLabel id="masters-label" lang={lang} {...sections.masters} label={t.nav.masters} />
       <p class="reveal mt-6 font-display text-[clamp(2.4rem,6vw,4.5rem)]">{t.home.mastersIntro}</p>
@@ -118,32 +116,37 @@ const sayingEn = useT('en').home.sayingText;
     </div>
   </section>
 
+  <BrushRule />
+
   <!-- 4 · 课程 Programs: four rows -->
-  <section id="programs" class="border-t border-paper/10 py-28 sm:py-40" aria-labelledby="programs-label">
+  <section id="programs" class="py-24 sm:py-36" aria-labelledby="programs-label">
     <div class="wrap">
       <SectionLabel id="programs-label" lang={lang} {...sections.programs} label={t.nav.programs} />
       <div class="mt-6 flex flex-wrap items-end justify-between gap-x-10 gap-y-4">
         <p class="reveal font-display text-[clamp(2.4rem,6vw,4.5rem)]">{t.home.programsTitle}</p>
-        <p class="text-stone">{t.home.programsNote}</p>
+        <p class="text-ink-soft">{t.home.programsNote}</p>
       </div>
 
-      <ul class="mt-14 border-t border-paper/15">
+      <ul class="mt-14 border-t border-ink/15">
         {
           programs.map((p) => {
             const price = fromPrice(p.data.program);
             return (
-              <li class="border-b border-paper/15">
+              <li class="border-b border-ink/15">
                 <a
                   href={localePath(lang, 'training', p.data.program)}
                   class="program-row group grid grid-cols-[auto_1fr_auto] items-center gap-x-5 gap-y-2 py-7 no-underline sm:gap-x-8 md:grid-cols-[auto_minmax(0,15rem)_minmax(0,1fr)_auto_auto] md:py-9"
                 >
-                  <Seal text={p.data.seal} size="sm" class="row-span-2 md:row-span-1" />
+                  <Seal text={p.data.seal} style="zhu" size="xs" class="row-span-2 md:row-span-1" />
                   <span class="font-display text-[1.9rem] leading-tight sm:text-4xl">{p.data.title}</span>
-                  <span class="col-start-2 text-[0.97rem] text-stone md:col-start-auto">{p.data.summary}</span>
-                  <span class="col-start-2 text-sm whitespace-nowrap text-stone md:col-start-auto">
+                  <span class="col-start-2 text-[0.97rem] text-ink-soft md:col-start-auto">{p.data.summary}</span>
+                  <span class="col-start-2 text-sm whitespace-nowrap text-ink-soft md:col-start-auto">
                     {price !== null ? `${t.common.from} ${formatPrice(price, intlLocale[lang])}` : t.training.pricePh}
                   </span>
-                  <span class="row-span-2 row-start-1 col-start-3 text-xl text-stone transition-transform duration-300 group-hover:translate-x-1 group-hover:text-paper md:col-start-auto md:row-span-1 md:row-start-auto" aria-hidden="true">
+                  <span
+                    class="col-start-3 row-span-2 row-start-1 text-xl text-ink-soft transition-transform duration-300 group-hover:translate-x-1 group-hover:text-vermilion md:col-start-auto md:row-span-1 md:row-start-auto"
+                    aria-hidden="true"
+                  >
                     →
                   </span>
                 </a>
@@ -157,24 +160,26 @@ const sayingEn = useT('en').home.sayingText;
       </p>
 
       <!-- one line on daily life; the full timetable lives on /daily-life -->
-      <p class="mt-24 max-w-2xl text-lg text-stone">
+      <p class="mt-24 max-w-2xl text-lg text-ink-soft">
         {t.home.dayTeaser}
-        <a href={localePath(lang, 'dailyLife')} class="ml-1 whitespace-nowrap text-paper">{t.home.dayLink} →</a>
+        <a href={localePath(lang, 'dailyLife')} class="ml-1 whitespace-nowrap text-ink">{t.home.dayLink} →</a>
       </p>
     </div>
   </section>
 
+  <BrushRule />
+
   <!-- 5 · 联系 Contact -->
-  <section id="contact" class="border-t border-paper/10 pt-28 pb-24 sm:pt-40 sm:pb-32" aria-labelledby="contact-label">
+  <section id="contact" class="pt-24 pb-20 sm:pt-36 sm:pb-28" aria-labelledby="contact-label">
     <div class="wrap">
       <SectionLabel id="contact-label" lang={lang} {...sections.contact} label={t.nav.contact} />
       <a href={localePath(lang, 'book')} class="cta-big group mt-8 inline-flex flex-wrap items-baseline gap-x-6 no-underline">
         <span class="font-display">{t.common.bookCta}</span>
         <span class="cta-arrow text-vermilion" aria-hidden="true">→</span>
       </a>
-      <p class="mt-6 max-w-xl text-lg text-stone">{t.home.contactLede}</p>
+      <p class="mt-6 max-w-xl text-lg text-ink-soft">{t.home.contactLede}</p>
 
-      <div class="mt-20 grid gap-14 border-t border-paper/15 pt-12 sm:grid-cols-2 lg:grid-cols-[auto_1fr_1.2fr] lg:gap-20">
+      <div class="mt-20 grid gap-14 border-t border-ink/15 pt-12 sm:grid-cols-2 lg:grid-cols-[auto_1fr_1.2fr] lg:gap-20">
         <div>
           <h3 class="label !text-[0.72rem]">{t.contact.wechatTitle}</h3>
           <div class="mt-5 w-36">
@@ -202,57 +207,36 @@ const sayingEn = useT('en').home.sayingText;
 </Base>
 
 <style>
-  .hero-title {
-    text-shadow: 0 2px 30px rgb(18 16 14 / 0.45);
+  /* title written top to bottom, like the inscription on a painting */
+  .hero-hanzi {
+    writing-mode: vertical-rl;
+    white-space: nowrap;
+    font-size: clamp(3.4rem, 9vw, 6.6rem);
+    line-height: 1;
+    letter-spacing: 0.16em;
+  }
+  /* the figure stands in the right half, feet near the bottom of the screen */
+  /* small in the landscape, as figures are in shanshui painting */
+  :global(.hero-figure) {
+    right: 0;
+    bottom: calc(10.5rem + 2svh);
+    width: min(62vw, 38svh);
+  }
+  @media (min-width: 48rem) {
+    :global(.hero-figure) {
+      right: max(6vw, calc(50vw - 30rem));
+      bottom: 10svh;
+      width: min(38vw, 56svh, 34rem);
+    }
   }
 
-  .scroll-cue {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 0.75rem;
-    font-size: 0.68rem;
-    letter-spacing: 0.3em;
-    text-transform: uppercase;
-    text-decoration: none;
-    color: rgb(239 231 214 / 0.75);
-  }
-  .scroll-word {
-    writing-mode: vertical-rl;
-  }
-  @media (max-width: 39.99rem) {
-    .scroll-word {
-      display: none;
-    }
-  }
-  .scroll-line {
-    position: relative;
-    display: block;
-    width: 1px;
-    height: 3.5rem;
-    overflow: hidden;
-    background: rgb(239 231 214 / 0.25);
-  }
-  .scroll-line::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: var(--color-paper);
-    transform: translateY(-100%);
-  }
-  @media (prefers-reduced-motion: no-preference) {
-    .scroll-line::after {
-      animation: scroll-drop 2.6s var(--ease-out-soft) infinite;
-    }
-    @keyframes scroll-drop {
-      0% {
-        transform: translateY(-100%);
-      }
-      60%,
-      100% {
-        transform: translateY(100%);
-      }
-    }
+  /* the branch reaches in from the top-right corner, above the inscription */
+  :global(.plum) {
+    top: 0;
+    right: -0.5rem;
+    width: min(56vw, 28rem);
+    opacity: 0.9;
+    transform: scaleX(-1); /* base off the right edge, the branch grows in from outside the frame */
   }
 
   .program-row :global(.seal) {

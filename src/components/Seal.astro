@@ -1,64 +1,44 @@
 ---
 /**
- * 印章 – a vermilion chop with one (or two) hanzi. Logo mark, and marker for programs and masters.
- * Two characters stack vertically (read top to bottom). Decorative: the same words always appear
- * as real text nearby, so the seal is hidden from assistive technology.
+ * 印章 – an old, hand-stamped seal (see src/lib/seal.ts). Logo, masters, programs, small markers.
+ * bai = characters cut out of the cinnabar block (白文), zhu = cinnabar characters in a frame (朱文).
+ * Two characters make a tall seal; four make a square, read right column first.
+ * Decorative: the same words always appear as real text nearby.
  */
+import { sealSVG, type SealGlyphs } from '../lib/seal';
+import glyphs from '../data/seal-glyphs.json';
+
 interface Props {
   text: string;
-  shape?: 'square' | 'round';
-  size?: 'xs' | 'sm' | 'md' | 'lg';
+  style?: 'bai' | 'zhu';
+  size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
   class?: string;
 }
 
-const { text, shape = 'square', size = 'md', class: className = '' } = Astro.props;
-const chars = [...text].slice(0, 4);
-const perColumn = chars.length <= 2 ? chars.length : 2;
-const columns = Math.ceil(chars.length / perColumn);
-const side = { xs: 1.75, sm: 2.25, md: 2.9, lg: 3.8 }[size];
-const fill = shape === 'round' ? 0.6 : 0.72;
-const glyph = (side * fill) / Math.max(perColumn, columns);
+const { text, style = 'bai', size = 'md', class: className = '' } = Astro.props;
+// one counter per build: every seal on a page gets its own filter/mask ids
+const g = globalThis as { __sealCount?: number };
+g.__sealCount = (g.__sealCount ?? 0) + 1;
+const svg = sealSVG(glyphs as unknown as SealGlyphs, { text, style, id: `seal${g.__sealCount}` })
+  .replace(/ width="[\d.]+" height="[\d.]+"/, '')
+  .replace('<svg ', '<svg aria-hidden="true" focusable="false" ');
+const side = { xs: 2, sm: 2.6, md: 3.2, lg: 4.4, xl: 6 }[size];
 ---
 
-<span
-  class:list={['seal', `seal-${shape}`, className]}
-  style={`--side:${side}rem; --glyph:${glyph.toFixed(3)}rem; --per-column:${perColumn}`}
-  aria-hidden="true"
-  lang="zh-Hans"
->
-  <span class="seal-text">{chars.map((c) => <span>{c}</span>)}</span>
-</span>
+<span class:list={['seal', className]} style={`--side:${side}rem`} lang="zh-Hans" set:html={svg} />
 
 <style>
   .seal {
-    display: inline-grid;
-    place-items: center;
+    display: inline-block;
     flex-shrink: 0;
     width: var(--side);
-    height: var(--side);
-    background: var(--color-vermilion);
-    color: var(--color-paper);
-    /* carved border: a thin paper line set inside the edge */
-    box-shadow:
-      inset 0 0 0 calc(var(--side) * 0.06) var(--color-vermilion),
-      inset 0 0 0 calc(var(--side) * 0.06 + 1px) rgb(239 231 214 / 0.8);
-    font-family: var(--font-hanzi);
-    font-weight: 600;
-    line-height: 1;
+    line-height: 0;
+    /* stamped ink sits in the paper, not on it */
+    mix-blend-mode: multiply;
   }
-  .seal-square {
-    border-radius: 2px;
-  }
-  .seal-round {
-    border-radius: 50%;
-  }
-  .seal-text {
-    writing-mode: vertical-rl;
-    display: flex;
-    flex-wrap: wrap;
-    align-content: center;
-    justify-content: center;
-    inline-size: calc(var(--glyph) * var(--per-column) * 1.04);
-    font-size: var(--glyph);
+  .seal :global(svg) {
+    display: block;
+    width: 100%;
+    height: auto;
   }
 </style>

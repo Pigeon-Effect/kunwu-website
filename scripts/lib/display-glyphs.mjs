@@ -2,7 +2,7 @@
 // Shared by scripts/subset-fonts.mjs (builds the subset) and scripts/verify-dist.mjs (warns about gaps).
 //
 // Display text = headings (h1–h4), <blockquote>, and every element whose class contains
-// font-display, font-hanzi, seal, label-hanzi, ghost-hanzi or menu-link. The scan is deliberately generous (it reads a stretch of
+// font-display, font-hanzi, seal, label-hanzi or menu-link. The scan is deliberately generous (it reads a stretch of
 // markup after each opening tag): an extra glyph costs a few hundred bytes, a missing one
 // falls back to the system serif.
 import { readdir, readFile } from 'node:fs/promises';
@@ -16,7 +16,7 @@ export const ALWAYS = '坤武功夫德师资课程联系日常报名子丑寅卯
 
 const RAW = /<(script|style)\b[\s\S]*?<\/\1\s*>/gi;
 const HEADING = /<(h[1-4]|blockquote)\b[^>]*>([\s\S]*?)<\/\1\s*>/gi;
-const DISPLAY_CLASS = /<(\w+)\b[^>]*\bclass="[^"]*\b(?:font-display|font-hanzi|seal|label-hanzi|ghost-hanzi|menu-link)\b[^"]*"[^>]*>/gi;
+const DISPLAY_CLASS = /<(\w+)\b[^>]*\bclass="[^"]*\b(?:font-display|font-hanzi|seal|label-hanzi|menu-link)\b[^"]*"[^>]*>/gi;
 
 export function displayGlyphs(html, into = new Set()) {
   const text = html.replace(RAW, '');

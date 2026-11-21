@@ -37,7 +37,7 @@ const ogImage = new URL(asset('og-image.png'), Astro.site).href;
     <link rel="icon" href={asset('favicon.svg')} type="image/svg+xml" />
     <link rel="apple-touch-icon" href={asset('apple-touch-icon.png')} />
     <link rel="manifest" href={asset('site.webmanifest')} />
-    <meta name="theme-color" content="#12100e" />
+    <meta name="theme-color" content="#f3ecdf" />
 
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content={t.site.name} />
@@ -54,7 +54,7 @@ const ogImage = new URL(asset('og-image.png'), Astro.site).href;
   <body class="flex min-h-dvh flex-col">
     <a
       href="#main"
-      class="sr-only z-[70] bg-paper px-4 py-2 text-ink focus:not-sr-only focus:fixed focus:top-3 focus:left-3"
+      class="sr-only z-[70] bg-ink px-4 py-2 text-paper focus:not-sr-only focus:fixed focus:top-3 focus:left-3"
       >{t.nav.skip}</a
     >
     <Header lang={lang} route={route} overlay={overlayHeader} />

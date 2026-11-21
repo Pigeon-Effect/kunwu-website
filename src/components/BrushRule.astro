@@ -1,0 +1,14 @@
+---
+/** A single dry brush stroke as a quiet divider between sections. */
+import InkArt from './InkArt.astro';
+
+interface Props {
+  class?: string;
+  align?: 'center' | 'start';
+}
+const { class: className = '', align = 'center' } = Astro.props;
+---
+
+<div class:list={['flex', align === 'center' ? 'justify-center' : 'justify-start', className]} aria-hidden="true">
+  <InkArt name="stroke" sizes="11rem" widths={[180, 360]} class="h-auto w-44 opacity-75" />
+</div>

@@ -1,5 +1,6 @@
 ---
 import Seal from './Seal.astro';
+import InkArt from './InkArt.astro';
 import { address } from '../config/site';
 import { localePath, useT, type Lang, type RouteKey } from '../i18n/utils';
 
@@ -20,14 +21,16 @@ const year = new Date().getFullYear();
 const otherName = lang === 'en' ? '坤武功夫国际交流中心' : 'Kunwu International Kung Fu Training Center';
 ---
 
-<footer class="mt-auto border-t border-paper/10">
+<footer class="mt-auto">
+  <!-- distant peaks above the footer, as on the edge of a scroll -->
+  <InkArt name="mountainsStrip" sizes="100vw" widths={[640, 960, 1280, 1600]} class="block h-auto w-full opacity-90" />
   <div class="wrap grid gap-10 py-14 text-sm md:grid-cols-[1.4fr_1fr] md:items-start">
     <div class="flex items-start gap-4">
-      <Seal text="坤武" size="sm" />
+      <Seal text="坤武" style="zhu" size="sm" />
       <div>
-        <p class="text-paper">{t.site.fullName}</p>
-        <p class="mt-1 text-stone" lang={lang === 'en' ? 'zh-Hans' : 'en'}>{otherName}</p>
-        <p class="mt-3 text-stone">{(lang === 'zh' ? address.zhLines : address.enLines).slice(-2).join(lang === 'zh' ? '' : ', ')}</p>
+        <p class="text-ink">{t.site.fullName}</p>
+        <p class="mt-1 text-ink-soft" lang={lang === 'en' ? 'zh-Hans' : 'en'}>{otherName}</p>
+        <p class="mt-3 text-ink-soft">{(lang === 'zh' ? address.zhLines : address.enLines).slice(-2).join(lang === 'zh' ? '' : ', ')}</p>
       </div>
     </div>
 
@@ -36,7 +39,7 @@ const otherName = lang === 'en' ? '坤武功夫国际交流中心' : 'Kunwu Inte
         {
           pages.map((p) => (
             <li>
-              <a href={localePath(lang, p.key)} class="text-stone no-underline transition-colors hover:text-paper">
+              <a href={localePath(lang, p.key)} class="text-ink-soft no-underline transition-colors hover:text-ink">
                 {p.label}
               </a>
             </li>
@@ -46,6 +49,6 @@ const otherName = lang === 'en' ? '坤武功夫国际交流中心' : 'Kunwu Inte
     </nav>
   </div>
   <div class="wrap pb-10">
-    <p class="text-xs text-stone">© {year} {t.site.fullName}. {t.footer.rights}</p>
+    <p class="text-xs text-ink-soft">© {year} {t.site.fullName}. {t.footer.rights}</p>
   </div>
 </footer>

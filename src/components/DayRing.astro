@@ -137,11 +137,11 @@ const halfAnnulus = `M${-R_OUT} 0A${R_OUT} ${R_OUT} 0 0 0 ${R_OUT} 0L${R_IN} 0A$
 
   <div>
     <p id={`${id}-label`} class="sr-only">{t.ring.listLabel}</p>
-    <ol aria-labelledby={`${id}-label`} class="divide-y divide-paper/10 border-y border-paper/10">
+    <ol aria-labelledby={`${id}-label`} class="divide-y divide-ink/10 border-y border-ink/10">
       {
         blocks.map((b) => (
           <li class="group flex items-baseline gap-4 py-2.5" data-start={b.s} data-end={b.e}>
-            <span class="w-[6.5rem] shrink-0 text-sm text-stone tabular-nums">
+            <span class="w-[6.5rem] shrink-0 text-sm text-ink-soft tabular-nums">
               {b.start}–{b.end}
             </span>
             <span class="flex-1">
@@ -149,16 +149,16 @@ const halfAnnulus = `M${-R_OUT} 0A${R_OUT} ${R_OUT} 0 0 0 ${R_OUT} 0L${R_IN} 0A$
                 aria-hidden="true"
                 class:list={[
                   'mr-2 inline-block h-2.5 w-2.5 translate-y-[-1px] rounded-full align-middle',
-                  b.kind === 'training' && 'bg-paper/85',
-                  b.kind === 'practice' && 'border-2 border-paper/50',
-                  b.kind === 'meal' && 'bg-stone',
-                  b.kind === 'rest' && 'border border-stone/60',
+                  b.kind === 'training' && 'bg-ink/85',
+                  b.kind === 'practice' && 'border-2 border-ink/50',
+                  b.kind === 'meal' && 'bg-ink-faint',
+                  b.kind === 'rest' && 'border border-ink-faint',
                 ]}
               />
               {b.label[lang]}
               <span class="sr-only"> ({t.ring.kinds[b.kind]})</span>
             </span>
-            <span class="hidden rounded-sm bg-vermilion px-2 py-0.5 text-xs font-medium text-paper group-data-now:inline">
+            <span class="hidden rounded-sm bg-vermilion px-2 py-0.5 text-xs font-medium text-ink group-data-now:inline">
               {t.ring.now}
             </span>
           </li>

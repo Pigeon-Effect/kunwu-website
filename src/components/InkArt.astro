@@ -1,0 +1,41 @@
+---
+/**
+ * One of the painted ink assets (src/assets/ink/, made by `npm run ink`), multiplied into the paper.
+ * Decorative unless `alt` is given.
+ */
+import { Picture } from 'astro:assets';
+import figure from '../assets/ink/figure.webp';
+import mountains from '../assets/ink/mountains.webp';
+import mountainsStrip from '../assets/ink/mountains-strip.webp';
+import stroke from '../assets/ink/stroke.webp';
+import plum from '../assets/ink/plum.webp';
+
+const art = { figure, mountains, mountainsStrip, stroke, plum };
+
+interface Props {
+  name: keyof typeof art;
+  alt?: string;
+  sizes: string;
+  widths?: number[];
+  eager?: boolean;
+  class?: string;
+  style?: string;
+}
+
+const { name, alt = '', sizes, widths = [320, 640, 960, 1280], eager = false, class: className = '', style } = Astro.props;
+const src = art[name];
+const usable = [...new Set([...widths.filter((w) => w < src.width), src.width])].sort((a, b) => a - b);
+---
+
+<Picture
+  src={src}
+  alt={alt}
+  formats={['avif', 'webp']}
+  widths={usable}
+  sizes={sizes}
+  loading={eager ? 'eager' : 'lazy'}
+  fetchpriority={eager ? 'high' : 'auto'}
+  aria-hidden={alt ? undefined : 'true'}
+  class:list={['ink', className]}
+  style={style}
+/>

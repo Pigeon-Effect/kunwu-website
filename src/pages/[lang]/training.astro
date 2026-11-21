@@ -31,8 +31,8 @@ const programs = await Promise.all(
     </nav>
   </PageHead>
 
-  <section class="bg-ink-raised" aria-labelledby="included-title">
-    <div class="wrap grid gap-6 border-y border-paper/10 py-12 md:grid-cols-[16rem_1fr] md:py-16">
+  <section class="bg-paper-deep" aria-labelledby="included-title">
+    <div class="wrap grid gap-6 border-y border-ink/10 py-12 md:grid-cols-[16rem_1fr] md:py-16">
       <h2 id="included-title" class="text-3xl">{t.training.includedTitle}</h2>
       <ul class="prose-kw grid gap-x-10 gap-y-2 !max-w-none sm:grid-cols-2 [&>li+li]:!mt-0">
         {t.training.included.map((item) => <li>{item}</li>)}
@@ -42,19 +42,19 @@ const programs = await Promise.all(
 
   {
     programs.map(({ data, booking, Content }, i) => (
-      <section id={data.program} class:list={['wrap scroll-mt-24 py-20 sm:py-28', i > 0 && 'border-t border-paper/10']} aria-labelledby={`${data.program}-title`}>
+      <section id={data.program} class:list={['wrap scroll-mt-24 py-20 sm:py-28', i > 0 && 'border-t border-ink/10']} aria-labelledby={`${data.program}-title`}>
         <div class="grid gap-12 lg:grid-cols-[minmax(0,1.2fr)_minmax(0,0.8fr)] lg:gap-16">
           <div>
             <Seal text={data.seal} size="md" class="mb-7" />
             <h2 id={`${data.program}-title`} class="flex flex-wrap items-baseline gap-x-5 gap-y-1 text-[2.6rem] sm:text-6xl">
               {data.title}
               {lang === 'en' && (
-                <span class="font-hanzi text-xl tracking-[0.2em] text-stone" lang="zh-Hans">
+                <span class="font-hanzi text-xl tracking-[0.2em] text-ink-soft" lang="zh-Hans">
                   {data.nameZh}
                 </span>
               )}
             </h2>
-            <p class="mt-5 max-w-2xl text-lg text-stone">{data.summary}</p>
+            <p class="mt-5 max-w-2xl text-lg text-ink-soft">{data.summary}</p>
             <div class="prose-kw mt-8">
               <Content />
             </div>
@@ -76,7 +76,7 @@ const programs = await Promise.all(
                 </thead>
                 <tbody>
                   {booking.options.map((o) => (
-                    <tr class="border-b border-paper/10">
+                    <tr class="border-b border-ink/10">
                       <th scope="row" class="py-2.5 font-normal">{weeksLabel(lang, o.weeks)}</th>
                       <td class="py-2.5 text-right tabular-nums">
                         {o.price !== null ? formatPrice(o.price, intlLocale[lang]) : t.training.pricePh}

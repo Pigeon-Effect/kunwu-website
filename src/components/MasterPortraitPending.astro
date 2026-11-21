@@ -12,10 +12,10 @@ const { master: m, lang } = Astro.props;
 const t = useT(lang);
 ---
 
-<div class="grid aspect-[4/5] w-full place-items-center bg-ink-raised" role="img" aria-label={`${m.name[lang]} – ${t.master.portraitPending}`}>
+<div class="grid aspect-[4/5] w-full place-items-center bg-paper-deep" role="img" aria-label={`${m.name[lang]} – ${t.master.portraitPending}`}>
   <div class="flex flex-col items-center gap-6" aria-hidden="true">
     <Seal text={m.seal} size="lg" />
     <span class="font-hanzi text-3xl tracking-[0.2em]" lang="zh-Hans">{m.hanzi}</span>
-    <span class="text-xs tracking-[0.2em] text-stone uppercase">{t.master.portraitPending}</span>
+    <span class="text-xs tracking-[0.2em] text-ink-soft uppercase">{t.master.portraitPending}</span>
   </div>
 </div>

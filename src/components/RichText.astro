@@ -27,7 +27,7 @@ const parts = text.split(/(\[\^[\w-]+\]|[\u3400-\u9fff\u3000-\u303f\uff00-\uffef
       const id = `${scope}-${ref[1]}`;
       return (
         <sup class="ml-0.5">
-          <a href={`#fn-${id}`} id={`fnref-${id}`} class="text-stone no-underline hover:text-paper" aria-label={noteLabel}>
+          <a href={`#fn-${id}`} id={`fnref-${id}`} class="text-ink-soft no-underline hover:text-ink" aria-label={noteLabel}>
             *
           </a>
         </sup>

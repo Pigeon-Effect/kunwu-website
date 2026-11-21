@@ -21,7 +21,7 @@ const zh = lang === 'zh';
 ---
 
 <Base lang={lang} title={t.meta.master.title} description={t.meta.master.description} route="master">
-  <PageHead lang={lang} section="masters" title={t.master.title} lede={t.master.lede} ghost="承">
+  <PageHead lang={lang} section="masters" title={t.master.title} lede={t.master.lede}>
     <nav aria-label={t.master.title} class="mt-10">
       <ul class="flex flex-wrap gap-x-10 gap-y-3">
         {
@@ -45,7 +45,7 @@ const zh = lang === 'zh';
       const portrait = masterPhoto(m.image);
       const notes = m.footnotes?.[lang] ?? {};
       return (
-        <article id={m.slug} class="scroll-mt-24 border-t border-paper/10 py-20 sm:py-28" aria-labelledby={`${m.slug}-name`}>
+        <article id={m.slug} class="scroll-mt-24 border-t border-ink/10 py-20 sm:py-28" aria-labelledby={`${m.slug}-name`}>
           <div class="wrap grid gap-14 lg:grid-cols-[minmax(0,25rem)_minmax(0,1fr)] lg:gap-24">
             <!-- portrait + further photos -->
             <div class="lg:sticky lg:top-28 lg:self-start">
@@ -55,8 +55,9 @@ const zh = lang === 'zh';
                     src={portrait.src}
                     alt={portrait.alt[lang]}
                     ratio="4/5"
+                    class="mount"
                     position={m.imagePosition}
-                    film
+                    aged
                     sizes="(min-width: 64rem) 25rem, (min-width: 26rem) 25rem, calc(100vw - 2.5rem)"
                     widths={[400, 600, 800, 1000, 1400, 1800]}
                   />
@@ -72,8 +73,8 @@ const zh = lang === 'zh';
                       src={photos[id].src}
                       alt={photos[id].alt[lang]}
                       ratio="3/4"
-                      film
-                      shade={0.15}
+                      aged
+                      wash={0.08}
                       sizes="12rem"
                       widths={[240, 360, 480]}
                     />
@@ -91,7 +92,7 @@ const zh = lang === 'zh';
                   </span>
                   {!zh && <span class="mt-4 block text-[2rem] sm:text-4xl">{m.name.en}</span>}
                 </h2>
-                <p class="mt-3 text-sm tracking-[0.14em] text-stone">
+                <p class="mt-3 text-sm tracking-[0.14em] text-ink-soft">
                   <span lang="zh-Latn-pinyin">{m.name_pinyin}</span>
                   {m.layman_name[lang] && (
                     <>
@@ -103,10 +104,10 @@ const zh = lang === 'zh';
                   )}
                 </p>
                 <p class="mt-6 max-w-2xl text-lg">{m.lineage[lang]}</p>
-                <p class="mt-1 text-stone">{m.title[lang]}</p>
+                <p class="mt-1 text-ink-soft">{m.title[lang]}</p>
               </header>
 
-              <section class="mt-12 border-y border-paper/12 py-8" aria-labelledby={`${m.slug}-credentials`}>
+              <section class="mt-12 border-y border-ink/12 py-8" aria-labelledby={`${m.slug}-credentials`}>
                 <h3 id={`${m.slug}-credentials`} class="label !text-[0.72rem]">
                   {t.master.credentialsTitle}
                 </h3>
@@ -125,7 +126,7 @@ const zh = lang === 'zh';
                     <h3 id={`${m.slug}-${section.key}`} class="text-[1.7rem] sm:text-3xl">
                       {t.master.sections[section.key]}
                     </h3>
-                    <div class="mt-5 space-y-5 text-[1.05rem] text-paper/90">
+                    <div class="mt-5 space-y-5 text-[1.05rem] text-ink">
                       {section.blocks.map((block) =>
                         block.type === 'p' ? (
                           <p>
@@ -133,7 +134,7 @@ const zh = lang === 'zh';
                           </p>
                         ) : block.type === 'term' ? (
                           <p>
-                            <span class="font-medium text-paper">{block.term}</span>
+                            <span class="font-medium text-ink">{block.term}</span>
                             {zh ? '' : ' '}
                             <RichText text={block.text} lang={lang} scope={m.slug} noteLabel={t.master.notes} />
                           </p>
@@ -152,7 +153,7 @@ const zh = lang === 'zh';
                 ))}
 
                 {Object.keys(notes).length > 0 && (
-                  <aside class="mt-14 border-t border-paper/12 pt-6 text-sm text-stone" aria-label={t.master.notes}>
+                  <aside class="mt-14 border-t border-ink/12 pt-6 text-sm text-ink-soft" aria-label={t.master.notes}>
                     <ol class="space-y-2">
                       {Object.entries(notes).map(([id, text]) => (
                         <li id={`fn-${m.slug}-${id}`} class="scroll-mt-28">
@@ -174,7 +175,7 @@ const zh = lang === 'zh';
     })
   }
 
-  <section class="border-t border-paper/10 py-20 sm:py-28">
+  <section class="border-t border-ink/10 py-20 sm:py-28">
     <div class="wrap flex flex-wrap items-center gap-x-10 gap-y-6">
       <a href={localePath(lang, 'book')} class="btn">{t.common.bookCta}</a>
       <a href={localePath(lang, 'training')} class="more">{t.master.toTraining} <span aria-hidden="true">→</span></a>

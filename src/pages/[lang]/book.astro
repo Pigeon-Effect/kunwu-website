@@ -28,10 +28,10 @@ const programs = (await getCollection('programs', (e) => splitId(e.id).lang === 
       {
         t.book.steps.map((step, i) => (
           <li class="flex gap-4">
-            <span aria-hidden="true" class="font-hanzi grid h-10 w-10 shrink-0 place-items-center border border-vermilion text-lg text-paper" lang="zh-Hans">
+            <span aria-hidden="true" class="font-hanzi grid h-10 w-10 shrink-0 place-items-center border border-vermilion text-lg text-ink" lang="zh-Hans">
               {['壹', '贰', '叁'][i]}
             </span>
-            <span class="pt-1.5 text-stone">{step}</span>
+            <span class="pt-1.5 text-ink-soft">{step}</span>
           </li>
         ))
       }
@@ -47,7 +47,7 @@ const programs = (await getCollection('programs', (e) => splitId(e.id).lang === 
   <div class="wrap pb-16">
     {
       programs.map((p) => (
-        <section id={p.program} class="scroll-mt-24 border-t border-paper/15 py-12 sm:py-16" aria-labelledby={`${p.program}-book`}>
+        <section id={p.program} class="scroll-mt-24 border-t border-ink/15 py-12 sm:py-16" aria-labelledby={`${p.program}-book`}>
           <div class="grid gap-6 md:grid-cols-[16rem_1fr] md:gap-12">
             <div>
               <Seal text={p.seal} size="sm" class="mb-5" />
@@ -55,7 +55,7 @@ const programs = (await getCollection('programs', (e) => splitId(e.id).lang === 
                 {p.title}
               </h2>
               {lang === 'en' && (
-                <p class="font-hanzi mt-2 tracking-[0.2em] text-stone" lang="zh-Hans">
+                <p class="font-hanzi mt-2 tracking-[0.2em] text-ink-soft" lang="zh-Hans">
                   {p.nameZh}
                 </p>
               )}
@@ -65,13 +65,13 @@ const programs = (await getCollection('programs', (e) => splitId(e.id).lang === 
             </div>
 
             <div>
-              <ul class="divide-y divide-paper/10 border-y border-paper/10">
+              <ul class="divide-y divide-ink/10 border-y border-ink/10">
                 {p.booking.options.map((o) => {
                   const duration = weeksLabel(lang, o.weeks);
                   return (
                     <li id={o.id} class="flex flex-wrap items-center gap-x-6 gap-y-2 py-4">
                       <span class="min-w-[6rem] text-lg">{duration}</span>
-                      <span class="flex-1 tabular-nums text-stone">
+                      <span class="flex-1 tabular-nums text-ink-soft">
                         {o.price !== null ? formatPrice(o.price, intlLocale[lang]) : t.training.pricePh}
                       </span>
                       {isLiveLink(o.paymentLink) ? (
@@ -84,7 +84,7 @@ const programs = (await getCollection('programs', (e) => splitId(e.id).lang === 
                           {t.book.pay} →
                         </a>
                       ) : (
-                        <span class="px-4 py-2.5 text-sm text-stone ring-1 ring-paper/20 ring-inset">
+                        <span class="px-4 py-2.5 text-sm text-ink-soft ring-1 ring-ink/20 ring-inset">
                           {t.book.notOpen}
                         </span>
                       )}
@@ -100,13 +100,13 @@ const programs = (await getCollection('programs', (e) => splitId(e.id).lang === 
     }
   </div>
 
-  <section class="border-t border-paper/10 bg-ink-raised">
+  <section class="border-t border-ink/10 bg-paper-deep">
     <div class="wrap grid gap-10 py-16 md:grid-cols-2 md:py-20">
       <div>
         <p class="text-lg">{t.book.questionsFirst}</p>
         <a href={localePath(lang, 'contact')} class="btn btn-ghost mt-5">{t.book.contactLink}</a>
       </div>
-      <ul class="space-y-2 text-sm text-stone">
+      <ul class="space-y-2 text-sm text-ink-soft">
         <li>{t.book.secureNote}</li>
         {!CURRENCY_CONFIRMED && <li>{t.book.currencyNote}</li>}
         <li>{t.book.policyNote}</li>

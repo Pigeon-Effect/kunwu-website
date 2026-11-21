@@ -30,15 +30,15 @@ const t = useT(lang);
       </section>
 
       <!-- The Chinese address, large: show it to a taxi driver -->
-      <section class="relative overflow-hidden border-l-2 border-vermilion bg-ink-raised p-7 sm:p-10" aria-labelledby="driver-title">
+      <section class="relative overflow-hidden border-l-2 border-vermilion bg-paper-deep p-7 sm:p-10" aria-labelledby="driver-title">
         <h2 id="driver-title" class="text-2xl">{t.contact.driverTitle}</h2>
-        <p class="mt-2 text-stone">{t.contact.driverText}</p>
-        <p class="mt-6 text-2xl leading-relaxed font-semibold tracking-[0.06em] text-paper sm:text-[2rem]" lang="zh-Hans">
+        <p class="mt-2 text-ink-soft">{t.contact.driverText}</p>
+        <p class="mt-6 text-2xl leading-relaxed font-semibold tracking-[0.06em] text-ink sm:text-[2rem]" lang="zh-Hans">
           {address.zhLines.slice().reverse().map((l) => <span class="block">{l}</span>)}
         </p>
       </section>
 
-      <p class="text-stone">
+      <p class="text-ink-soft">
         {t.contact.timeNote}
       </p>
     </div>
@@ -60,14 +60,14 @@ const t = useT(lang);
         </p>
       </section>
 
-      <section aria-labelledby="email-title" class="border-t border-paper/10 pt-8">
+      <section aria-labelledby="email-title" class="border-t border-ink/10 pt-8">
         <h2 id="email-title" class="text-3xl">{t.contact.emailTitle}</h2>
         <p class="mt-3 text-lg">
           {contact.email ? <a href={`mailto:${contact.email}`}>{contact.email}</a> : t.contact.emailPh}
         </p>
       </section>
 
-      <section aria-labelledby="phone-title" class="border-t border-paper/10 pt-8">
+      <section aria-labelledby="phone-title" class="border-t border-ink/10 pt-8">
         <h2 id="phone-title" class="text-3xl">{t.contact.phoneTitle}</h2>
         <p class="mt-3 text-lg">
           {contact.phone ? <a href={`tel:${contact.phone.replace(/\s/g, '')}`}>{contact.phone}</a> : t.contact.phonePh}

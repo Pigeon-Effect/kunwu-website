@@ -2,7 +2,7 @@
 /**
  * Justified photo grid, CSS only: every photo keeps its own aspect ratio and grows in proportion
  * to it, so each row fills the width at roughly the same height. Rows stay low (the photos are
- * soft – see images.todo.md), all photos lazy-load with the film treatment.
+ * soft – see images.todo.md), all photos lazy-load with the aged treatment.
  */
 import Photo from './Photo.astro';
 import { photos, type PhotoId } from '../data/photos';
@@ -26,8 +26,8 @@ const items = ids.map((id) => {
         <Photo
           src={p.src}
           alt={p.alt[lang]}
-          film
-          shade={0.12}
+          aged
+          wash={0.08}
           ratio={`${p.src.width}/${p.src.height}`}
           sizes={`(min-width: 64rem) calc(15rem * ${ar.toFixed(3)}), calc(10rem * ${ar.toFixed(3)})`}
           widths={[240, 360, 480, 720, 960]}

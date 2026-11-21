@@ -98,8 +98,8 @@ export async function paintMountains({ width: W, height: H, seed = 5, layers, bi
 
   // a few birds: two quick strokes each
   for (let b = 0; b < birds; b++) {
-    const bx = W * (0.55 + r() * 0.3);
-    const by = H * (0.1 + r() * 0.2);
+    const bx = W * (0.36 + r() * 0.14);
+    const by = H * (0.03 + r() * 0.1);
     const s = 5 + r() * 4;
     for (let k = -1; k <= 1; k += 2)
       for (let q = 0; q <= 1; q += 0.02) {
