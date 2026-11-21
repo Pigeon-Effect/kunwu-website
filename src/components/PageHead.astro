@@ -8,17 +8,14 @@ import { sections, type SectionKey } from '../config/sections';
 import type { Lang } from '../i18n/utils';
 
 interface Props {
-  lang?: Lang;
-  section?: SectionKey;
+  lang: Lang;
+  section: SectionKey;
   title: string;
   lede?: string;
   ghost?: string;
-  /** @deprecated legacy props, ignored – removed once all pages are restyled */
-  inscription?: string[];
-  seal?: string;
 }
-const { lang = 'en', section, title, lede, ghost } = Astro.props;
-const s = section ? sections[section] : null;
+const { lang, section, title, lede, ghost } = Astro.props;
+const s = sections[section];
 ---
 
 <header class="relative overflow-hidden">
@@ -30,7 +27,7 @@ const s = section ? sections[section] : null;
     )
   }
   <div class="wrap relative pt-16 pb-14 sm:pt-24 sm:pb-20">
-    {s && <SectionLabel as="p" decorative lang={lang} pinyin={s.pinyin} hanzi={s.hanzi} label={title} />}
+    <SectionLabel as="p" decorative lang={lang} pinyin={s.pinyin} hanzi={s.hanzi} label={title} />
     <h1 class="mt-6 max-w-4xl text-[3rem] sm:text-7xl lg:text-[5.5rem]">{title}</h1>
     {lede && <p class="mt-7 max-w-2xl text-lg text-stone sm:text-xl">{lede}</p>}
     <slot />

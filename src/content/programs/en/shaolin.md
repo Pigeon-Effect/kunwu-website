@@ -14,6 +14,6 @@ focus:
 
 Shaolin kung fu is where everything at Kunwu starts. Training follows the traditional order: first the body is built through basic skills, then forms are learned and refined, and only then does the practice widen.
 
-Master Shi Yanpeng is a 34th-generation lay disciple of the Shaolin Temple, and his classes put equal weight on precise technique and on martial virtue (武德).
+Classes put equal weight on precise technique and on martial virtue (武德).
 
 [PLACEHOLDER: curriculum outline – what a beginner learns in the first week, the first month and the first three months; whether students are grouped by level.]

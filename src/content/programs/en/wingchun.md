@@ -12,6 +12,6 @@ focus:
   - "[PLACEHOLDER: wooden dummy (木人桩) – available, from which level?]"
 ---
 
-Wing Chun is direct and efficient: short distances, simultaneous attack and defence, no wasted movement. Master Shi Yanpeng holds a first-class Wing Chun coaching certificate from the Chinese Wushu Association.
+Wing Chun is direct and efficient: short distances, simultaneous attack and defence, no wasted movement.
 
 [PLACEHOLDER: how the Wing Chun program is structured and whether it can be combined with Shaolin kung fu.]

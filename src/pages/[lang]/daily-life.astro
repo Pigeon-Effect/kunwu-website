@@ -6,6 +6,8 @@ import PageHead from '../../components/PageHead.astro';
 import Photo from '../../components/Photo.astro';
 import DayRing from '../../components/DayRing.astro';
 import Seal from '../../components/Seal.astro';
+import SectionLabel from '../../components/SectionLabel.astro';
+import { sections } from '../../config/sections';
 import { galleryCaptions } from '../../data/gallery';
 import { videos, channels } from '../../data/videos';
 import { asset, getLangStaticPaths, useT, type Lang } from '../../i18n/utils';
@@ -43,22 +45,23 @@ const life = [
 ---
 
 <Base lang={lang} title={t.meta.dailyLife.title} description={t.meta.dailyLife.description} route="dailyLife">
-  <PageHead title={t.daily.title} lede={t.daily.lede} inscription={['晨钟暮鼓']} seal="日常" />
+  <PageHead lang={lang} section="dailyLife" title={t.daily.title} lede={t.daily.lede} />
 
-  <section class="bg-rice py-16 sm:py-20" aria-labelledby="schedule-title">
+  <section class="border-t border-paper/10 bg-ink-raised py-20 sm:py-28" aria-labelledby="schedule-title">
     <div class="wrap">
-      <h2 id="schedule-title" class="mb-10 text-4xl sm:text-5xl">{t.daily.scheduleTitle}</h2>
+      <SectionLabel as="p" decorative lang={lang} {...sections.schedule} label={t.daily.scheduleTitle} />
+      <h2 id="schedule-title" class="mt-5 mb-12 text-4xl sm:text-6xl">{t.daily.scheduleTitle}</h2>
       <DayRing lang={lang} id="daily-ring" />
     </div>
   </section>
 
-  <div class="wrap grid gap-12 py-16 sm:py-24 md:grid-cols-3 md:gap-10">
+  <div class="wrap grid gap-14 py-20 sm:py-28 md:grid-cols-3 md:gap-12">
     {
-      life.map((item) => (
-        <section class="border-t border-gold pt-8">
-          <Seal text={item.seal} size="lg" />
-          <h2 class="mt-6 text-3xl">{item.title}</h2>
-          <p class="mt-4 text-lg text-ink-soft">{item.text}</p>
+      life.map((item, i) => (
+        <section class="reveal border-t border-paper/15 pt-8" style={`--reveal-delay:${i * 120}ms`}>
+          <Seal text={item.seal} size="md" />
+          <h2 class="mt-7 text-3xl sm:text-4xl">{item.title}</h2>
+          <p class="mt-4 text-stone">{item.text}</p>
         </section>
       ))
     }
@@ -70,7 +73,7 @@ const life = [
         <h2 id="gallery-title" class="text-4xl sm:text-5xl">
           {t.daily.galleryTitle}
         </h2>
-        <p class="mt-3 text-ink-soft">{t.daily.galleryLede}</p>
+        <p class="mt-3 text-stone">{t.daily.galleryLede}</p>
         <div class="mt-10 columns-2 gap-4 lg:columns-3 [&>*]:mb-4">
           {gallery.map((g) => (
             <Photo src={g.src} alt={g.alt} sizes="(min-width: 64rem) 22rem, 50vw" widths={[360, 540, 720, 1080]} />
@@ -86,14 +89,14 @@ const life = [
         <h2 id="videos-title" class="text-4xl sm:text-5xl">
           {t.daily.videosTitle}
         </h2>
-        <p class="mt-3 text-ink-soft">{t.daily.videosLede}</p>
+        <p class="mt-3 text-stone">{t.daily.videosLede}</p>
         <div class="mt-10 grid gap-4 sm:grid-cols-3">
           {clips.map((c) => (
             <figure>
               <video controls playsinline preload="none" poster={c.posterUrl} width={c.width} height={c.height} class="h-auto w-full bg-ink">
                 <source src={asset(c.file)} type="video/mp4" />
               </video>
-              <figcaption class="mt-2 text-sm text-ink-soft">{c.title[lang]}</figcaption>
+              <figcaption class="mt-2 text-sm text-stone">{c.title[lang]}</figcaption>
             </figure>
           ))}
         </div>
