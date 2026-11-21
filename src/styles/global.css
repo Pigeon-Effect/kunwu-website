@@ -119,6 +119,11 @@
     border-radius: 1px;
   }
 
+  /* <main> receives focus from the skip link; it is a landmark, not a control */
+  main:focus {
+    outline: none;
+  }
+
   ::selection {
     background: var(--color-vermilion);
     color: var(--color-paper);

@@ -13,6 +13,7 @@ Astro 7 · Tailwind CSS 4 · TypeScript (strict). Zero external requests – see
 | `npm run preview` | serve `dist/` |
 | `npm run placeholders` | list all missing content (`[PLACEHOLDER: …]`) |
 | `npm run icons` | regenerate favicons / touch icons / social image from `src/assets/brand/*.svg` |
+| `npm run fonts` | rebuild the Chinese display-font subset from the built pages (run after `npm run build` when Chinese headings, names or labels change, then build again; the build warns when glyphs are missing) |
 
 ### Windows with Smart App Control
 
@@ -32,43 +33,48 @@ npm install --no-save --force @astrojs/compiler-binding-wasm32-wasi@0.5.3
 | Prices, durations, **Stripe Payment Links** | `src/config/booking.ts` (only place) |
 | Address, email, WeChat, phone, map coordinates | `src/config/site.ts` |
 | Daily schedule (drives the day ring) | `src/data/schedule.ts` |
-| Master biography | `src/content/master/{en,zh}.md` |
+| Masters (biographies, credentials, portraits; Shi Yanpeng kept with `visible: false`) | `src/data/masters.ts` |
+| Photos (alt texts, replace flags) / gallery order | `src/data/photos.ts` / `src/data/gallery.ts` – inventory in `images.todo.md` |
+| Section labels "(wǔ dé) 武德" | `src/config/sections.ts` |
 | Programs | `src/content/programs/{en,zh}/*.md` |
 | FAQ | `src/content/faq/{en,zh}/*.md` |
 | UI text | `src/i18n/{en,zh}.json` (zh is type-checked against en) |
-| Gallery photos | drop into `src/assets/photos/gallery/`, alt texts in `src/data/gallery.ts` – the gallery section appears as soon as there is one photo |
 | Video clips | `public/videos/` + `src/data/videos.ts` |
 | Logos | `src/assets/brand/` (see README there) |
 
 Anything written as `[PLACEHOLDER: …]` is highlighted on the page automatically. Gallery and video sections stay hidden until real content exists.
 
-## Design system
+## Design system ("clean but epic")
 
-**Colour code** (tokens in `src/styles/global.css`) – each colour has one job:
+Dark, cinematic, calm: few sections, much space, one idea per screen. Tokens in `src/styles/global.css`:
 
 | | | |
 |---|---|---|
-| 墨 ink | `#171411` | text |
-| 宣 paper | `#FBF8F1` | page background |
-| 朱 vermilion | `#C23B22` | the only action / accent colour: buttons, seals, "now" |
-| 金 gold | `#B08A3E` | lines and ornaments only |
-| 米 rice | `#F3ECD9` | tinted sections |
+| 墨 ink | `#12100E` | background |
+| 宣 paper | `#EFE7D6` | text (15.5:1 on ink) |
+| 石 stone | `#8A857B` | secondary text (5.2:1 on ink) |
+| 朱 vermilion | `#B8321F` | the single accent: seals, hover marks, the primary button. Never small text on ink (3.2:1). |
 
-The plum-blossom red appears only inside the logo.
+No other colours; no gradients except dark overlays on photos.
 
-**Recurring elements**
+**Type** – Latin display: Cormorant Garamond (@fontsource, latin + latin-ext). Chinese display: Noto Serif SC,
+subset to the glyphs in use (`npm run fonts`, ~70 KB). Body: system sans (PingFang / YaHei / Noto Sans CJK).
 
-- 题款 + 印章 – every page head carries a short vertical inscription signed with a seal (`PageHead`, `Inscription`, `Seal`).
-- 回纹 – the Chinese key fret (`.fret`) is the one divider: under the header, above the footer, in page heads.
-- 印 – seals mark programs (少林 · 太极 · 格斗 · 咏春), daily life (住 · 食 · 休); booking steps use 壹 贰 叁.
-- 月洞门 – modern photos sit in a moon-gate arch with a gold contour (`<Photo frame="moon">`); archival photos as paper prints (`frame="print"`).
-- 十二时辰 – the day ring is labelled with the twelve double hours; the current one lights up in vermilion.
+**Elements**
 
-Chinese inscriptions and seals use the system Kai (regular script) fonts with the CJK sans stack as fallback – no web fonts.
+- `SectionLabel` – "(wǔ dé) 武德": pinyin small caps + hanzi, muted. Home: 武德 · 师资 · 课程 · 联系.
+- `Seal` – vermilion chop with one or two hanzi: logo (坤), masters (淞 · 涛), programs, 住 · 食 · 休, 德.
+- Oversized faint hanzi behind two sections only: 武 (home, philosophy) and 承 (/master).
+- `DayRing` – the twelve double hours (十二时辰), /daily-life only.
+- `.film` – overlay, vignette and grain for the soft photos; `Photo` never requests widths above the original.
+- Motion: `.reveal` on a few elements (IntersectionObserver), slow hero zoom; all off with `prefers-reduced-motion`.
 
 ## Deployment
 
 Pushing to `main` deploys to GitHub Pages via `.github/workflows/deploy.yml` (enable Pages → Source: GitHub Actions in the repo settings).
 Without a custom domain the site is served at `https://<owner>.github.io/<repo>/`.
 To redeploy without a new commit: Actions → "Deploy to GitHub Pages" → **Run workflow** (on `main`). Do not re-run old runs – they would put an old build online, so the workflow now refuses to deploy any commit that is not the current `main`.
-When the domain is final: add `public/CNAME`, and set the repository variables `SITE_URL=https://<domain>` and `BASE_PATH=/`.
+The base path comes from `SITE_BASE` (default `/kunwu-website/`; `BASE_PATH` is still accepted). For a domain root – e.g. a
+China-friendly host later – build with `SITE_BASE=/ SITE_URL=https://<domain> npm run build`; all links go through
+`localePath()` / `asset()`, nothing is hard-coded. On GitHub: add `public/CNAME` and set the repository variables
+`SITE_URL=https://<domain>` and `SITE_BASE=/`.

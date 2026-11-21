@@ -23,6 +23,8 @@ interface Props {
   /** overlay strength 0–1 (film only) */
   shade?: number;
   fill?: boolean;
+  /** encoder quality 1–100 (Astro default otherwise) */
+  quality?: number | undefined;
   caption?: string | undefined;
   class?: string;
   imgClass?: string;
@@ -39,6 +41,7 @@ const {
   film = false,
   shade,
   fill = false,
+  quality,
   caption,
   class: className = '',
   imgClass = '',
@@ -76,6 +79,7 @@ const frameStyle = [fill ? '' : `aspect-ratio:${ratio}`, shade !== undefined ? `
           alt={alt}
           formats={['avif', 'webp']}
           widths={usableWidths}
+          {...(quality ? { quality } : {})}
           sizes={effectiveSizes}
           loading={eager ? 'eager' : 'lazy'}
           decoding={eager ? 'sync' : 'async'}
