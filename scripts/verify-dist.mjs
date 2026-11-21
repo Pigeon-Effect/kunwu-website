@@ -4,6 +4,7 @@
 // Run automatically by `npm run build`.
 import { readdir, readFile } from 'node:fs/promises';
 import { join, extname } from 'node:path';
+import { glyphsInDist } from './lib/display-glyphs.mjs';
 
 const DIST = new URL('../dist/', import.meta.url);
 const FORBIDDEN = /google|gstatic|googleapis|doubleclick|youtube\.com\/embed|ytimg|jsdelivr|unpkg|cdnjs|cloudflare|fontawesome|typekit/i;
@@ -52,3 +53,9 @@ if (problems.length) {
   process.exit(1);
 }
 console.log(`✓ verify-dist: ${files} files checked – no external resources, no Google, no CDNs.`);
+
+// Display-font coverage (warning only): Chinese display text whose glyphs are not in the subset
+// falls back to the system serif. Fix with `npm run fonts` and build again.
+const subset = new Set(await readFile(new URL('../src/assets/fonts/kunwu-serif-sc.txt', import.meta.url), 'utf8').catch(() => ''));
+const missing = [...(await glyphsInDist(DIST.pathname.replace(/^\/([A-Za-z]:)/, '$1')))].filter((c) => !subset.has(c));
+if (missing.length) console.warn(`! verify-dist: ${missing.length} display glyph(s) not in the font subset: ${missing.join('')} – run \`npm run fonts\`, then build again.`);
