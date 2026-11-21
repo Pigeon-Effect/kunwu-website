@@ -2,7 +2,7 @@
  * Every photo the site uses, with alt texts in both languages.
  *
  * `todoReplace: true` = low-resolution copy (WeChat re-compression, ~1000 px on the long side for
- * most). Used anyway with the `.film` treatment and never shown larger than needed – replace with
+ * most). Used anyway, toned like old prints (`.aged`), never shown larger than needed – replace with
  * originals when available. The full list with dimensions and places of use is in images.todo.md.
  *
  * Alt texts describe what is visible; they make no claims about places or events.

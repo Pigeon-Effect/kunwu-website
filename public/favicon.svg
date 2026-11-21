@@ -1,8 +1,16 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
-  <!-- gold ring + taiji: the simplified favicon / small-size mark -->
-  <circle cx="32" cy="32" r="29.5" fill="#FFFFFF" stroke="#B08A3E" stroke-width="4"/>
-  <path d="M32 9A23 23 0 0 0 32 55A11.5 11.5 0 0 0 32 32A11.5 11.5 0 0 1 32 9Z" fill="#000"/>
-  <circle cx="32" cy="20.5" r="3.6" fill="#000"/>
-  <circle cx="32" cy="43.5" r="3.6" fill="#FFF"/>
-  <circle cx="32" cy="32" r="23" fill="none" stroke="#000" stroke-width="1.5"/>
-</svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-3 -3 106 106" width="106" height="106"><defs><filter id="mark-f" x="-6%" y="-6%" width="112%" height="112%" color-interpolation-filters="sRGB">
+<feTurbulence type="fractalNoise" baseFrequency="0.05" numOctaves="3" seed="981" result="warp"/>
+<feDisplacementMap in="SourceGraphic" in2="warp" scale="3.6" xChannelSelector="R" yChannelSelector="G" result="edge"/>
+<feTurbulence type="fractalNoise" baseFrequency="0.2" numOctaves="2" seed="988" result="speck"/>
+<feColorMatrix in="speck" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 -22 0 0 0 15.2" result="flecks"/>
+<feTurbulence type="fractalNoise" baseFrequency="0.018" numOctaves="2" seed="984" result="tone"/>
+<feColorMatrix in="tone" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.9 0 0 0 0.52" result="ink"/>
+<feComposite in="flecks" in2="ink" operator="arithmetic" k1="1" result="cover"/>
+<feComposite in="edge" in2="cover" operator="in"/>
+</filter></defs><mask id="mark-m" maskUnits="userSpaceOnUse" x="-5" y="-5" width="110" height="110">
+<rect x="-5" y="-5" width="110" height="110" fill="#fff"/>
+<g fill="#000"><path transform="translate(6.86 4.96) scale(0.0876 0.0894)" d="M448 436L448 408L866 408L866 436L448 436M448 649L448 621L866 621L866 649L448 649M575 974L575 34L752 51Q751 61 743.5 69Q736 77 715 80L715 926Q715 933 697.5 944.5Q680 956 654 965Q628 974 602 974L575 974M39 341L31 313L267 313L321 215Q321 215 331 226Q341 237 356 254Q371 271 386.5 290Q402 309 413 325Q412 333 404.5 337Q397 341 387 341L39 341M132 714L132 46L309 61Q308 71 300.5 79Q293 87 272 90L272 670L132 714M90 847L13 688Q46 682 108 668.5Q170 655 248 636.5Q326 618 407 598L409 607Q366 644 295.5 697Q225 750 118 818Q110 841 90 847M368 742L368 203L368 148L509 203L846 203L846 231L502 231L502 697Q502 704 485.5 714.5Q469 725 443 733.5Q417 742 388 742L368 742M794 733L794 203L784 203L847 135L972 232Q968 237 958.5 243Q949 249 934 252L934 691Q934 696 915 706Q896 716 869.5 724.5Q843 733 818 733"/></g>
+<circle cx="100" cy="0" r="6.48" fill="#000"/>
+<circle cx="73.16999999999999" cy="0" r="2.3168" fill="#000"/>
+</mask>
+<g filter="url(#mark-f)"><rect width="100" height="100" rx="2" fill="#b0392a" mask="url(#mark-m)"/></g></svg>

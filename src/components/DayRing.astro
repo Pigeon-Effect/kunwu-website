@@ -2,7 +2,7 @@
 /**
  * The day ring (日晷) – the site's one memorable element.
  * A 24-hour dial: noon at the top, midnight at the bottom, time runs clockwise.
- * Day half lighter (yang), night half darker (yin); training blocks are paper-coloured arcs.
+ * Day half lighter (yang), night half darker (yin); training blocks are ink arcs.
  * Shown on /daily-life only.
  * Around it: the twelve double hours (十二时辰), 子 at midnight, 午 at noon.
  * A small script adds a vermilion marker for the current time in Heze (UTC+8)
@@ -45,9 +45,9 @@ const arc = (startMin: number, endMin: number, r: number, gapDeg = 0.8) => {
 };
 
 const strokeFor: Record<BlockKind, { color: string; width: number; opacity: number } | null> = {
-  training: { color: 'var(--color-paper)', width: BAND - 6, opacity: 0.85 },
-  practice: { color: 'var(--color-paper)', width: BAND - 14, opacity: 0.5 },
-  meal: { color: 'var(--color-stone)', width: 5, opacity: 1 },
+  training: { color: 'var(--color-ink)', width: BAND - 6, opacity: 0.78 },
+  practice: { color: 'var(--color-ink)', width: BAND - 14, opacity: 0.4 },
+  meal: { color: 'var(--color-ink-faint)', width: 5, opacity: 1 },
   rest: null,
 };
 
@@ -88,9 +88,9 @@ const halfAnnulus = `M${-R_OUT} 0A${R_OUT} ${R_OUT} 0 0 0 ${R_OUT} 0L${R_IN} 0A$
     focusable="false"
   >
     <!-- day half lighter, night half darker, hairline edges -->
-    <circle r={R_OUT} fill="rgb(239 231 214 / 0.07)" stroke="rgb(239 231 214 / 0.25)" stroke-width="1"></circle>
-    <circle r={R_IN} fill="var(--color-ink)" stroke="rgb(239 231 214 / 0.25)" stroke-width="1"></circle>
-    <path d={halfAnnulus} fill="rgb(0 0 0 / 0.55)"></path>
+    <circle r={R_OUT} fill="rgb(255 252 244 / 0.55)" stroke="var(--color-ink-faint)" stroke-width="1"></circle>
+    <circle r={R_IN} fill="none" stroke="var(--color-ink-faint)" stroke-width="1"></circle>
+    <path d={halfAnnulus} fill="rgb(31 28 24 / 0.1)"></path>
 
     {arcs.map((a) => <path d={a.d} fill="none" stroke={a.color} stroke-width={a.width} stroke-opacity={a.opacity} />)}
 
@@ -101,37 +101,37 @@ const halfAnnulus = `M${-R_OUT} 0A${R_OUT} ${R_OUT} 0 0 0 ${R_OUT} 0L${R_IN} 0A$
           y1={tk.y1}
           x2={tk.x2}
           y2={tk.y2}
-          stroke={tk.major ? 'var(--color-paper)' : 'var(--color-stone)'}
+          stroke={tk.major ? 'var(--color-ink-soft)' : 'var(--color-ink-faint)'}
           stroke-width={tk.major ? 1.5 : 1}
         />
       ))
     }
     {
       branches.map((b) => (
-        <text x={b.x} y={b.y} text-anchor="middle" font-size="15" fill="var(--color-paper)" class="font-hanzi" data-shichen={b.i}>
+        <text x={b.x} y={b.y} text-anchor="middle" font-size="15" fill="var(--color-ink)" class="font-hanzi" data-shichen={b.i}>
           {b.ch}
         </text>
       ))
     }
     {
       hourLabels.map((l) => (
-        <text x={l.x} y={l.y} text-anchor="middle" font-size="9.5" fill="var(--color-stone)" font-family="var(--font-sans)">
+        <text x={l.x} y={l.y} text-anchor="middle" font-size="9.5" fill="var(--color-ink-soft)" font-family="var(--font-sans)">
           {l.text}
         </text>
       ))
     }
 
-    <text y="-6" text-anchor="middle" font-size={lang === 'zh' ? 19 : 21} fill="var(--color-paper)" class="font-display">
+    <text y="-6" text-anchor="middle" font-size={lang === 'zh' ? 19 : 21} fill="var(--color-ink)" class="font-display">
       {t.ring.title}
     </text>
-    <text y="18" text-anchor="middle" font-size="11.5" fill="var(--color-stone)" font-family="var(--font-sans)" data-ring-clock>
+    <text y="18" text-anchor="middle" font-size="11.5" fill="var(--color-ink-soft)" font-family="var(--font-sans)" data-ring-clock>
       UTC+8
     </text>
 
     <!-- "now" marker, positioned by script -->
     <g data-ring-marker class="hidden">
       <line x1="0" y1={-(R_IN - 10)} x2="0" y2={-(R_OUT + 2)} stroke="var(--color-vermilion)" stroke-width="1.5"></line>
-      <circle cy={-R_MID} r="7" fill="var(--color-vermilion)" stroke="var(--color-ink)" stroke-width="2"></circle>
+      <circle cy={-R_MID} r="7" fill="var(--color-vermilion)" stroke="var(--color-paper)" stroke-width="2"></circle>
     </g>
   </svg>
 
@@ -158,7 +158,7 @@ const halfAnnulus = `M${-R_OUT} 0A${R_OUT} ${R_OUT} 0 0 0 ${R_OUT} 0L${R_IN} 0A$
               {b.label[lang]}
               <span class="sr-only"> ({t.ring.kinds[b.kind]})</span>
             </span>
-            <span class="hidden rounded-sm bg-vermilion px-2 py-0.5 text-xs font-medium text-ink group-data-now:inline">
+            <span class="hidden rounded-sm bg-vermilion px-2 py-0.5 text-xs font-medium text-paper group-data-now:inline">
               {t.ring.now}
             </span>
           </li>
@@ -188,7 +188,7 @@ const halfAnnulus = `M${-R_OUT} 0A${R_OUT} ${R_OUT} 0 0 0 ${R_OUT} 0L${R_IN} 0A$
 
       const branch = Math.floor(((mins + 60) % 1440) / 120);
       root.querySelectorAll('[data-shichen]').forEach((el) => {
-        el.setAttribute('fill', Number(el.getAttribute('data-shichen')) === branch ? 'var(--color-vermilion)' : 'var(--color-paper)');
+        el.setAttribute('fill', Number(el.getAttribute('data-shichen')) === branch ? 'var(--color-vermilion)' : 'var(--color-ink)');
       });
 
       root.querySelectorAll<HTMLElement>('li[data-start]').forEach((li) => {

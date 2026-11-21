@@ -1,5 +1,9 @@
 # Brand assets
 
+**Current logo (Nov 2026): the worn seal 坤武功夫** – `src/lib/seal.ts`, exported by `npm run icons` to
+`public/brand/kunwu-seal.svg` and `kunwu-seal-1024.png` (also favicons and the social image). The files below are
+the earlier emblem and the original logos, kept for reference.
+
 | File | Use |
 |---|---|
 | `kunwu-emblem.svg` | Main emblem, simplified from the round logo: gold double ring, five-petal plum blossom, taiji. Header, footer, social image. Works on light and on ink backgrounds (it carries its own rice-paper disc). |

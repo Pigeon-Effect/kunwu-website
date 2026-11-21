@@ -45,7 +45,7 @@ const programs = await Promise.all(
       <section id={data.program} class:list={['wrap scroll-mt-24 py-20 sm:py-28', i > 0 && 'border-t border-ink/10']} aria-labelledby={`${data.program}-title`}>
         <div class="grid gap-12 lg:grid-cols-[minmax(0,1.2fr)_minmax(0,0.8fr)] lg:gap-16">
           <div>
-            <Seal text={data.seal} size="md" class="mb-7" />
+            <Seal text={data.seal} style="zhu" size="sm" class="mb-7" />
             <h2 id={`${data.program}-title`} class="flex flex-wrap items-baseline gap-x-5 gap-y-1 text-[2.6rem] sm:text-6xl">
               {data.title}
               {lang === 'en' && (

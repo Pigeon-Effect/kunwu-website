@@ -50,7 +50,7 @@ const programs = (await getCollection('programs', (e) => splitId(e.id).lang === 
         <section id={p.program} class="scroll-mt-24 border-t border-ink/15 py-12 sm:py-16" aria-labelledby={`${p.program}-book`}>
           <div class="grid gap-6 md:grid-cols-[16rem_1fr] md:gap-12">
             <div>
-              <Seal text={p.seal} size="sm" class="mb-5" />
+              <Seal text={p.seal} style="zhu" size="xs" class="mb-5" />
               <h2 id={`${p.program}-book`} class="text-4xl">
                 {p.title}
               </h2>

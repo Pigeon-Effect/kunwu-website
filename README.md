@@ -12,7 +12,9 @@ Astro 7 · Tailwind CSS 4 · TypeScript (strict). Zero external requests – see
 | `npm run build` | `astro check` + `astro build` + `verify-dist` (fails on any external script/style/font/image or Google/CDN host) |
 | `npm run preview` | serve `dist/` |
 | `npm run placeholders` | list all missing content (`[PLACEHOLDER: …]`) |
-| `npm run icons` | regenerate favicons / touch icons / social image from `src/assets/brand/*.svg` |
+| `npm run ink` | repaint the ink artwork in `src/assets/ink/` (figure, peaks, brush stroke, plum branch) – `npm run ink -- figure` for one |
+| `npm run seal-glyphs` | extract outlines for new seal characters into `src/data/seal-glyphs.json` |
+| `npm run icons` | regenerate favicons, touch icons, the social image and logo exports from the seal and the ink art |
 | `npm run fonts` | rebuild the Chinese display-font subset from the built pages (run after `npm run build` when Chinese headings, names or labels change, then build again; the build warns when glyphs are missing) |
 
 ### Windows with Smart App Control
@@ -44,30 +46,35 @@ npm install --no-save --force @astrojs/compiler-binding-wasm32-wasi@0.5.3
 
 Anything written as `[PLACEHOLDER: …]` is highlighted on the page automatically. Gallery and video sections stay hidden until real content exists.
 
-## Design system ("clean but epic")
+## Design system (antique ink painting)
 
-Dark, cinematic, calm: few sections, much space, one idea per screen. Tokens in `src/styles/global.css`:
+Bright, antique, calm – like a Chinese ink painting on old rice paper. Tokens in `src/styles/global.css`:
 
 | | | |
 |---|---|---|
-| 墨 ink | `#12100E` | background |
-| 宣 paper | `#EFE7D6` | text (15.5:1 on ink) |
-| 石 stone | `#8A857B` | secondary text (5.2:1 on ink) |
-| 朱 vermilion | `#B8321F` | the single accent: seals, hover marks, the primary button. Never small text on ink (3.2:1). |
+| 宣 paper | `#F3ECDF` | background, with paper fibres and a soft aged vignette |
+| 宣 paper-deep | `#E8DDC8` | mounts, quiet sections |
+| 墨 ink | `#1F1C18` | text |
+| 淡墨 ink-soft | `#5A5348` | secondary text (6.4:1) |
+| 淡墨 ink-faint | `#8C8376` | hairlines and ornaments only |
+| 朱 vermilion | `#B0392A` | cinnabar: seals, the primary button, hover marks |
 
-No other colours; no gradients except dark overlays on photos.
+**Type** – Latin display: Cormorant Garamond (@fontsource). Chinese display: Noto Serif SC, subset to the glyphs in use
+(`npm run fonts`, ~50 KB). Body: system sans.
 
-**Type** – Latin display: Cormorant Garamond (@fontsource, latin + latin-ext). Chinese display: Noto Serif SC,
-subset to the glyphs in use (`npm run fonts`, ~70 KB). Body: system sans (PingFang / YaHei / Noto Sans CJK).
+**Ink art** (`src/assets/ink/`, painted by `scripts/ink/` – a small brush engine on top of sharp):
 
-**Elements**
+- `figure` – an abstract xieyi figure after the side-kick photo (`src/assets/photos/master/originals/shi-yanpeng-side-kick.jpeg`)
+- `mountains`, `mountains-strip` – Zhangjiajie sandstone peaks in mist (hero; footer and mobile menu)
+- `stroke` – a dry brush stroke (`BrushRule`, between sections and under page titles)
+- `plum` – a plum branch (梅, for Meihua Quan) in the philosophy section
 
-- `SectionLabel` – "(wǔ dé) 武德": pinyin small caps + hanzi, muted. Home: 武德 · 师资 · 课程 · 联系.
-- `Seal` – vermilion chop with one or two hanzi: logo (坤), masters (淞 · 涛), programs, 住 · 食 · 休, 德.
-- Oversized faint hanzi behind two sections only: 武 (home, philosophy) and 承 (/master).
-- `DayRing` – the twelve double hours (十二时辰), /daily-life only.
-- `.film` – overlay, vignette and grain for the soft photos; `Photo` never requests widths above the original.
-- Motion: `.reveal` on a few elements (IntersectionObserver), slow hero zoom; all off with `prefers-reduced-motion`.
+**Seals** – `Seal` / `src/lib/seal.ts`: worn hand-stamped seals from glyph outlines (Noto Serif SC Black).
+白文 for names (logo 坤武功夫, masters 淞 · 涛), 朱文 for all other marks (programs, 住 · 食 · 休, 德).
+
+**Elements** – section labels "(wǔ dé) 武德"; the day ring with the twelve double hours (十二时辰, /daily-life only);
+photos toned like old prints (`.aged`), master portraits mounted (`.mount`); subtle reveal on scroll, the hero ink
+settles in once – all off with `prefers-reduced-motion`.
 
 ## Deployment
 
