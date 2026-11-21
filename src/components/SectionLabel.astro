@@ -1,0 +1,29 @@
+---
+/**
+ * Section label "(wǔ dé) 武德": pinyin in small caps, then the hanzi – muted.
+ * Rendered as a heading. On English pages the visible pinyin + hanzi are decorative and the
+ * heading's accessible name is the English `label`; on Chinese pages the hanzi are the name.
+ */
+import type { Lang } from '../i18n/utils';
+
+interface Props {
+  pinyin: string;
+  hanzi: string;
+  /** what the section is called in the page language (accessible name) */
+  label: string;
+  lang: Lang;
+  as?: 'h1' | 'h2' | 'h3' | 'p';
+  id?: string;
+  class?: string;
+}
+
+const { pinyin, hanzi, label, lang, as: Tag = 'h2', id, class: className = '' } = Astro.props;
+const zh = lang === 'zh';
+---
+
+<Tag id={id} class:list={['label', className]}>
+  <span aria-hidden="true">(<span lang="zh-Latn-pinyin">{pinyin}</span>)</span>
+  <span class="label-hanzi" lang="zh-Hans" aria-hidden={zh ? undefined : 'true'}>{hanzi}</span>
+  {!zh && <span class="sr-only">{label}</span>}
+  {zh && label !== hanzi && <span class="sr-only">{label}</span>}
+</Tag>

@@ -17,7 +17,11 @@
     "menu": "Menu",
     "skip": "Skip to content",
     "switchTo": "中文",
-    "switchToLabel": "中文 – 阅读中文版"
+    "switchToLabel": "中文 – 阅读中文版",
+    "philosophy": "Philosophy",
+    "masters": "Masters",
+    "programs": "Programs",
+    "languageLabel": "Language"
   },
   "common": {
     "bookCta": "Book your training",

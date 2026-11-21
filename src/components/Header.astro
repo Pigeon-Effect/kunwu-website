@@ -1,44 +1,58 @@
 ---
-import Emblem from '../assets/brand/kunwu-emblem.svg';
+/**
+ * Fixed header. Four items + language switch + Book.
+ * overlay=true (home): transparent over the hero, solid ink once the page scrolls
+ * (a few lines in Base.astro set data-scrolled). Without JavaScript it is always solid.
+ * Mobile: a full-screen menu from a native <details> – works without JavaScript.
+ */
+import Seal from './Seal.astro';
 import { localePath, switchLangPath, htmlLang, useT, type Lang, type RouteKey } from '../i18n/utils';
 
 interface Props {
   lang: Lang;
   route?: RouteKey | undefined;
+  overlay?: boolean;
 }
 
-const { lang, route } = Astro.props;
+const { lang, route, overlay = false } = Astro.props;
 const t = useT(lang);
+const onHome = route === 'home';
 const other: Lang = lang === 'en' ? 'zh' : 'en';
 const switchHref = switchLangPath(Astro.url.pathname, other);
 
-const items: { key: RouteKey; label: string }[] = [
-  { key: 'home', label: t.nav.home },
-  { key: 'master', label: t.nav.master },
-  { key: 'dailyLife', label: t.nav.dailyLife },
-  { key: 'training', label: t.nav.trainingShort },
-  { key: 'contact', label: t.nav.contact },
+/** Anchors on the home page, real pages everywhere else (philosophy only exists on home). */
+const items: { label: string; href: string; key?: RouteKey }[] = [
+  { label: t.nav.philosophy, href: onHome ? '#philosophy' : localePath(lang, 'home', 'philosophy') },
+  { label: t.nav.masters, href: onHome ? '#masters' : localePath(lang, 'master'), key: 'master' },
+  { label: t.nav.programs, href: onHome ? '#programs' : localePath(lang, 'training'), key: 'training' },
+  { label: t.nav.contact, href: onHome ? '#contact' : localePath(lang, 'contact'), key: 'contact' },
 ];
-const current = (key: RouteKey) => (key === route ? 'page' : undefined);
+const current = (key?: RouteKey) => (key && key === route ? 'page' : undefined);
 const langs: { code: Lang; label: string }[] = [
   { code: 'en', label: 'EN' },
   { code: 'zh', label: '中文' },
 ];
 ---
 
-<header class="relative z-40 bg-paper">
-  <div class="wrap flex h-[4.25rem] items-center gap-4 lg:gap-8">
-    <a href={localePath(lang)} class="mr-auto flex items-center gap-2.5 whitespace-nowrap no-underline">
-      <Emblem width={38} height={38} aria-hidden="true" class="shrink-0" />
-      <span class="font-display text-[1.2rem] text-ink" lang={htmlLang[lang]}>{t.site.name}</span>
+<header class="site-header" data-overlay={overlay ? '' : undefined} data-header>
+  <div class="wrap flex h-[4.5rem] items-center gap-5 lg:gap-10">
+    <a href={localePath(lang)} class="mr-auto flex items-center gap-3 no-underline" aria-current={onHome ? 'page' : undefined}>
+      <Seal text="坤" size="xs" />
+      {
+        lang === 'zh' ? (
+          <span class="font-hanzi text-[1.15rem] tracking-[0.2em]">{t.site.name}</span>
+        ) : (
+          <span class="font-display text-[1.3rem] tracking-[0.02em]">{t.site.name}</span>
+        )
+      }
     </a>
 
     <nav aria-label={t.nav.label} class="hidden lg:block">
-      <ul class="flex items-center gap-7 text-[0.95rem]">
+      <ul class="flex items-center gap-9">
         {
           items.map((item) => (
             <li>
-              <a href={localePath(lang, item.key)} class="nav-link text-ink" aria-current={current(item.key)}>
+              <a href={item.href} class="nav-link" aria-current={current(item.key)}>
                 {item.label}
               </a>
             </li>
@@ -47,14 +61,17 @@ const langs: { code: Lang; label: string }[] = [
       </ul>
     </nav>
 
-    <!-- Language: current one in ink, the other one a link -->
-    <div class="flex items-center text-[0.9rem]">
+    <div class="hidden items-center gap-2 text-[0.8rem] tracking-[0.12em] sm:flex" role="group" aria-label={t.nav.languageLabel}>
       {
         langs.map((l, i) => (
           <>
-            {i > 0 && <span aria-hidden="true" class="mx-2 h-3.5 w-px bg-gold" />}
+            {i > 0 && (
+              <span aria-hidden="true" class="text-stone">
+                /
+              </span>
+            )}
             {l.code === lang ? (
-              <span class="font-semibold text-ink" lang={htmlLang[l.code]}>
+              <span class="text-paper" lang={htmlLang[l.code]}>
                 {l.label}
               </span>
             ) : (
@@ -63,7 +80,7 @@ const langs: { code: Lang; label: string }[] = [
                 hreflang={htmlLang[l.code]}
                 lang={htmlLang[l.code]}
                 aria-label={t.nav.switchToLabel}
-                class="text-ink-soft no-underline hover:text-vermilion"
+                class="text-stone no-underline transition-colors hover:text-paper"
               >
                 {l.label}
               </a>
@@ -73,44 +90,160 @@ const langs: { code: Lang; label: string }[] = [
       }
     </div>
 
-    <a href={localePath(lang, 'book')} class="btn hidden !px-4 !py-2 text-[0.92rem] sm:inline-flex" aria-current={current('book')}>
+    <a href={localePath(lang, 'book')} class="btn btn-ghost hidden !min-h-0 !px-5 !py-2.5 md:inline-flex" aria-current={current('book')}>
       {t.nav.book}
     </a>
 
-    <!-- Mobile menu: native <details>, no JavaScript -->
-    <details class="group lg:hidden">
-      <summary class="flex list-none items-center gap-2 py-2 text-[0.92rem] [&::-webkit-details-marker]:hidden">
-        <span aria-hidden="true" class="relative block h-3 w-5">
-          <span class="absolute top-0 left-0 h-[1.5px] w-5 bg-ink transition group-open:top-1.5 group-open:rotate-45"></span>
-          <span class="absolute top-1.5 left-0 h-[1.5px] w-5 bg-ink transition group-open:opacity-0"></span>
-          <span class="absolute top-3 left-0 h-[1.5px] w-5 bg-ink transition group-open:top-1.5 group-open:-rotate-45"></span>
-        </span>
+    <!-- Mobile: full-screen menu -->
+    <details class="menu lg:hidden" data-menu>
+      <summary class="relative z-[60] -mr-2 flex h-11 w-11 list-none items-center justify-center [&::-webkit-details-marker]:hidden">
+        <span aria-hidden="true" class="burger"><span></span><span></span></span>
         <span class="sr-only">{t.nav.menu}</span>
       </summary>
-      <nav aria-label={t.nav.label} class="absolute inset-x-0 top-full bg-paper shadow-[0_18px_30px_-22px_rgb(0_0_0/0.35)]">
-        <div class="fret" aria-hidden="true"></div>
-        <ul class="wrap flex flex-col py-3">
-          {
-            items.map((item) => (
-              <li>
-                <a
-                  href={localePath(lang, item.key)}
-                  aria-current={current(item.key)}
-                  class="font-display flex items-center gap-3 py-3 text-[1.6rem] no-underline aria-[current=page]:text-vermilion"
-                >
-                  {item.label}
-                </a>
-              </li>
-            ))
-          }
-          <li class="pt-3 pb-4">
-            <a href={localePath(lang, 'book')} class="btn w-full justify-center">
-              {t.common.bookCta}
-            </a>
-          </li>
-        </ul>
-      </nav>
+      <div class="menu-panel">
+        <nav aria-label={t.nav.label} class="wrap flex min-h-full flex-col pt-28 pb-10">
+          <ul class="flex flex-col gap-1">
+            {
+              items.map((item) => (
+                <li>
+                  <a href={item.href} aria-current={current(item.key)} class="menu-link">
+                    {item.label}
+                  </a>
+                </li>
+              ))
+            }
+          </ul>
+          <div class="mt-auto pt-12">
+            <a href={localePath(lang, 'book')} class="btn w-full">{t.common.bookCta}</a>
+            <p class="mt-8 flex items-center gap-3 text-sm tracking-[0.12em]">
+              <span class="text-stone">{t.nav.languageLabel}</span>
+              <a href={switchHref} hreflang={htmlLang[other]} lang={htmlLang[other]} aria-label={t.nav.switchToLabel}>
+                {langs.find((l) => l.code === other)?.label}
+              </a>
+            </p>
+          </div>
+        </nav>
+      </div>
     </details>
   </div>
-  <div class="fret" aria-hidden="true"></div>
 </header>
+
+<style>
+  .site-header {
+    position: fixed;
+    inset: 0 0 auto;
+    z-index: 50;
+    color: var(--color-paper);
+  }
+  /* background on a pseudo-element: a backdrop-filter on the header itself would trap the
+     fixed full-screen menu inside the header box */
+  .site-header::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: rgb(18 16 14 / 0.9);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgb(239 231 214 / 0.08);
+    transition:
+      opacity 400ms ease,
+      border-color 400ms ease;
+  }
+  :global(.js) .site-header[data-overlay]:not([data-scrolled])::before {
+    opacity: 0;
+  }
+
+  .nav-link {
+    position: relative;
+    font-size: 0.78rem;
+    font-weight: 500;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    text-decoration: none;
+    padding-block: 0.5rem;
+  }
+  :global(:lang(zh-Hans)) .nav-link {
+    font-size: 0.95rem;
+    letter-spacing: 0.25em;
+  }
+  .nav-link::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 1px;
+    background: var(--color-vermilion);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 300ms var(--ease-out-soft);
+  }
+  .nav-link:hover::after,
+  .nav-link[aria-current='page']::after {
+    transform: scaleX(1);
+  }
+
+  .burger {
+    position: relative;
+    display: block;
+    width: 1.5rem;
+    height: 0.6rem;
+  }
+  .burger > span {
+    position: absolute;
+    left: 0;
+    width: 100%;
+    height: 1.5px;
+    background: currentColor;
+    transition:
+      transform 300ms var(--ease-out-soft),
+      top 300ms var(--ease-out-soft);
+  }
+  .burger > span:first-child {
+    top: 0;
+  }
+  .burger > span:last-child {
+    top: calc(100% - 1.5px);
+  }
+  .menu[open] .burger > span:first-child {
+    top: calc(50% - 0.75px);
+    transform: rotate(45deg);
+  }
+  .menu[open] .burger > span:last-child {
+    top: calc(50% - 0.75px);
+    transform: rotate(-45deg);
+  }
+
+  .menu-panel {
+    position: fixed;
+    inset: 0;
+    z-index: 55;
+    overflow-y: auto;
+    background: var(--color-ink);
+  }
+  .menu-link {
+    display: block;
+    padding-block: 0.55rem;
+    font-family: var(--font-display);
+    font-size: 2.6rem;
+    line-height: 1.15;
+    text-decoration: none;
+  }
+  .menu-link[aria-current='page'] {
+    color: var(--color-stone);
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .menu[open] .menu-panel {
+      animation: menu-in 400ms var(--ease-out-soft);
+    }
+    @keyframes menu-in {
+      from {
+        opacity: 0;
+      }
+    }
+  }
+  :global(html:has(.menu[open])) {
+    overflow: hidden;
+  }
+</style>

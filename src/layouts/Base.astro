@@ -10,9 +10,11 @@ interface Props {
   description: string;
   /** which nav item is active */
   route?: RouteKey;
+  /** the page starts with a full-bleed hero: header is transparent until the page scrolls */
+  overlayHeader?: boolean;
 }
 
-const { lang, title, description, route } = Astro.props;
+const { lang, title, description, route, overlayHeader = false } = Astro.props;
 const t = useT(lang);
 const pathname = Astro.url.pathname;
 const canonical = new URL(pathname, Astro.site);
@@ -35,7 +37,7 @@ const ogImage = new URL(asset('og-image.png'), Astro.site).href;
     <link rel="icon" href={asset('favicon.svg')} type="image/svg+xml" />
     <link rel="apple-touch-icon" href={asset('apple-touch-icon.png')} />
     <link rel="manifest" href={asset('site.webmanifest')} />
-    <meta name="theme-color" content="#ffffff" />
+    <meta name="theme-color" content="#12100e" />
 
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content={t.site.name} />
@@ -46,17 +48,58 @@ const ogImage = new URL(asset('og-image.png'), Astro.site).href;
     <meta property="og:locale" content={lang === 'zh' ? 'zh_CN' : 'en_US'} />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="generator" content={Astro.generator} />
+    <!-- Marks JS as available before first paint, so .reveal elements never flash. -->
+    <script is:inline>document.documentElement.classList.add('js');</script>
   </head>
   <body class="flex min-h-dvh flex-col">
     <a
       href="#main"
-      class="sr-only z-50 rounded-full bg-ink px-4 py-2 text-paper focus:not-sr-only focus:fixed focus:top-3 focus:left-3"
+      class="sr-only z-[70] bg-paper px-4 py-2 text-ink focus:not-sr-only focus:fixed focus:top-3 focus:left-3"
       >{t.nav.skip}</a
     >
-    <Header lang={lang} route={route} />
-    <main id="main" class="flex-1" tabindex="-1">
+    <Header lang={lang} route={route} overlay={overlayHeader} />
+    <main id="main" class:list={['flex-1', !overlayHeader && 'pt-[4.5rem]']} tabindex="-1">
       <slot />
     </main>
     <Footer lang={lang} />
+
+    <script>
+      // Header: solid once the page has scrolled a little.
+      const header = document.querySelector<HTMLElement>('[data-header]');
+      if (header?.hasAttribute('data-overlay')) {
+        const update = () => header.toggleAttribute('data-scrolled', window.scrollY > 24);
+        update();
+        window.addEventListener('scroll', update, { passive: true });
+      }
+
+      // Mobile menu: close after choosing an item (anchors stay on the page) and on Escape.
+      const menu = document.querySelector<HTMLDetailsElement>('[data-menu]');
+      menu?.querySelectorAll('a').forEach((a) => a.addEventListener('click', () => (menu.open = false)));
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && menu?.open) {
+          menu.open = false;
+          menu.querySelector('summary')?.focus();
+        }
+      });
+
+      // Reveal on scroll: fade/translate in once. Without IntersectionObserver everything shows.
+      const items = document.querySelectorAll<HTMLElement>('.reveal');
+      if ('IntersectionObserver' in window) {
+        const io = new IntersectionObserver(
+          (entries) => {
+            for (const entry of entries) {
+              if (entry.isIntersecting) {
+                entry.target.classList.add('is-in');
+                io.unobserve(entry.target);
+              }
+            }
+          },
+          { rootMargin: '0px 0px -8% 0px', threshold: 0.12 },
+        );
+        items.forEach((el) => io.observe(el));
+      } else {
+        items.forEach((el) => el.classList.add('is-in'));
+      }
+    </script>
   </body>
 </html>

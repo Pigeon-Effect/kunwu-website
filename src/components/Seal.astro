@@ -1,25 +1,28 @@
 ---
 /**
- * 印章 – a vermilion seal with 1–4 characters, read top-to-bottom, right-to-left.
- * Decorative: the same words always appear as real text nearby.
+ * 印章 – a vermilion chop with one (or two) hanzi. Logo mark, and marker for programs and masters.
+ * Two characters stack vertically (read top to bottom). Decorative: the same words always appear
+ * as real text nearby, so the seal is hidden from assistive technology.
  */
 interface Props {
   text: string;
-  size?: 'sm' | 'md' | 'lg';
+  shape?: 'square' | 'round';
+  size?: 'xs' | 'sm' | 'md' | 'lg';
   class?: string;
 }
 
-const { text, size = 'md', class: className = '' } = Astro.props;
-const chars = [...text];
+const { text, shape = 'square', size = 'md', class: className = '' } = Astro.props;
+const chars = [...text].slice(0, 4);
 const perColumn = chars.length <= 2 ? chars.length : 2;
 const columns = Math.ceil(chars.length / perColumn);
-const side = { sm: 2.4, md: 3, lg: 3.9 }[size];
-const glyph = (side * 0.84) / Math.max(perColumn, columns);
+const side = { xs: 1.75, sm: 2.25, md: 2.9, lg: 3.8 }[size];
+const fill = shape === 'round' ? 0.6 : 0.72;
+const glyph = (side * fill) / Math.max(perColumn, columns);
 ---
 
 <span
-  class:list={['seal', className]}
-  style={`--side:${side}rem; --glyph:${glyph}rem; --per-column:${perColumn}`}
+  class:list={['seal', `seal-${shape}`, className]}
+  style={`--side:${side}rem; --glyph:${glyph.toFixed(3)}rem; --per-column:${perColumn}`}
   aria-hidden="true"
   lang="zh-Hans"
 >
@@ -33,14 +36,21 @@ const glyph = (side * 0.84) / Math.max(perColumn, columns);
     flex-shrink: 0;
     width: var(--side);
     height: var(--side);
-    border-radius: 3px;
     background: var(--color-vermilion);
     color: var(--color-paper);
+    /* carved border: a thin paper line set inside the edge */
     box-shadow:
-      inset 0 0 0 calc(var(--side) * 0.055) var(--color-vermilion),
-      inset 0 0 0 calc(var(--side) * 0.055 + 1px) rgb(251 248 241 / 0.85);
-    font-family: var(--font-kai);
+      inset 0 0 0 calc(var(--side) * 0.06) var(--color-vermilion),
+      inset 0 0 0 calc(var(--side) * 0.06 + 1px) rgb(239 231 214 / 0.8);
+    font-family: var(--font-hanzi);
+    font-weight: 600;
     line-height: 1;
+  }
+  .seal-square {
+    border-radius: 2px;
+  }
+  .seal-round {
+    border-radius: 50%;
   }
   .seal-text {
     writing-mode: vertical-rl;
