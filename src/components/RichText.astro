@@ -1,0 +1,38 @@
+---
+/**
+ * Inline text with two small conveniences:
+ *  - `[^id]` becomes a footnote reference to #fn-<scope>-<id>
+ *  - on English pages, runs of Chinese characters get lang="zh-Hans" (correct font and voice)
+ */
+import type { Lang } from '../i18n/utils';
+
+interface Props {
+  text: string;
+  lang: Lang;
+  /** keeps footnote ids unique on a page, e.g. the master's slug */
+  scope?: string;
+  /** label for the footnote link, e.g. "Note" */
+  noteLabel?: string;
+}
+
+const { text, lang, scope = 'note', noteLabel = 'Note' } = Astro.props;
+const HAN = /[\u3400-\u9fff\u3000-\u303f\uff00-\uffef]/u;
+const parts = text.split(/(\[\^[\w-]+\]|[\u3400-\u9fff\u3000-\u303f\uff00-\uffef]+)/u).filter(Boolean);
+---
+
+{
+  parts.map((part) => {
+    const ref = part.match(/^\[\^([\w-]+)\]$/);
+    if (ref) {
+      const id = `${scope}-${ref[1]}`;
+      return (
+        <sup class="ml-0.5">
+          <a href={`#fn-${id}`} id={`fnref-${id}`} class="text-stone no-underline hover:text-paper" aria-label={noteLabel}>
+            *
+          </a>
+        </sup>
+      );
+    }
+    return lang === 'en' && HAN.test(part) ? <span lang="zh-Hans">{part}</span> : part;
+  })
+}

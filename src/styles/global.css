@@ -149,7 +149,8 @@
 
   /* Section label: "(wǔ dé) 武德" – pinyin in small caps, hanzi in the display serif, all muted */
   .label {
-    display: inline-flex;
+    display: flex;
+    flex-wrap: wrap;
     align-items: baseline;
     gap: 0.9em;
     font-family: var(--font-sans);

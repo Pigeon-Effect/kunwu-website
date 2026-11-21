@@ -2,144 +2,273 @@
 import { getCollection } from 'astro:content';
 import Base from '../../layouts/Base.astro';
 import Photo from '../../components/Photo.astro';
-import DayRing from '../../components/DayRing.astro';
 import Seal from '../../components/Seal.astro';
-import Inscription from '../../components/Inscription.astro';
+import SectionLabel from '../../components/SectionLabel.astro';
+import MasterCard from '../../components/MasterCard.astro';
+import { sections } from '../../config/sections';
+import { address, contact, mapLink } from '../../config/site';
 import { fromPrice, formatPrice } from '../../config/booking';
-import { masterEarlyYears, masterSideKickPortrait } from '../../data/photos';
+import { visibleMasters } from '../../data/masters';
+import { photos } from '../../data/photos';
 import { getLangStaticPaths, intlLocale, localePath, splitId, useT, type Lang } from '../../i18n/utils';
 
 export const getStaticPaths = getLangStaticPaths;
 
 const lang = Astro.params.lang as Lang;
 const t = useT(lang);
+const zh = lang === 'zh';
 const programs = (await getCollection('programs', (e) => splitId(e.id).lang === lang)).sort(
   (a, b) => a.data.order - b.data.order,
 );
+const hero = photos.yantaoGuandaoTemple;
+const saying = ['未曾学艺先学礼', '未曾习武先习德'];
+const sayingEn = useT('en').home.sayingText;
 ---
 
-<Base lang={lang} title={t.meta.home.title} description={t.meta.home.description} route="home">
-  <!-- Hero: type, one photo in a moon-gate arch, an inscription beside it -->
-  <section class="wrap grid items-center gap-12 pt-10 pb-16 sm:pt-16 lg:grid-cols-[1.1fr_0.9fr] lg:gap-14 lg:pt-20 lg:pb-24">
-    <div>
-      <h1 class="text-[2.75rem] leading-[1.08] sm:text-7xl lg:text-[4.9rem]">
-        {t.home.heroTitle.map((line) => <span class="block">{line}</span>)}
-      </h1>
-      <p class="mt-7 max-w-xl text-lg text-ink-soft sm:text-xl">{t.home.heroLede}</p>
-      <div class="mt-9 flex flex-wrap items-center gap-x-6 gap-y-4">
-        <a href={localePath(lang, 'book')} class="btn">{t.common.bookCta}</a>
-        <a href="#day" class="py-2">{t.home.heroSecondary}</a>
-      </div>
-    </div>
-    <div class="flex items-start justify-center gap-6 lg:justify-end">
+<Base lang={lang} title={t.meta.home.title} description={t.meta.home.description} route="home" overlayHeader>
+  <!-- 1 · Hero: one photo, the wordmark, one line, one button -->
+  <section class="relative isolate flex h-[100svh] min-h-[38rem] flex-col overflow-hidden" aria-labelledby="hero-title">
+    <div class="slow-zoom absolute inset-0 -z-10">
       <Photo
-        src={masterSideKickPortrait.src}
-        alt={masterSideKickPortrait.alt[lang]}
-        frame="moon"
+        src={hero.src}
+        alt={t.home.heroAlt}
+        fill
+        film
+        shade={0.38}
         eager
-        sizes="(min-width: 64rem) 26rem, 90vw"
-        widths={[480, 720, 960, 1280, 1760]}
-        class="w-full max-w-[26rem] p-2"
+        position="50% 42%"
+        sizes="(max-aspect-ratio: 188/100) 188vh, 100vw"
+        widths={[640, 960, 1280, 1600, 1920]}
       />
-      <div class="hidden pt-10 sm:block">
-        <Inscription lines={['少林功夫', '日日修行']} seal="坤武" />
-      </div>
     </div>
+    <!-- extra darkening under the header and towards the next section -->
+    <div
+      class="absolute inset-0 -z-10 bg-[linear-gradient(to_bottom,rgb(18_16_14/0.7)_0%,rgb(18_16_14/0.1)_38%,rgb(18_16_14/0.15)_70%,rgb(18_16_14/0.95)_100%)]"
+      aria-hidden="true"
+    >
+    </div>
+
+    <div class="wrap flex flex-1 flex-col items-center pt-[max(6.5rem,14svh)] pb-[max(1.75rem,4.5svh)] text-center">
+      <h1 id="hero-title" class="hero-title">
+        <span class="font-hanzi block text-[clamp(4.2rem,15vw,9.5rem)] leading-none tracking-[0.14em] [margin-right:-0.14em]" lang="zh-Hans">
+          坤武功夫
+        </span>
+        <span class="mt-5 block font-display text-[clamp(1.35rem,3.4vw,2.2rem)] leading-none tracking-[0.34em] uppercase [margin-right:-0.34em]" lang="en">
+          Kunwu Kung Fu
+        </span>
+      </h1>
+      <p class="mt-7 text-[1.05rem] text-paper/85 sm:text-lg">{t.home.tagline}</p>
+
+      <!-- the button sits low, below the figure in the photo -->
+      <a href={localePath(lang, 'book')} class="btn mt-auto">{t.common.bookCta}</a>
+    </div>
+    <a href="#philosophy" class="scroll-cue absolute right-5 bottom-6 sm:right-10 sm:bottom-10" aria-label={t.nav.philosophy}>
+      <span aria-hidden="true" class="scroll-word">{t.common.scroll}</span>
+      <span class="scroll-line" aria-hidden="true"></span>
+    </a>
   </section>
 
-  <!-- The day ring with the twelve double hours -->
-  <section id="day" class="bg-rice py-16 sm:py-24" aria-labelledby="day-title">
-    <div class="wrap">
-      <div class="mb-10 max-w-2xl">
-        <h2 id="day-title" class="text-4xl sm:text-5xl">{t.home.dayTitle}</h2>
-        <p class="mt-4 text-lg text-ink-soft">{t.home.dayLede}</p>
-      </div>
-      <DayRing lang={lang} id="home-ring" />
-      <p class="mt-10">
-        <a href={localePath(lang, 'dailyLife')}>{t.home.dayLink} →</a>
-      </p>
-    </div>
-  </section>
-
-  <!-- The master -->
-  <section class="wrap grid items-center gap-12 py-16 sm:py-24 md:grid-cols-[0.8fr_1.2fr] md:gap-16" aria-labelledby="master-title">
-    <Photo
-      src={masterEarlyYears.src}
-      alt={masterEarlyYears.alt[lang]}
-      frame="print"
-      caption={masterEarlyYears.caption?.[lang]}
-      captionZh={lang === 'en' ? masterEarlyYears.caption?.zh : undefined}
-      sizes="(min-width: 48rem) 22rem, 90vw"
-      class="mx-auto w-full max-w-[22rem] md:mx-0"
-    />
-    <div>
-      <p class="text-gold-deep">{t.home.masterKicker}</p>
-      <h2 id="master-title" class="mt-3">
-        <span class="cjk block text-6xl tracking-[0.12em] text-ink sm:text-7xl" lang="zh-Hans">释延朋</span>
-        {lang === 'en' && <span class="mt-4 block text-3xl">Master Shi Yanpeng</span>}
-      </h2>
-      <p class="mt-6 max-w-xl text-lg text-ink-soft">{t.home.masterLede}</p>
-      <p class="mt-8">
-        <a href={localePath(lang, 'master')}>{t.home.masterLink} →</a>
-      </p>
-    </div>
-  </section>
-
-  <!-- Programs: each marked with its own seal -->
-  <section class="wrap pb-16 sm:pb-24" aria-labelledby="programs-title">
-    <div class="flex flex-wrap items-end justify-between gap-4">
+  <!-- 2 · 武德 Philosophy: the old saying, large; the lineage in one paragraph; a faint 武 behind -->
+  <section id="philosophy" class="relative overflow-hidden py-28 sm:py-44" aria-labelledby="philosophy-label">
+    <span class="ghost-hanzi top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[30rem] sm:text-[44rem]" aria-hidden="true" lang="zh-Hans"
+      >武</span
+    >
+    <div class="wrap relative grid grid-cols-[minmax(0,1fr)] items-center gap-16 md:grid-cols-[minmax(0,1fr)_auto] md:gap-24">
       <div>
-        <h2 id="programs-title" class="text-4xl sm:text-5xl">{t.home.programsTitle}</h2>
-        <p class="mt-3 text-ink-soft">{t.home.programsLede}</p>
+        <SectionLabel id="philosophy-label" lang={lang} {...sections.philosophy} label={t.nav.philosophy} />
+        <figure class="reveal mt-10">
+          <blockquote>
+            {
+              zh ? (
+                <p class="font-display text-[clamp(1.9rem,4.6vw,3.4rem)] leading-[1.35]">{t.home.sayingText}</p>
+              ) : (
+                <p class="font-display text-[clamp(2.1rem,5vw,4rem)] leading-[1.08] italic">“{t.home.sayingText}”</p>
+              )
+            }
+          </blockquote>
+          <figcaption class="mt-6 text-sm tracking-[0.14em] text-stone">— {t.home.sayingSource}</figcaption>
+          {zh && <p class="mt-4 font-display text-xl text-stone italic" lang="en">{sayingEn}</p>}
+        </figure>
+        <p class="reveal mt-14 max-w-xl text-lg text-stone" style="--reveal-delay:120ms">{t.home.lineageText}</p>
       </div>
-      <a href={localePath(lang, 'training')}>{t.home.programsLink} →</a>
-    </div>
-    <ul class="mt-10 border-t border-gold">
-      {
-        programs.map((p) => {
-          const price = fromPrice(p.data.program);
-          return (
-            <li class="border-b border-gold">
-              <a
-                href={localePath(lang, 'training', p.data.program)}
-                class="group grid grid-cols-[auto_1fr] items-center gap-x-5 gap-y-1 py-6 no-underline sm:grid-cols-[auto_14rem_1fr_auto] sm:gap-x-8"
-              >
-                <Seal text={p.data.seal} size="md" class="row-span-2 sm:row-span-1" />
-                <span class="font-display text-2xl group-hover:text-vermilion sm:text-3xl">{p.data.title}</span>
-                <span class="text-ink-soft">{p.data.summary}</span>
-                <span class="col-start-2 text-sm whitespace-nowrap text-ink-soft sm:col-start-auto">
-                  {price !== null ? `${t.common.from} ${formatPrice(price, intlLocale[lang])}` : t.training.pricePh}
-                </span>
-              </a>
-            </li>
-          );
-        })
-      }
-    </ul>
-    <div class="mt-10">
-      <a href={localePath(lang, 'book')} class="btn">{t.common.bookCta}</a>
+
+      <!-- the saying as a vertical inscription, signed with a seal -->
+      <div class="reveal justify-self-center md:justify-self-end" style="--reveal-delay:200ms" lang="zh-Hans" aria-hidden={zh ? 'true' : undefined}>
+        <p class="sr-only">{saying.join('，')}。</p>
+        <div class="flex flex-row-reverse items-start gap-7" aria-hidden="true">
+          <span class="font-hanzi text-[2.3rem] leading-none tracking-[0.3em] whitespace-nowrap [writing-mode:vertical-rl] sm:text-[2.7rem]">{saying[0]}</span>
+          <span class="flex flex-col items-center">
+            <span class="font-hanzi mt-[1.3em] text-[2.3rem] leading-none tracking-[0.3em] whitespace-nowrap [writing-mode:vertical-rl] sm:text-[2.7rem]">{saying[1]}</span>
+            <Seal text="德" size="sm" class="mt-6" />
+          </span>
+        </div>
+      </div>
     </div>
   </section>
 
-  <!-- A saying of the martial arts, in vertical script -->
-  <section class="bg-rice" aria-labelledby="saying-title">
-    <div class="fret" aria-hidden="true"></div>
-    <div class="wrap grid items-center gap-12 py-16 sm:py-24 md:grid-cols-[1fr_auto] md:gap-20">
-      <div class="max-w-xl">
-        <h2 id="saying-title" class="text-gold-deep text-base! font-sans! tracking-normal!">{t.home.sayingKicker}</h2>
-        {lang === 'en' && <p class="font-display mt-5 text-3xl leading-snug sm:text-4xl">{t.home.sayingText}</p>}
-        <p class:list={['text-lg text-ink-soft', lang === 'en' ? 'mt-6' : 'mt-5']}>{t.home.sayingNote}</p>
+  <!-- 3 · 师资 Masters -->
+  <section id="masters" class="border-t border-paper/10 py-28 sm:py-40" aria-labelledby="masters-label">
+    <div class="wrap">
+      <SectionLabel id="masters-label" lang={lang} {...sections.masters} label={t.nav.masters} />
+      <p class="reveal mt-6 font-display text-[clamp(2.4rem,6vw,4.5rem)]">{t.home.mastersIntro}</p>
+      <div class="mt-16 grid gap-20 sm:mt-20 md:grid-cols-2 md:gap-12 lg:gap-24">
+        {visibleMasters.map((m, i) => <MasterCard master={m} lang={lang} delay={i * 140} />)}
       </div>
-      <div class="justify-self-center md:justify-self-end" lang="zh-Hans">
-        <p class="sr-only">未曾学艺先学礼，未曾习武先习德。</p>
-        <div class="saying flex flex-row-reverse items-start gap-6" aria-hidden="true">
-          <span class="kai text-[2.4rem] leading-none tracking-[0.28em] text-ink [writing-mode:vertical-rl] sm:text-[2.9rem]">未曾学艺先学礼</span>
-          <div class="flex flex-col items-center">
-            <span class="kai mt-[1.2em] text-[2.4rem] leading-none tracking-[0.28em] text-ink [writing-mode:vertical-rl] sm:text-[2.9rem]">未曾习武先习德</span>
-            <Seal text="武德" size="md" class="mt-5" />
+    </div>
+  </section>
+
+  <!-- 4 · 课程 Programs: four rows -->
+  <section id="programs" class="border-t border-paper/10 py-28 sm:py-40" aria-labelledby="programs-label">
+    <div class="wrap">
+      <SectionLabel id="programs-label" lang={lang} {...sections.programs} label={t.nav.programs} />
+      <div class="mt-6 flex flex-wrap items-end justify-between gap-x-10 gap-y-4">
+        <p class="reveal font-display text-[clamp(2.4rem,6vw,4.5rem)]">{t.home.programsTitle}</p>
+        <p class="text-stone">{t.home.programsNote}</p>
+      </div>
+
+      <ul class="mt-14 border-t border-paper/15">
+        {
+          programs.map((p) => {
+            const price = fromPrice(p.data.program);
+            return (
+              <li class="border-b border-paper/15">
+                <a
+                  href={localePath(lang, 'training', p.data.program)}
+                  class="program-row group grid grid-cols-[auto_1fr_auto] items-center gap-x-5 gap-y-2 py-7 no-underline sm:gap-x-8 md:grid-cols-[auto_minmax(0,15rem)_minmax(0,1fr)_auto_auto] md:py-9"
+                >
+                  <Seal text={p.data.seal} size="sm" class="row-span-2 md:row-span-1" />
+                  <span class="font-display text-[1.9rem] leading-tight sm:text-4xl">{p.data.title}</span>
+                  <span class="col-start-2 text-[0.97rem] text-stone md:col-start-auto">{p.data.summary}</span>
+                  <span class="col-start-2 text-sm whitespace-nowrap text-stone md:col-start-auto">
+                    {price !== null ? `${t.common.from} ${formatPrice(price, intlLocale[lang])}` : t.training.pricePh}
+                  </span>
+                  <span class="row-span-2 row-start-1 col-start-3 text-xl text-stone transition-transform duration-300 group-hover:translate-x-1 group-hover:text-paper md:col-start-auto md:row-span-1 md:row-start-auto" aria-hidden="true">
+                    →
+                  </span>
+                </a>
+              </li>
+            );
+          })
+        }
+      </ul>
+      <p class="mt-10">
+        <a href={localePath(lang, 'training')} class="more">{t.home.programsLink} <span aria-hidden="true">→</span></a>
+      </p>
+
+      <!-- one line on daily life; the full timetable lives on /daily-life -->
+      <p class="mt-24 max-w-2xl text-lg text-stone">
+        {t.home.dayTeaser}
+        <a href={localePath(lang, 'dailyLife')} class="ml-1 whitespace-nowrap text-paper">{t.home.dayLink} →</a>
+      </p>
+    </div>
+  </section>
+
+  <!-- 5 · 联系 Contact -->
+  <section id="contact" class="border-t border-paper/10 pt-28 pb-24 sm:pt-40 sm:pb-32" aria-labelledby="contact-label">
+    <div class="wrap">
+      <SectionLabel id="contact-label" lang={lang} {...sections.contact} label={t.nav.contact} />
+      <a href={localePath(lang, 'book')} class="cta-big group mt-8 inline-flex flex-wrap items-baseline gap-x-6 no-underline">
+        <span class="font-display">{t.common.bookCta}</span>
+        <span class="cta-arrow text-vermilion" aria-hidden="true">→</span>
+      </a>
+      <p class="mt-6 max-w-xl text-lg text-stone">{t.home.contactLede}</p>
+
+      <div class="mt-20 grid gap-14 border-t border-paper/15 pt-12 sm:grid-cols-2 lg:grid-cols-[auto_1fr_1.2fr] lg:gap-20">
+        <div>
+          <h3 class="label !text-[0.72rem]">{t.contact.wechatTitle}</h3>
+          <div class="mt-5 w-36">
+            <Photo src={contact.wechatQr} alt={contact.wechatQr ? t.contact.wechatQrAlt : t.contact.wechatQrPh} ratio="1/1" sizes="9rem" widths={[288]} />
           </div>
+          <p class="mt-4 text-sm">{t.contact.wechatId}: {contact.wechatId ?? t.contact.wechatIdPh}</p>
+        </div>
+        <div>
+          <h3 class="label !text-[0.72rem]">{t.contact.emailTitle}</h3>
+          <p class="mt-5 text-lg">{contact.email ? <a href={`mailto:${contact.email}`}>{contact.email}</a> : t.contact.emailPh}</p>
+        </div>
+        <div>
+          <h3 class="label !text-[0.72rem]">{t.contact.addressTitle}</h3>
+          <address class="mt-5 not-italic">
+            {(zh ? address.zhLines : address.enLines).map((l) => <span class="block">{l}</span>)}
+          </address>
+          {!address.confirmed && <p class="mt-3 text-sm">{t.contact.toConfirm}</p>}
+          <p class="mt-5">
+            <a href={mapLink()} rel="noopener" class="text-sm">{t.contact.mapLink} ↗</a>
+          </p>
         </div>
       </div>
     </div>
   </section>
 </Base>
+
+<style>
+  .hero-title {
+    text-shadow: 0 2px 30px rgb(18 16 14 / 0.45);
+  }
+
+  .scroll-cue {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.75rem;
+    font-size: 0.68rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    text-decoration: none;
+    color: rgb(239 231 214 / 0.75);
+  }
+  .scroll-word {
+    writing-mode: vertical-rl;
+  }
+  @media (max-width: 39.99rem) {
+    .scroll-word {
+      display: none;
+    }
+  }
+  .scroll-line {
+    position: relative;
+    display: block;
+    width: 1px;
+    height: 3.5rem;
+    overflow: hidden;
+    background: rgb(239 231 214 / 0.25);
+  }
+  .scroll-line::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: var(--color-paper);
+    transform: translateY(-100%);
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .scroll-line::after {
+      animation: scroll-drop 2.6s var(--ease-out-soft) infinite;
+    }
+    @keyframes scroll-drop {
+      0% {
+        transform: translateY(-100%);
+      }
+      60%,
+      100% {
+        transform: translateY(100%);
+      }
+    }
+  }
+
+  .program-row :global(.seal) {
+    transition: transform 400ms var(--ease-out-soft);
+  }
+  .program-row:hover :global(.seal) {
+    transform: rotate(-4deg);
+  }
+
+  .cta-big {
+    font-size: clamp(2.8rem, 8.5vw, 7rem);
+    line-height: 1;
+  }
+  .cta-arrow {
+    transition: transform 400ms var(--ease-out-soft);
+  }
+  .cta-big:hover .cta-arrow {
+    transform: translateX(0.15em);
+  }
+</style>

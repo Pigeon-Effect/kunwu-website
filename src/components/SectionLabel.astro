@@ -13,17 +13,20 @@ interface Props {
   label: string;
   lang: Lang;
   as?: 'h1' | 'h2' | 'h3' | 'p';
+  /** purely visual (e.g. above an h1 that already names the page) */
+  decorative?: boolean;
   id?: string;
   class?: string;
 }
 
-const { pinyin, hanzi, label, lang, as: Tag = 'h2', id, class: className = '' } = Astro.props;
+const { pinyin, hanzi, label, lang, as: Tag = 'h2', decorative = false, id, class: className = '' } = Astro.props;
 const zh = lang === 'zh';
+const named = !decorative;
 ---
 
-<Tag id={id} class:list={['label', className]}>
+<Tag id={id} class:list={['label', className]} aria-hidden={decorative ? 'true' : undefined}>
   <span aria-hidden="true">(<span lang="zh-Latn-pinyin">{pinyin}</span>)</span>
   <span class="label-hanzi" lang="zh-Hans" aria-hidden={zh ? undefined : 'true'}>{hanzi}</span>
-  {!zh && <span class="sr-only">{label}</span>}
-  {zh && label !== hanzi && <span class="sr-only">{label}</span>}
+  {named && !zh && <span class="sr-only">{label}</span>}
+  {named && zh && label !== hanzi && <span class="sr-only">{label}</span>}
 </Tag>

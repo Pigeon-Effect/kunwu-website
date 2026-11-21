@@ -1,10 +1,10 @@
 ---
 /**
- * A photo, or – while no photo exists – a clearly marked placeholder of the same shape.
- * frame: 'moon'  = 月洞门 arch with gold contour (modern photos)
- *        'print' = old paper print with caption (archival photos)
- *        'line'  = rectangle with gold contour
- *        'none'
+ * A photo through Astro's image pipeline (AVIF + WebP, several widths, never wider than the
+ * original), or – without `src` – a clearly marked placeholder of the same shape.
+ *
+ * film  = dark overlay + vignette + fine grain (for the soft, low-resolution photos)
+ * fill  = cover the positioned parent completely (hero)
  */
 import { Picture } from 'astro:assets';
 import type { ImageMetadata } from 'astro';
@@ -12,66 +12,86 @@ import type { ImageMetadata } from 'astro';
 interface Props {
   src?: ImageMetadata | null | undefined;
   alt: string;
-  /** CSS aspect ratio, e.g. "4/5"; defaults to the photo's own ratio (or 4/3 for placeholders) */
-  ratio?: string;
+  /** CSS aspect ratio of the frame, e.g. "4/5"; defaults to the photo's own ratio (4/3 for placeholders) */
+  ratio?: string | undefined;
+  /** CSS object-position for the crop */
+  position?: string | undefined;
   sizes?: string;
   widths?: number[];
   eager?: boolean;
-  frame?: 'moon' | 'print' | 'line' | 'none';
+  film?: boolean;
+  /** overlay strength 0–1 (film only) */
+  shade?: number;
+  fill?: boolean;
   caption?: string | undefined;
-  /** Chinese caption shown next to the English one */
-  captionZh?: string | undefined;
   class?: string;
+  imgClass?: string;
+  /** @deprecated legacy props, ignored – removed once all pages are restyled */
+  frame?: string;
+  captionZh?: string | undefined;
 }
 
 const {
   src,
   alt,
   ratio = src ? `${src.width}/${src.height}` : '4/3',
+  position = '50% 50%',
   sizes = '(min-width: 72rem) 36rem, 100vw',
   widths = [480, 720, 960, 1280],
   eager = false,
-  frame = 'none',
+  film = false,
+  shade,
+  fill = false,
   caption,
-  captionZh,
   class: className = '',
+  imgClass = '',
 } = Astro.props;
 
 const label = alt.replace(/\[PLACEHOLDER:\s*([^\]]*)\]/g, '$1');
-const usableWidths = src ? [...new Set([...widths.filter((w) => w < src.width), src.width])] : [];
-const shape = frame === 'moon' ? 'moon-gate' : frame === 'line' ? 'framed' : '';
+
+// `sizes` describes the frame. When object-fit: cover crops a wider photo into a narrower frame,
+// the image is drawn wider than the frame – scale every size so the browser picks a sharp source.
+const ratioValue = (r: string) => {
+  const [a, b] = r.split('/').map(Number);
+  return a && b ? a / b : a || 1;
+};
+const coverFactor = src && !fill ? Math.max(1, src.width / src.height / ratioValue(ratio)) : 1;
+const effectiveSizes =
+  coverFactor > 1.05
+    ? sizes
+        .split(',')
+        .map((entry) => entry.trim().replace(/(\S+)$/, (len) => `calc(${len} * ${coverFactor.toFixed(2)})`))
+        .join(', ')
+    : sizes;
+// never upscale: only widths below the original, plus the original itself
+const usableWidths = src ? [...new Set([...widths.filter((w) => w < src.width), src.width])].sort((a, b) => a - b) : [];
+const frameStyle = [fill ? '' : `aspect-ratio:${ratio}`, shade !== undefined ? `--film-shade:${shade}` : '']
+  .filter(Boolean)
+  .join(';');
 ---
 
-<figure class:list={['min-w-0', frame === 'print' && 'print', className]}>
-  {
-    src ? (
-      <Picture
-        src={src}
-        alt={alt}
-        formats={['avif', 'webp']}
-        widths={usableWidths}
-        sizes={sizes}
-        loading={eager ? 'eager' : 'lazy'}
-        fetchpriority={eager ? 'high' : 'auto'}
-        class:list={['block h-auto w-full object-cover', shape]}
-        style={`aspect-ratio:${ratio}`}
-      />
-    ) : (
-      <div class:list={['ph-photo w-full', shape]} style={`aspect-ratio:${ratio}`} role="img" aria-label={label}>
-        <span aria-hidden="true">[PLACEHOLDER: photo – {label}]</span>
-      </div>
-    )
-  }
-  {
-    (caption || captionZh) && (
-      <figcaption class="flex items-baseline justify-between gap-4">
-        {caption && <span>{caption}</span>}
-        {captionZh && (
-          <span class="kai tracking-[0.2em] text-ink" lang="zh-Hans">
-            {captionZh}
-          </span>
-        )}
-      </figcaption>
-    )
-  }
+<figure class:list={['min-w-0', fill && 'absolute inset-0', className]}>
+  <div class:list={['relative overflow-hidden', film && 'film', fill ? 'h-full w-full' : 'w-full']} style={frameStyle || undefined}>
+    {
+      src ? (
+        <Picture
+          src={src}
+          alt={alt}
+          formats={['avif', 'webp']}
+          widths={usableWidths}
+          sizes={effectiveSizes}
+          loading={eager ? 'eager' : 'lazy'}
+          decoding={eager ? 'sync' : 'async'}
+          fetchpriority={eager ? 'high' : 'auto'}
+          class:list={['block h-full w-full object-cover', imgClass]}
+          style={`object-position:${position}`}
+        />
+      ) : (
+        <div class="ph-photo h-full w-full" role="img" aria-label={label}>
+          <span aria-hidden="true">[PLACEHOLDER: photo – {label}]</span>
+        </div>
+      )
+    }
+  </div>
+  {caption && <figcaption class="mt-3 text-sm text-stone">{caption}</figcaption>}
 </figure>

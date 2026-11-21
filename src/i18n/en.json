@@ -7,21 +7,17 @@
   "nav": {
     "label": "Main",
     "home": "Home",
-    "master": "Master",
-    "dailyLife": "Daily life",
-    "training": "Training & prices",
-    "trainingShort": "Training",
-    "book": "Book",
-    "faq": "FAQ",
-    "contact": "Contact",
-    "menu": "Menu",
-    "skip": "Skip to content",
-    "switchTo": "中文",
-    "switchToLabel": "中文 – 阅读中文版",
     "philosophy": "Philosophy",
     "masters": "Masters",
     "programs": "Programs",
-    "languageLabel": "Language"
+    "dailyLife": "Daily life",
+    "training": "Training & prices",
+    "book": "Book",
+    "contact": "Contact",
+    "menu": "Menu",
+    "skip": "Skip to content",
+    "languageLabel": "Language",
+    "switchToLabel": "中文 – 阅读中文版"
   },
   "common": {
     "bookCta": "Book your training",
@@ -31,17 +27,17 @@
       "other": "{n} weeks"
     },
     "from": "from",
-    "placeholderBadge": "Draft",
-    "draftNotice": "[PLACEHOLDER: durations and prices are drafts and not yet confirmed by the school]"
+    "draftNotice": "[PLACEHOLDER: durations and prices are drafts and not yet confirmed by the school]",
+    "scroll": "Scroll"
   },
   "meta": {
     "home": {
-      "title": "Kunwu Kung Fu – Shaolin kung fu school in Heze, China",
-      "description": "Train Shaolin kung fu, Tai Chi, Wing Chun and MMA with Master Shi Yanpeng, 34th-generation lay disciple of the Shaolin Temple. Live and train at the school in Heze, Shandong."
+      "title": "Kunwu Kung Fu – kung fu school in Heze, China",
+      "description": "Train Shaolin kung fu, Tai Chi, Wing Chun and MMA in Heze, Shandong, with masters of the Meihua Quan lineage. Live, eat and train at the school."
     },
     "master": {
-      "title": "Master Shi Yanpeng – Kunwu Kung Fu",
-      "description": "Master Shi Yanpeng (释延朋) is a 34th-generation lay disciple of the Shaolin Temple and holds the 6th Duan rank."
+      "title": "The masters – Kunwu Kung Fu",
+      "description": "Shi Yansong and Shi Yantao: successors of Meihua Quan (Plum Blossom Fist) and lay disciples of the Shaolin Temple."
     },
     "dailyLife": {
       "title": "Daily life at the school – Kunwu Kung Fu",
@@ -55,10 +51,6 @@
       "title": "Book your training – Kunwu Kung Fu",
       "description": "Choose a program and duration and pay securely online."
     },
-    "faq": {
-      "title": "Questions & answers – Kunwu Kung Fu",
-      "description": "Visa, arrival, equipment, language, health requirements and life at the school."
-    },
     "contact": {
       "title": "Contact & address – Kunwu Kung Fu",
       "description": "Address of Kunwu Kung Fu in Heze, Shandong, China, plus WeChat and email."
@@ -69,31 +61,34 @@
     }
   },
   "home": {
-    "heroTitle": [
-      "Shaolin kung fu,",
-      "lived every day."
-    ],
-    "heroLede": "Train, eat and live at the school with Master Shi Yanpeng, 34th-generation lay disciple of the Shaolin Temple, in Heze, Shandong.",
-    "heroSecondary": "See a day at the school",
-    "dayTitle": "One day, one rhythm",
-    "dayLede": "Students live at the school. The day follows the same rhythm as the taiji: effort and rest, morning and night.",
-    "dayLink": "Daily life at the school",
-    "masterKicker": "Your teacher",
-    "masterLede": "34th-generation lay disciple of the Shaolin Temple, 6th Duan, first-class coach in Wushu and Wing Chun. In his classes precise technique and martial virtue carry equal weight.",
-    "masterLink": "About Master Shi Yanpeng",
-    "programsTitle": "Four ways to train",
-    "programsLede": "Accommodation and meals are part of every program.",
-    "programsLink": "Programs and prices",
-    "photosTitle": "At the school",
-    "sayingKicker": "A saying of the martial arts",
+    "tagline": "Shaolin kung fu, lived every day.",
+    "heroAlt": "Shi Yantao in a low stance with a guandao raised behind his head, in front of a wide temple hall with red pillars.",
     "sayingText": "Before learning the art, learn courtesy. Before learning to fight, learn virtue.",
-    "sayingNote": "An old saying among martial artists. Martial virtue (武德) is at the heart of how Master Shi Yanpeng teaches."
+    "sayingSource": "An old saying of the martial arts",
+    "lineageText": "Both of our masters belong to the lineage of Meihua Quan (Plum Blossom Fist), a national intangible cultural heritage of China, and both are lay disciples of the Shaolin Temple.",
+    "mastersIntro": "Two masters, one lineage.",
+    "programsTitle": "Four ways to train",
+    "programsNote": "Accommodation and meals are included in every program.",
+    "programsLink": "Programs and prices",
+    "dayTeaser": "Students live at the school. The day follows the rhythm of the taiji: effort and rest, morning and night.",
+    "dayLink": "A day at the school",
+    "contactLede": "Questions first? Write to us about training, travel or your stay."
   },
   "master": {
-    "title": "The master",
-    "lede": "Master Shi Yanpeng teaches at Kunwu in person. Who he is, and what he passes on.",
+    "title": "The masters",
+    "lede": "Two masters teach at Kunwu. Both belong to the Meihua Quan lineage and are lay disciples of the Shaolin Temple.",
     "credentialsTitle": "Lineage and qualifications",
-    "toTraining": "Train with him"
+    "laymanName": "Layman's name",
+    "sections": {
+      "about": "About",
+      "specialties": "Specialties",
+      "teachers": "Teachers",
+      "honours": "Honours 2015–2017",
+      "teaching": "Teaching"
+    },
+    "notes": "Notes",
+    "portraitPending": "Portrait to follow",
+    "toTraining": "Programs and prices"
   },
   "daily": {
     "title": "Daily life",
@@ -107,10 +102,9 @@
     "restTitle": "Rest days",
     "restText": "[PLACEHOLDER: how many rest days per week, and what students usually do with them.]",
     "galleryTitle": "Photos",
-    "galleryLede": "Training, meals and quiet moments at the school.",
+    "galleryLede": "The school grounds, the halls and the masters.",
     "videosTitle": "Short clips",
     "videosLede": "Short clips from training. Longer videos on our channel.",
-    "videoPh": "Video clip",
     "channelPh": "[PLACEHOLDER: link to Bilibili / YouTube channel]"
   },
   "ring": {
@@ -161,18 +155,6 @@
     "currencyNote": "[PLACEHOLDER: currency and accepted payment methods (card? WeChat Pay? Alipay?)]",
     "policyNote": "[PLACEHOLDER: cancellation and refund policy]"
   },
-  "faq": {
-    "title": "Questions & answers",
-    "lede": "What students usually ask before they come.",
-    "topics": {
-      "before": "Before you come",
-      "training": "Training",
-      "life": "Life at the school",
-      "booking": "Booking and payment"
-    },
-    "stillQuestions": "Your question is not here?",
-    "contactLink": "Write to us"
-  },
   "contact": {
     "title": "Contact",
     "lede": "Write to us with any question – about training, travel or your stay.",
@@ -194,7 +176,6 @@
     "timeNote": "Heze is on China Standard Time (UTC+8)."
   },
   "footer": {
-    "contact": "Contact",
     "pages": "Pages",
     "rights": "All rights reserved."
   },

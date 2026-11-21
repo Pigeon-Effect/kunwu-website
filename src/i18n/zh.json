@@ -7,21 +7,17 @@
   "nav": {
     "label": "主导航",
     "home": "首页",
-    "master": "师傅",
-    "dailyLife": "日常生活",
-    "training": "课程与价格",
-    "trainingShort": "课程",
-    "book": "报名",
-    "faq": "常见问题",
-    "contact": "联系我们",
-    "menu": "菜单",
-    "skip": "跳到正文",
-    "switchTo": "EN",
-    "switchToLabel": "EN – Read in English",
     "philosophy": "武德",
     "masters": "师资",
     "programs": "课程",
-    "languageLabel": "语言"
+    "dailyLife": "日常生活",
+    "training": "课程与价格",
+    "book": "报名",
+    "contact": "联系我们",
+    "menu": "菜单",
+    "skip": "跳到正文",
+    "languageLabel": "语言",
+    "switchToLabel": "EN – Read in English"
   },
   "common": {
     "bookCta": "报名训练",
@@ -31,17 +27,17 @@
       "other": "{n} 周"
     },
     "from": "起",
-    "placeholderBadge": "草稿",
-    "draftNotice": "[PLACEHOLDER: 时长与价格为草稿，尚待学校确认]"
+    "draftNotice": "[PLACEHOLDER: 时长与价格为草稿，尚待学校确认]",
+    "scroll": "向下"
   },
   "meta": {
     "home": {
-      "title": "坤武功夫 – 山东菏泽少林功夫学校",
-      "description": "跟随少林寺第三十四代俗家弟子释延朋师傅学习少林功夫、太极拳、咏春拳与综合格斗。在山东菏泽的学校同吃、同住、同练。"
+      "title": "坤武功夫 – 山东菏泽功夫学校",
+      "description": "在山东菏泽，跟随梅花拳一脉的师傅学习少林功夫、太极拳、咏春拳与综合格斗。在学校同吃、同住、同练。"
     },
     "master": {
-      "title": "释延朋师傅 – 坤武功夫",
-      "description": "释延朋师傅是少林寺第三十四代俗家弟子，武术六段。"
+      "title": "师资 – 坤武功夫",
+      "description": "释延淞与释延涛：梅花拳传人，少林寺俗家弟子。"
     },
     "dailyLife": {
       "title": "学校日常生活 – 坤武功夫",
@@ -55,10 +51,6 @@
       "title": "报名训练 – 坤武功夫",
       "description": "选择项目与时长，在线安全付款。"
     },
-    "faq": {
-      "title": "常见问题 – 坤武功夫",
-      "description": "签证、交通、装备、语言、身体要求以及学校生活。"
-    },
     "contact": {
       "title": "联系方式与地址 – 坤武功夫",
       "description": "坤武功夫位于中国山东省菏泽市。地址、微信与邮箱。"
@@ -69,31 +61,34 @@
     }
   },
   "home": {
-    "heroTitle": [
-      "少林功夫，",
-      "日日修行。"
-    ],
-    "heroLede": "跟随少林寺第三十四代俗家弟子释延朋师傅，在山东菏泽同吃、同住、同练。",
-    "heroSecondary": "看看学校的一天",
-    "dayTitle": "一日一节奏",
-    "dayLede": "学员住在学校里。一天的节奏如同太极：动与静，昼与夜。",
-    "dayLink": "学校的日常生活",
-    "masterKicker": "你的师傅",
-    "masterLede": "少林寺第三十四代俗家弟子，武术六段，武术与咏春拳一级教练。他的课堂上，招式的精准与武德的修养同样重要。",
-    "masterLink": "了解释延朋师傅",
-    "programsTitle": "四种修习方式",
-    "programsLede": "所有项目均包含住宿与餐食。",
-    "programsLink": "课程与价格",
-    "photosTitle": "在学校",
-    "sayingKicker": "武林古训",
+    "tagline": "少林功夫，日日修行。",
+    "heroAlt": "释延涛手持大刀，于红柱大殿前沉身下势，刀举过顶。",
     "sayingText": "未曾学艺先学礼，未曾习武先习德。",
-    "sayingNote": "武德，是释延朋师傅教学的核心。"
+    "sayingSource": "武林古训",
+    "lineageText": "两位师傅皆为国家级非物质文化遗产梅花拳的传人，亦同为少林寺俗家弟子。",
+    "mastersIntro": "一脉相承，两位师傅。",
+    "programsTitle": "四种修习方式",
+    "programsNote": "所有项目均包含住宿与餐食。",
+    "programsLink": "课程与价格",
+    "dayTeaser": "学员住在学校里。一天的节奏如同太极：动与静，昼与夜。",
+    "dayLink": "学校的一天",
+    "contactLede": "想先问问？关于训练、行程或住宿，欢迎联系我们。"
   },
   "master": {
-    "title": "师傅",
-    "lede": "释延朋师傅亲自在坤武授课。他是谁，他传承的是什么。",
+    "title": "师资",
+    "lede": "坤武由两位师傅授课。两位皆为梅花拳传人、少林寺俗家弟子。",
     "credentialsTitle": "传承与资历",
-    "toTraining": "跟他学习"
+    "laymanName": "俗名",
+    "sections": {
+      "about": "简介",
+      "specialties": "擅长",
+      "teachers": "师承",
+      "honours": "荣誉 2015—2017",
+      "teaching": "教学"
+    },
+    "notes": "注",
+    "portraitPending": "肖像照待补",
+    "toTraining": "课程与价格"
   },
   "daily": {
     "title": "日常生活",
@@ -107,10 +102,9 @@
     "restTitle": "休息日",
     "restText": "[PLACEHOLDER: 每周休息几天，学员通常如何度过。]",
     "galleryTitle": "照片",
-    "galleryLede": "训练、用餐和学校里安静的时刻。",
+    "galleryLede": "校园、厅堂与师傅。",
     "videosTitle": "短视频",
     "videosLede": "训练片段。更多视频请看我们的频道。",
-    "videoPh": "视频片段",
     "channelPh": "[PLACEHOLDER: 哔哩哔哩 / YouTube 频道链接]"
   },
   "ring": {
@@ -161,18 +155,6 @@
     "currencyNote": "[PLACEHOLDER: 币种与支持的付款方式（银行卡？微信支付？支付宝？）]",
     "policyNote": "[PLACEHOLDER: 取消与退款政策]"
   },
-  "faq": {
-    "title": "常见问题",
-    "lede": "学员来之前常问的问题。",
-    "topics": {
-      "before": "出发之前",
-      "training": "训练",
-      "life": "学校生活",
-      "booking": "报名与付款"
-    },
-    "stillQuestions": "没有找到你的问题？",
-    "contactLink": "联系我们"
-  },
   "contact": {
     "title": "联系我们",
     "lede": "关于训练、行程或住宿，有任何问题都欢迎联系我们。",
@@ -194,7 +176,6 @@
     "timeNote": "菏泽使用北京时间（UTC+8）。"
   },
   "footer": {
-    "contact": "联系",
     "pages": "页面",
     "rights": "保留所有权利。"
   },

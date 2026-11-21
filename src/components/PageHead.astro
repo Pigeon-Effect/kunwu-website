@@ -1,23 +1,38 @@
 ---
-import Inscription from './Inscription.astro';
+/**
+ * Head of an inner page: section label, large title, short lede.
+ * `ghost` = one oversized faint hanzi behind the head (use on one page only).
+ */
+import SectionLabel from './SectionLabel.astro';
+import { sections, type SectionKey } from '../config/sections';
+import type { Lang } from '../i18n/utils';
 
 interface Props {
+  lang?: Lang;
+  section?: SectionKey;
   title: string;
   lede?: string;
-  /** vertical Chinese inscription, one string per column */
-  inscription: string[];
-  seal: string;
+  ghost?: string;
+  /** @deprecated legacy props, ignored – removed once all pages are restyled */
+  inscription?: string[];
+  seal?: string;
 }
-const { title, lede, inscription, seal } = Astro.props;
+const { lang = 'en', section, title, lede, ghost } = Astro.props;
+const s = section ? sections[section] : null;
 ---
 
-<header class="wrap grid grid-cols-[1fr_auto] gap-6 pt-12 pb-10 sm:pt-16 sm:pb-14">
-  <div>
-    <h1 class="text-[2.6rem] sm:text-6xl">{title}</h1>
-    {lede && <p class="mt-5 max-w-2xl text-lg text-ink-soft sm:text-xl">{lede}</p>}
-    <div class="fret fret-short mt-8" aria-hidden="true"></div>
+<header class="relative overflow-hidden">
+  {
+    ghost && (
+      <span class="ghost-hanzi -top-[0.12em] right-[-0.08em] text-[18rem] sm:text-[26rem]" aria-hidden="true" lang="zh-Hans">
+        {ghost}
+      </span>
+    )
+  }
+  <div class="wrap relative pt-16 pb-14 sm:pt-24 sm:pb-20">
+    {s && <SectionLabel as="p" decorative lang={lang} pinyin={s.pinyin} hanzi={s.hanzi} label={title} />}
+    <h1 class="mt-6 max-w-4xl text-[3rem] sm:text-7xl lg:text-[5.5rem]">{title}</h1>
+    {lede && <p class="mt-7 max-w-2xl text-lg text-stone sm:text-xl">{lede}</p>}
     <slot />
   </div>
-  <div class="sm:hidden"><Inscription lines={inscription} seal={seal} size="sm" /></div>
-  <div class="mr-2 hidden sm:block"><Inscription lines={inscription} seal={seal} /></div>
 </header>
