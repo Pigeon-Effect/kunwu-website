@@ -211,6 +211,14 @@
     background: var(--color-vermilion);
   }
 
+  /* quieter list: a short stone dash instead of the vermilion square */
+  .marks-quiet > li::before {
+    top: 0.85em;
+    width: 0.6em;
+    height: 1px;
+    background: var(--color-stone);
+  }
+
   /* Buttons. Vermilion only for the one primary action ("Book your training"). */
   .btn {
     display: inline-flex;

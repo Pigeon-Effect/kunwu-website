@@ -140,7 +140,3 @@ export const photos = {
 } satisfies Record<string, SitePhoto>;
 
 export type PhotoId = keyof typeof photos;
-
-/** @deprecated legacy names for the old master page – removed with it */
-export const masterEarlyYears = { ...photos.yanpengEarlyYears, caption: { en: 'An early photograph', zh: '早年留影' } };
-export const masterSideKick = photos.yanpengSideKick;

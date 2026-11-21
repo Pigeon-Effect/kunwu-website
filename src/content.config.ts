@@ -5,15 +5,7 @@ import { programIds } from './config/booking';
 
 /** Entry ids are `<lang>/<slug>` (or just `<lang>` for single-file collections). */
 
-const master = defineCollection({
-  loader: glob({ pattern: '*.md', base: './src/content/master' }),
-  schema: z.object({
-    name: z.string(),
-    nameZh: z.string(),
-    lineage: z.string(),
-    credentials: z.array(z.string()),
-  }),
-});
+/** Masters are not a collection: see src/data/masters.ts (both languages in one typed file). */
 
 const programs = defineCollection({
   loader: glob({ pattern: '{en,zh}/*.md', base: './src/content/programs' }),
@@ -38,4 +30,4 @@ const faq = defineCollection({
   }),
 });
 
-export const collections = { master, programs, faq };
+export const collections = { programs, faq };
