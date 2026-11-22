@@ -69,6 +69,13 @@ Bright, antique, calm – like a Chinese ink painting on old rice paper. Tokens 
 - `stroke` – a dry brush stroke (`BrushRule`, between sections and under page titles)
 - `plum` – a plum branch (梅, for Meihua Quan) in the philosophy section
 
+**Calligraphy** – `Calligraphy` / `src/lib/calligraphy.ts`: titles in brush calligraphy (楷书), written stroke by stroke
+in the correct stroke order when they scroll into view (CSS only; finished at once without JS or with reduced motion).
+Hero 坤武功夫, the home section titles, inner page heads and the master names; the 未曾学艺先学礼 inscription in the same hand,
+unanimated. Stroke outlines, centre lines and order come from [Make Me a Hanzi](https://github.com/skishore/makemeahanzi)
+via the `hanzi-writer-data` package (dev dependency, read at build time – nothing is loaded at runtime). The outlines are
+derived from Arphic PL KaitiM GB, © Arphic Technology, under the Arphic Public License (copy shipped as `public/licenses/ARPHICPL.TXT`).
+
 **Seals** – `Seal` / `src/lib/seal.ts`: worn hand-stamped seals from glyph outlines (Noto Serif SC Black).
 白文 for names (logo 坤武功夫, masters 淞 · 涛), 朱文 for all other marks (programs, 住 · 食 · 休, 德).
 

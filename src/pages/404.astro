@@ -1,6 +1,7 @@
 ---
 import Base from '../layouts/Base.astro';
 import SectionLabel from '../components/SectionLabel.astro';
+import Calligraphy from '../components/Calligraphy.astro';
 import { sections } from '../config/sections';
 import { localePath, useT } from '../i18n/utils';
 
@@ -16,7 +17,8 @@ const zh = useT('zh');
       <p class="mt-5 text-ink-soft">{en.notFound.text}</p>
       <a href={localePath('en')} class="btn mt-10">{en.notFound.home}</a>
     </div>
-    <div lang="zh-Hans" class="md:pt-[2.6rem]">
+    <div lang="zh-Hans">
+      <Calligraphy text={sections.notFound.hanzi} vertical={false} size="clamp(3.4rem, 8vw, 5rem)" delay={400} class="-ml-2 mb-6" />
       <p class="font-display text-4xl sm:text-5xl">{zh.notFound.title}</p>
       <p class="mt-5 text-ink-soft">{zh.notFound.text}</p>
       <a href={localePath('zh')} class="btn btn-ghost mt-10">{zh.notFound.home}</a>
