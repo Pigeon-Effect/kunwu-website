@@ -300,23 +300,6 @@ export function multiplyInto(dst, src, dx, dy, m = null, opacity = 1) {
   }
 }
 
-/** Lay a density plane in a colour: pixel *= lerp(1, colour, density). */
-export function inkInto(dst, plane, pw, ph, dx, dy, colour, opacity = 1) {
-  const c = colour.map((v) => v / 255);
-  for (let y = 0; y < ph; y++) {
-    const ty = y + dy;
-    if (ty < 0 || ty >= dst.h) continue;
-    for (let x = 0; x < pw; x++) {
-      const tx = x + dx;
-      if (tx < 0 || tx >= dst.w) continue;
-      const a = clamp01(plane[y * pw + x] * opacity);
-      if (a <= 0) continue;
-      const di = (ty * dst.w + tx) * 3;
-      for (let k = 0; k < 3; k++) dst.d[di + k] *= 1 - a * (1 - c[k]);
-    }
-  }
-}
-
 /** Mirror a float image horizontally. */
 export function flipX(im) {
   const out = img(im.w, im.h, im.c);

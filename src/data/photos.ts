@@ -20,10 +20,10 @@ import guestRoom from '../assets/photos/gallery/guest-room.jpg';
 import diningHall from '../assets/photos/gallery/dining-hall.jpg';
 import lounge from '../assets/photos/gallery/lounge.jpg';
 import banquetRoom from '../assets/photos/gallery/banquet-room.jpg';
-// Shi Yanpeng (entry hidden, see src/data/masters.ts). early-years.jpg = scan with the white
-// scanner edge trimmed; side-kick-portrait.jpg = 4:5 crop of side-kick.jpg. Originals in master/originals/.
+// side-kick.jpg = Shi Yantao's portrait (the school's choice, Nov 2026); original in master/originals/.
+import yantaoSideKick from '../assets/photos/master/side-kick.jpg';
+// Shi Yanpeng (entry hidden, see src/data/masters.ts): early-years.jpg = scan with the white scanner edge trimmed.
 import yanpengEarlyYears from '../assets/photos/master/early-years.jpg';
-import yanpengSideKick from '../assets/photos/master/side-kick.jpg';
 
 export interface SitePhoto {
   src: ImageMetadata;
@@ -33,6 +33,14 @@ export interface SitePhoto {
 }
 
 export const photos = {
+  yantaoSideKick: {
+    src: yantaoSideKick,
+    alt: {
+      en: 'Shi Yantao in a dark blue jacket kicking high to the side, fists raised, in front of a red brick wall above a grey base.',
+      zh: '释延涛身着深蓝色练功服，在红砖墙前高位侧踹，双拳护于身前。',
+    },
+    todoReplace: false,
+  },
   yantaoGuandaoTemple: {
     src: yantaoGuandaoTemple,
     alt: {
@@ -126,14 +134,6 @@ export const photos = {
     alt: {
       en: 'An early photograph of Shi Yanpeng in a saffron robe and prayer beads, balancing on one leg on a rock with his arms spread wide, wooded hills behind him.',
       zh: '释延朋早年留影：身着黄色僧袍、佩戴念珠，单腿立于山石之上，双臂展开，身后是青山。',
-    },
-    todoReplace: false,
-  },
-  yanpengSideKick: {
-    src: yanpengSideKick,
-    alt: {
-      en: 'Master Shi Yanpeng kicking high to the side in front of a red brick wall.',
-      zh: '释延朋师傅在红墙前高位侧踹。',
     },
     todoReplace: false,
   },

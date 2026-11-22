@@ -287,8 +287,9 @@ export const masters: Master[] = [
       },
       zh: {},
     },
-    image: 'yantaoGuandaoTemple',
-    imagePosition: '50% 55%',
+    image: 'yantaoSideKick',
+    imagePosition: '62% 50%',
+    photos: ['yantaoGuandaoTemple'],
   },
 
   /**
@@ -382,7 +383,6 @@ export const masters: Master[] = [
       ],
     },
     image: 'yanpengEarlyYears',
-    photos: ['yanpengSideKick'],
   },
 ];
 

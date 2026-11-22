@@ -2,11 +2,9 @@
 /**
  * Head of an inner page: section label, large title, a dry brush stroke, short lede – and the section's
  * name written in calligraphy down the right side, like the inscription on a scroll (题画). The painting is
- * the page's theme (src/data/paintings.ts). An inscription belongs in the empty part of a painting, so:
- *   artMode 'beside'  the painting stands left of the inscription (figures, animals – things to keep clear)
- *   artMode 'behind'  the painting lies under the inscription, bleeding off the page's edge (a pine bough
- *                     with open space between its needles); placed with --art-w, --art-top, --art-right
- * Phones: the painting follows the text, right-aligned.
+ * the page's theme (src/data/paintings.ts). It stands left of the inscription, whole and inside the page –
+ * an inscription goes in the empty paper beside a painting, never on its figures – and keeps its distance
+ * from the text. Phones: the painting follows the text, right-aligned.
  */
 import SectionLabel from './SectionLabel.astro';
 import BrushRule from './BrushRule.astro';
@@ -22,28 +20,21 @@ interface Props {
   title: string;
   lede?: string;
   art?: PaintingKey;
-  artMode?: 'beside' | 'behind';
-  /** CSS custom properties: --art-w (desktop width), --art-w-sm (phone width), --art-top, --art-right */
+  /** CSS custom properties: --art-w (desktop width), --art-w-sm (phone width), --art-top */
   artStyle?: string;
 }
-const { lang, section, title, lede, art, artMode = 'beside', artStyle } = Astro.props;
+const { lang, section, title, lede, art, artStyle } = Astro.props;
 const s = sections[section];
 // when the title is the section's own hanzi (师资 on /zh/master/), the title itself is written
 const written = title === s.hanzi;
-const sizes = artMode === 'behind' ? '(min-width: 48rem) 40vw, 46vw' : '(min-width: 64rem) 24rem, (min-width: 48rem) 26vw, 62vw';
+const sizes = '(min-width: 64rem) 24rem, (min-width: 48rem) 26vw, 72vw';
 ---
 
-<header class="page-head relative isolate" data-art={art ? artMode : undefined} style={artStyle}>
-  {
-    art && artMode === 'behind' && (
-      <div class="art-behind" aria-hidden="true">
-        <Painting name={art} sizes={sizes} widths={[360, 540, 720, 960]} load="eager" class="block h-auto w-full" />
-      </div>
-    )
-  }
-  <div class="wrap relative pt-16 pb-14 sm:pt-24 sm:pb-20">
-    <div class="flex items-start justify-between gap-6">
-      <div class="min-w-0 flex-1">
+<header class="page-head" style={artStyle}>
+  <div class="wrap pt-16 pb-14 sm:pt-24 sm:pb-20">
+    <!-- one grid: wide screens  text · painting · inscription;  phones  text · inscription / painting below -->
+    <div class="head-grid">
+      <div class="head-text min-w-0">
         <SectionLabel as="p" decorative lang={lang} pinyin={s.pinyin} hanzi={s.hanzi} label={title} />
         {
           written ? (
@@ -58,54 +49,63 @@ const sizes = artMode === 'behind' ? '(min-width: 48rem) 40vw, 46vw' : '(min-wid
         <BrushRule align="start" class="mt-5 -ml-2" />
         {lede && <p class="mt-6 max-w-2xl text-lg text-ink-soft sm:text-xl">{lede}</p>}
       </div>
-      <div class="flex shrink-0 items-start gap-2 sm:mr-[3%] lg:gap-4">
-        {
-          art && artMode === 'beside' && (
-            <div class="art-beside hidden md:block" aria-hidden="true">
-              <Painting name={art} sizes={sizes} widths={[300, 450, 600, 800]} load="lazy" class="block h-auto w-full" />
-            </div>
-          )
-        }
-        {!written && <Calligraphy text={s.hanzi} size="clamp(3rem, 8vw, 5.6rem)" gap="-0.04em" delay={300} eager class="shrink-0" />}
-      </div>
+      {
+        art && (
+          <div class="head-art" aria-hidden="true">
+            <Painting name={art} sizes={sizes} widths={[300, 450, 600, 800]} load="eager" class="block h-auto w-full" />
+          </div>
+        )
+      }
+      {!written && <Calligraphy text={s.hanzi} size="clamp(3rem, 8vw, 5.6rem)" gap="-0.04em" delay={300} eager class="head-callig" />}
     </div>
-    {
-      art && artMode === 'beside' && (
-        <div class="art-below md:hidden" aria-hidden="true">
-          <Painting name={art} sizes={sizes} widths={[300, 450, 600, 800]} load="lazy" class="block h-auto w-full" />
-        </div>
-      )
-    }
     <slot />
   </div>
 </header>
 
 <style>
-  /* beside the inscription: in the flow, top aligned with the label */
-  .art-beside {
-    width: var(--art-w, clamp(13rem, 26vw, 24rem));
-    margin-top: var(--art-top, 0rem);
+  .head-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-areas:
+      'text callig'
+      'art art';
+    align-items: start;
   }
-  .art-below {
+  .head-text {
+    grid-area: text;
+    padding-right: 1.5rem;
+  }
+  :global(.head-callig) {
+    grid-area: callig;
+  }
+  /* phones: the painting follows the text, right-aligned */
+  .head-art {
+    grid-area: art;
+    justify-self: end;
     width: var(--art-w-sm, 72vw);
-    margin: 2rem -0.5rem 0 auto;
+    margin: 2rem -0.5rem 0 0;
   }
-
-  /* behind the inscription: top right, bleeding off the page's edge */
-  .art-behind {
-    position: absolute;
-    z-index: -1;
-    top: var(--art-top, 0.5rem);
-    right: var(--art-right, -1rem);
-    width: var(--art-w, min(46vw, 36rem));
-    pointer-events: none;
+  /* wider: the painting stands left of the inscription, top aligned with the label, clear of the text */
+  @media (min-width: 48rem) {
+    .head-grid {
+      grid-template-columns: minmax(0, 1fr) auto auto;
+      grid-template-areas: 'text art callig';
+    }
+    .head-text {
+      padding-right: 3rem;
+    }
+    .head-art {
+      justify-self: auto;
+      width: var(--art-w, clamp(13rem, 26vw, 24rem));
+      margin: var(--art-top, 0rem) 1rem 0 0;
+    }
+    :global(.head-callig) {
+      margin-right: 3%;
+    }
   }
-  @media (max-width: 47.99rem) {
-    .art-behind {
-      top: -0.5rem;
-      right: -1.75rem;
-      width: var(--art-w-sm, 52vw);
-      opacity: 0.6;
+  @media (min-width: 64rem) {
+    .head-art {
+      margin-right: 1.5rem;
     }
   }
 </style>

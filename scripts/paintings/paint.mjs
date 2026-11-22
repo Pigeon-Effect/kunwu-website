@@ -2,8 +2,9 @@
 //   npm run paintings                       everything
 //   npm run paintings -- hero pine waves    only these (paper, hero, or excerpt names from excerpts.mjs)
 //   npm run paintings -- --proof out/       also write JPEG proofs, laid on the paper, into out/
-// Sources: src/assets/photos/chinese_traditional_paintings/ and src/assets/photos/background/
-// Output:  src/assets/paper/rice-paper.webp, src/assets/paintings/*.webp (ink on transparent, for
+// Sources: src/assets/photos/chinese_traditional_paintings/, src/assets/photos/background/ (the paper) and
+//          src/assets/photos/header/ (the home landscape)
+// Output:  src/assets/paper/rice-paper(@2x).webp, src/assets/paintings/*.webp (ink on transparent, for
 //          mix-blend-mode: multiply on the page)
 import { mkdir, writeFile } from 'node:fs/promises';
 import sharp from 'sharp';
@@ -56,7 +57,8 @@ for (const name of wanted) {
   }
   if (name === 'hero') {
     for (const format of ['wide', 'tall']) {
-      const rgba = withAlpha(await hero(format));
+      const { image, mask } = await hero(format);
+      const rgba = withAlpha(image, mask);
       const buf = await webp(rgba);
       await writeFile(new URL(`hero-${format}.webp`, outDir), buf);
       await proof(`hero-${format}`, rgba);

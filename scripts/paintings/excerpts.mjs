@@ -43,31 +43,36 @@ export const excerpts = {
     mask: {
       keep: [[0.02, 0], [1, 0], [1, 1], [0.17, 1], [0.17, 0.44], [0.02, 0.44]],
       feather: 60,
-      fade: { bottom: 0.25, right: 0.12, left: 0.06, top: 0.03 },
+      fade: { bottom: 0.25, right: 0.12, left: 0.06, top: 0.13 },
       seed: 43,
     },
   },
-  // Zheng Xie: ink chrysanthemums leaning out from a rock
+  // Zheng Xie: a spray of ink chrysanthemums leaning out from the rock – two blossoms, whole
   chrysanthemum: {
     src: 'Chrysanthemum_Spring_of_Gangu_by_Zheng_Xie.jpg',
-    extract: { left: 640, top: 1500, width: 646, height: 1800 },
-    out: 600,
-    mask: { fade: { top: 0.15, bottom: 0.2, left: 0.38, right: 0.04 }, seed: 45 },
+    extract: { left: 0, top: 1990, width: 640, height: 520 },
+    // (a stray rock stroke above the lower blossom left out)
+    mask: {
+      keep: [[0, 0], [0.09, 0], [0.09, 0.25], [0.31, 0.25], [0.31, 0], [1, 0], [1, 1], [0, 1]],
+      feather: 26,
+      fade: { top: 0.12, bottom: 0.14, left: 0.03, right: 0.26 },
+      seed: 45,
+    },
   },
   // Wang Xuehao: a peony – the flower of Heze
   peony: {
     src: WANG_I,
     extract: { left: 470, top: 380, width: 1640, height: 1440 },
     out: 1000,
-    mask: { fade: { bottom: 0.18, right: 0.1, left: 0.12, top: 0.08 }, seed: 47 },
+    mask: { fade: { bottom: 0.22, right: 0.12, left: 0.12, top: 0.08 }, seed: 47 },
   },
 
   // 翎毛 · training — Bian Shoumin: a wild goose coming down
   goose: {
     src: 'Bian_Shoumin_-_Geese_Descending_on_a_Sandbank_-_Google_Art_Project.jpg',
-    extract: { left: 1660, top: 2880, width: 1120, height: 920 },
+    extract: { left: 1660, top: 2865, width: 1240, height: 1035 },
     out: 1000,
-    mask: { fade: { bottom: 0.15, right: 0.12, left: 0.12, top: 0.08 }, seed: 51 },
+    mask: { fade: { bottom: 0.08, right: 0.1, left: 0.12, top: 0.04 }, seed: 51 },
   },
   // Coimbra album: a praying mantis (螳螂 – Shandong's mantis boxing)
   mantis: {
@@ -87,35 +92,39 @@ export const excerpts = {
   // Coimbra album: a dragonfly (its seal left out)
   dragonfly: {
     src: ALBUM(2),
-    extract: { left: 880, top: 1090, width: 1420, height: 1200 },
-    out: 760,
+    extract: { left: 800, top: 1000, width: 1600, height: 1300 },
+    out: 820,
     flat: { paperScale: 320, inkRadius: 60, white: 0.92 },
-    mask: { keep: [[0.46, 0], [1, 0], [1, 1], [0, 1], [0, 0.22], [0.46, 0.22]], feather: 40, fade: { bottom: 0.15, right: 0.1, left: 0.1, top: 0.08 }, seed: 57 },
+    mask: { keep: [[0.45, 0], [1, 0], [1, 1], [0, 1], [0, 0.27], [0.45, 0.27]], feather: 40, fade: { bottom: 0.1, right: 0.06, left: 0.06, top: 0.03 }, seed: 57 },
   },
   // Coimbra album: two crabs, claws locked
   crabs: {
     src: ALBUM(3),
-    extract: { left: 640, top: 850, width: 1560, height: 940 },
-    out: 820,
+    extract: { left: 600, top: 830, width: 1680, height: 980 },
+    out: 860,
     flat: { paperScale: 320, inkRadius: 60, white: 0.92 },
-    mask: { fade: { bottom: 0.15, right: 0.1, left: 0.1, top: 0.12 }, seed: 59 },
+    mask: { fade: { bottom: 0.12, right: 0.08, left: 0.08, top: 0.1 }, seed: 59 },
   },
 
-  // 海 · contact — Suzhou woodblock print "Happy Fisherfolk": waves and a boat with three fishermen
+  // 海 · contact — Suzhou woodblock print "Happy Fisherfolk": a boat with three fishermen in the waves, whole
   waves: {
     src: '2025.91_print.jpg',
-    extract: { left: 1290, top: 2925, width: 1030, height: 445 },
+    extract: { left: 1240, top: 2850, width: 680, height: 470 },
     flat: { paperScale: 220, inkRadius: 40, white: 0.95 },
     tone: { lift: 0.9, sat: 0.55 },
-    mask: { fade: { top: 0.1, right: 0.16, left: 0.12, bottom: 0.05 }, mist: 0.35, seed: 61 },
+    mask: { fade: { top: 0.13, right: 0.15, left: 0.12, bottom: 0.1 }, mist: 0.35, seed: 61 },
   },
 
   // 人物 · daily life — Shen Qinglan: children kicking a jianzi under a pine (signature left out)
   jianzi: {
     src: 'Children_Playing_Jianzi.jpg',
-    extract: { left: 40, top: 790, width: 740, height: 880 },
-    out: 740,
-    mask: { keep: [[0, 0], [1, 0], [1, 1], [0.12, 1], [0.12, 0.86], [0, 0.86]], feather: 30, fade: { top: 0.12, bottom: 0.08, left: 0.1, right: 0.1 }, seed: 63 },
+    extract: { left: 20, top: 760, width: 770, height: 930 },
+    mask: {
+      keep: [[0, 0], [0.72, 0], [1, 0.38], [1, 1], [0.07, 1], [0.07, 0.77], [0, 0.77]],
+      feather: 70,
+      fade: { top: 0.05, bottom: 0.1, left: 0.08, right: 0.08 },
+      seed: 63,
+    },
   },
 
   // 行旅 · book — Ren Yu: travellers on a snowy mountain path

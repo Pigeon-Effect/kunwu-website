@@ -1,8 +1,10 @@
 ---
 /**
- * 天头 – the header is the top of a hanging scroll's mounting: a wooden rod (天杆), a band of mounting silk
- * with a woven cloud damask and a little sheen, a narrow border strip (隔水) with a key-fret (回纹), and the
- * shadow it casts on the paper below.
+ * 剔红 – the navigation bar is a panel of carved cinnabar lacquer (scripts/lacquer/lacquer.mjs → `npm run
+ * lacquer`): a rounded lip, a field of 天锦 sky brocade (small diamonds, a flower raised in each), a band of
+ * 回纹 key fret, lit from the upper left, casting its shadow on the paper below. The links are gold, like the
+ * gold-filled inscriptions (戗金) on lacquer; Book is a raised plaque of black lacquer edged in gold; the logo
+ * is a paper title slip (题签) pasted on.
  * It slides away while the page scrolls down and comes back at once when it scrolls up (Base.astro);
  * without JavaScript it simply stays.
  * Four pages + language switch + Book. Mobile: a full-screen menu from a native <details>, opening below
@@ -38,7 +40,6 @@ const langs: { code: Lang; label: string }[] = [
 
 <header class="site-header" data-header>
   <div class="band">
-    <span class="rod" aria-hidden="true"></span>
     <div class="wrap flex h-full items-center gap-5 lg:gap-9">
       <!-- 题签: the title slip, a strip of paper glued onto the silk -->
       <a href={localePath(lang)} class="title-slip mr-auto flex items-center gap-3 no-underline" aria-current={onHome ? 'page' : undefined}>
@@ -66,7 +67,7 @@ const langs: { code: Lang; label: string }[] = [
         </ul>
       </nav>
 
-      <div class="hidden items-center gap-2 text-[0.8rem] tracking-[0.12em] sm:flex" role="group" aria-label={t.nav.languageLabel}>
+      <div class="lang hidden items-center gap-2 text-[0.8rem] tracking-[0.12em] sm:flex" role="group" aria-label={t.nav.languageLabel}>
         {
           langs.map((l, i) => (
             <>
@@ -87,7 +88,7 @@ const langs: { code: Lang; label: string }[] = [
         }
       </div>
 
-      <a href={localePath(lang, 'book')} class="btn hidden !min-h-0 !px-5 !py-2.5 md:inline-flex" aria-current={current('book')}>
+      <a href={localePath(lang, 'book')} class="plaque hidden md:inline-flex" aria-current={current('book')}>
         {t.nav.book}
       </a>
 
@@ -134,49 +135,31 @@ const langs: { code: Lang; label: string }[] = [
 
 <style>
   .site-header {
-    --band: 4.5rem; /* rod + silk + border strip */
+    --band: 4.5rem; /* lip + field + key-fret band: the lacquer tile's full height */
     position: fixed;
     inset: 0 0 auto;
     z-index: 50;
     height: var(--band);
-    color: var(--color-rice);
+    color: var(--color-gold);
   }
 
-  /* ------------------------------------------------ the mounting */
+  /* ------------------------------------------------ the lacquer panel */
   .band {
     position: relative;
     height: 100%;
-    padding-top: 6px; /* the rod */
-    padding-bottom: 9px; /* the border strip */
-    background-color: var(--color-silk);
-    background-image: var(--silk);
+    /* the content sits on the brocade field, between the lip (7 px) and the key-fret band (13 px) */
+    padding-top: 7px;
+    padding-bottom: 13px;
+    background: var(--color-lacquer) url('../assets/lacquer/tihong.webp') repeat-x 0 0 / auto 100%;
+    background-image: image-set(url('../assets/lacquer/tihong.avif') type('image/avif'), url('../assets/lacquer/tihong.webp') type('image/webp'));
+    /* a carved panel lies on the paper: a dark contact line, then its soft shadow */
     box-shadow:
-      0 1px 0 rgb(0 0 0 / 0.25),
-      0 12px 18px -12px rgb(30 22 10 / 0.6);
+      0 1px 1px rgb(40 6 2 / 0.55),
+      0 4px 6px -2px rgb(60 12 4 / 0.35),
+      0 14px 22px -12px rgb(60 12 4 / 0.5);
     translate: none;
     /* back at once when scrolling up; away more slowly when scrolling down */
     transition: translate 240ms var(--ease-out-soft);
-  }
-  /* 天杆 – the wooden rod the scroll hangs from: a round section, lit from above */
-  .rod {
-    position: absolute;
-    inset: 0 0 auto;
-    height: 6px;
-    background: linear-gradient(to bottom, #6b4c35 0%, #8a6649 28%, #4d3425 62%, #2a1c13 100%);
-    box-shadow: 0 1px 1.5px rgb(0 0 0 / 0.45);
-  }
-  /* 隔水 – the narrow border strip of a lighter silk with a key-fret (回纹), edged in dark */
-  .band::after {
-    content: '';
-    position: absolute;
-    inset: auto 0 0;
-    height: 9px;
-    border-top: 1px solid rgb(20 14 8 / 0.5);
-    border-bottom: 1px solid rgb(20 14 8 / 0.45);
-    background-color: var(--color-silk-light);
-    background-image: var(--fret);
-    background-size: 12px 7px;
-    pointer-events: none;
   }
 
   /* slides away while scrolling down; JS sets data-hidden */
@@ -185,39 +168,42 @@ const langs: { code: Lang; label: string }[] = [
     transition-duration: 420ms;
   }
 
-  /* 题签 – the title slip: paper glued onto the silk, its edges a little lifted */
+  /* 题签 – the title slip: paper pasted onto the lacquer, its edges a little lifted */
   .title-slip {
-    padding: 0.32rem 0.85rem 0.32rem 0.4rem;
+    padding: 0.2rem 0.85rem 0.2rem 0.3rem;
     color: var(--color-ink);
     background: var(--color-paper) url('../assets/paper/rice-paper.webp') repeat 37% 61%;
     box-shadow:
-      inset 0 0 0 1px rgb(60 45 25 / 0.18),
-      inset 0 0 12px rgb(120 95 60 / 0.16),
-      0 1px 2px rgb(0 0 0 / 0.45);
+      inset 0 0 0 1px rgb(60 45 25 / 0.16),
+      inset 0 0 10px rgb(120 95 60 / 0.14),
+      0 1px 1px rgb(30 4 0 / 0.6),
+      0 2px 5px rgb(30 4 0 / 0.35);
     transition: box-shadow 250ms ease;
   }
   .title-slip:hover {
     box-shadow:
       inset 0 0 0 1px rgb(176 57 42 / 0.5),
-      inset 0 0 12px rgb(120 95 60 / 0.16),
-      0 1px 2px rgb(0 0 0 / 0.45);
-  }
-  .band .title-slip:focus-visible {
-    outline-color: var(--color-rice);
+      inset 0 0 10px rgb(120 95 60 / 0.14),
+      0 1px 1px rgb(30 4 0 / 0.6),
+      0 2px 5px rgb(30 4 0 / 0.35);
   }
 
-  /* ------------------------------------------------ links on the silk */
+  /* ------------------------------------------------ gold on the lacquer */
   .nav-link {
     position: relative;
     font-size: 0.78rem;
-    font-weight: 500;
+    font-weight: 600;
     letter-spacing: 0.2em;
     text-transform: uppercase;
     text-decoration: none;
     padding-block: 0.5rem;
-    color: var(--color-rice);
-    opacity: 0.88;
-    transition: opacity 200ms ease;
+    color: var(--color-gold);
+    /* set into the carving: dark below, a faint glint above, a dark halo against the brocade */
+    text-shadow:
+      0 1px 0 rgb(35 4 1 / 0.85),
+      0 -1px 0 rgb(255 210 160 / 0.12),
+      0 0 6px rgb(45 6 2 / 0.7);
+    transition: color 200ms ease;
   }
   :global(:lang(zh-Hans)) .nav-link {
     font-size: 0.95rem;
@@ -230,29 +216,83 @@ const langs: { code: Lang; label: string }[] = [
     right: 0.2em;
     bottom: 0.05rem;
     height: 1px;
-    background: var(--color-silk-light);
+    background: currentColor;
+    box-shadow: 0 1px 0 rgb(35 4 1 / 0.8);
     transform: scaleX(0);
     transform-origin: left;
     transition: transform 300ms var(--ease-out-soft);
   }
   .nav-link:hover,
   .nav-link[aria-current='page'] {
-    opacity: 1;
+    color: var(--color-gold-bright);
   }
   .nav-link:hover::after,
   .nav-link[aria-current='page']::after {
     transform: scaleX(1);
   }
+  .lang {
+    text-shadow:
+      0 1px 0 rgb(35 4 1 / 0.85),
+      0 0 6px rgb(45 6 2 / 0.7);
+  }
   .lang-link {
     text-decoration: none;
-    opacity: 0.72;
+    opacity: 0.8;
     transition: opacity 200ms ease;
   }
   .lang-link:hover {
     opacity: 1;
   }
+
+  /* Book: a raised plaque of black lacquer, a gold fillet round its edge, its letters in gold */
+  .plaque {
+    align-items: center;
+    justify-content: center;
+    padding: 0.6rem 1.25rem;
+    border-radius: 2px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    line-height: 1.2;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    text-decoration: none;
+    color: var(--color-gold-bright);
+    background:
+      radial-gradient(120% 90% at 30% 0%, rgb(255 235 210 / 0.1), transparent 60%),
+      linear-gradient(to bottom, #2e1a15, #150a08);
+    box-shadow:
+      inset 0 0 0 1px rgb(214 176 104 / 0.75),
+      inset 0 0 0 2.5px rgb(20 8 6 / 0.9),
+      inset 0 1px 0 3px rgb(255 225 190 / 0.08),
+      0 1px 0 rgb(255 170 130 / 0.18),
+      0 2px 3px rgb(25 3 0 / 0.6),
+      0 5px 10px -4px rgb(25 3 0 / 0.55);
+    text-shadow: 0 1px 0 rgb(0 0 0 / 0.7);
+    transition:
+      color 200ms ease,
+      box-shadow 200ms ease,
+      translate 150ms ease;
+  }
+  .plaque:hover {
+    color: #fff4da;
+    box-shadow:
+      inset 0 0 0 1px rgb(236 205 140 / 0.95),
+      inset 0 0 0 2.5px rgb(20 8 6 / 0.9),
+      inset 0 1px 0 3px rgb(255 225 190 / 0.12),
+      0 1px 0 rgb(255 170 130 / 0.18),
+      0 2px 3px rgb(25 3 0 / 0.6),
+      0 5px 10px -4px rgb(25 3 0 / 0.55);
+  }
+  .plaque:active {
+    translate: 0 1px;
+  }
+  :global(:lang(zh-Hans)) .plaque {
+    font-size: 0.92rem;
+    letter-spacing: 0.28em;
+  }
+
   .band :global(:focus-visible) {
-    outline-color: var(--color-rice);
+    outline-color: var(--color-gold-bright);
   }
   .menu-panel :global(:focus-visible) {
     outline-color: var(--color-vermilion);
@@ -270,6 +310,7 @@ const langs: { code: Lang; label: string }[] = [
     left: 0;
     width: 100%;
     height: 1.5px;
+    box-shadow: 0 1px 0 rgb(35 4 1 / 0.85), 0 0 4px rgb(45 6 2 / 0.6);
     background: currentColor;
     transition:
       transform 300ms var(--ease-out-soft),

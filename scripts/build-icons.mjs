@@ -8,7 +8,7 @@ import { sealSVG } from '../src/lib/seal.ts';
 
 const root = new URL('../', import.meta.url);
 const pub = new URL('public/', root);
-const PAPER = '#ddd8d4';
+const PAPER = '#f2efe8';
 const glyphs = JSON.parse(await readFile(new URL('src/data/seal-glyphs.json', root), 'utf8'));
 const asset = (path) => fileURLToPath(new URL(`src/assets/${path}`, root));
 

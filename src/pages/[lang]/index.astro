@@ -24,78 +24,82 @@ const zh = lang === 'zh';
 const saying = ['未曾学艺先学礼', '未曾习武先习德'] as const;
 const sayingEn = useT('en').home.sayingText;
 
-// the hero painting, art-directed: a tall composition for portrait screens, a wide one otherwise
+// the hero painting, art-directed: its right part for portrait screens, the whole picture otherwise
 const TALL = '(max-aspect-ratio: 4/5)';
 const art = async (image: ImageMetadata, widths: number[]) => {
-  // soft ink painting: a low AVIF quality looks the same on screen at a third of the size
-  const opts = { src: image, widths, quality: 38 };
+  // ink painting: a low AVIF quality looks the same on screen at a third of the size
+  const opts = { src: image, widths, quality: 40 };
   const [avif, webp] = await Promise.all([getImage({ ...opts, format: 'avif' }), getImage({ ...opts, format: 'webp' })]);
   return { avif: avif.srcSet.attribute, webp: webp.srcSet.attribute, fallback: webp.src };
 };
-const tall = await art(paintings.heroTall.image, [480, 640, 800, 1000, 1200]);
-const wide = await art(paintings.heroWide.image, [960, 1280, 1600, 2000, 2400]);
-// The image covers the screen. A soft ink painting needs no more than ~1.5 image px per CSS px, so the
-// sizes ask for a little less than the full device resolution on dense phone screens.
-const tallSizes = '(min-aspect-ratio: 6/11) 76vw, calc((100vh - 4.5rem) * 0.42)';
-const wideSizes = '(max-aspect-ratio: 12/7) calc((100vh - 4.5rem) * 1.72), 100vw';
+const tall = await art(paintings.heroTall.image, [480, 640, 800, 1000, 1200, 1600]);
+const wide = await art(paintings.heroWide.image, [960, 1280, 1600, 2000, 2400, 3168]);
+// The picture is never cropped: it stands at the bottom right, as wide as the screen or as tall as the
+// first screen, whichever is smaller (see .hero-art); on portrait screens it follows the title.
+const tallSizes = 'min(100vw, 40rem)';
+const wideSizes = '(min-aspect-ratio: 21/9) calc((100vh - 4.5rem) * 2.36), 100vw';
 ---
 
 <Base lang={lang} title={t.meta.home.title} description={t.meta.home.description} route="home" paintings={['heroWide', 'cliffTemple']}>
   <!-- 1 · 山水: the landscape – the title written down the left like an inscription, sealed -->
-  <section class="hero relative isolate overflow-hidden" aria-labelledby="hero-title">
-    <picture>
-      <source media={TALL} type="image/avif" srcset={tall.avif} sizes={tallSizes} />
-      <source media={TALL} type="image/webp" srcset={tall.webp} sizes={tallSizes} />
-      <source type="image/avif" srcset={wide.avif} sizes={wideSizes} />
-      <img
-        src={wide.fallback}
-        srcset={wide.webp}
-        sizes={wideSizes}
-        width={paintings.heroWide.image.width}
-        height={paintings.heroWide.image.height}
-        alt={t.home.heroAlt}
-        loading="eager"
-        fetchpriority="high"
-        decoding="async"
-        class="ink ink-in hero-art absolute inset-0 -z-10 h-full w-full object-cover"
-      />
-    </picture>
+  <section class="hero relative isolate" aria-labelledby="hero-title">
+    <!-- the name, written down the mist on the left like an inscription, sealed; beside it the way in -->
+    <div class="hero-inner wrap">
+      <div class="flex items-start gap-5 sm:gap-8">
+        <Calligraphy text="坤武功夫" size="clamp(3rem, 9vw, 6.8rem)" gap="-0.02em" delay={700} speed={1.7} eager class="hero-write shrink-0" />
+        <div class="min-w-0 pt-2">
+          <h1 id="hero-title" class="font-display text-[clamp(1.5rem,3vw,2.1rem)] leading-[1.1] tracking-[0.06em]">
+            <span class="sr-only" lang="zh-Hans">坤武功夫</span>
+            <span class="block" lang="en">Kunwu<br />Kung Fu</span>
+          </h1>
+          <Seal text="坤武功夫" size="lg" class="mt-6 ml-0.5" />
+          <div class="hero-call">
+            <p class="text-lg text-ink-soft">{t.home.tagline}</p>
+            <a href={localePath(lang, 'book')} class="btn mt-5">{t.common.bookCta}</a>
+          </div>
+        </div>
+      </div>
+    </div>
 
-    <div class="hero-inner wrap flex flex-col">
-      <h1 id="hero-title" class="flex items-start gap-5 sm:gap-8">
-        <span class="sr-only" lang="zh-Hans">坤武功夫</span>
-        <Calligraphy text="坤武功夫" size="clamp(3.6rem, 9vw, 6.8rem)" gap="-0.02em" delay={700} speed={1.7} eager class="hero-write" />
-        <span class="mt-2 block font-display text-[clamp(1.4rem,3vw,2.1rem)] leading-[1.1] tracking-[0.06em]" lang="en">
-          Kunwu<br />Kung Fu
-        </span>
-      </h1>
-      <Seal text="坤武功夫" size="lg" class="mt-6 ml-1" />
-
-      <div class="hero-call max-w-sm">
-        <p class="text-lg text-ink-soft">{t.home.tagline}</p>
-        <a href={localePath(lang, 'book')} class="btn mt-6">{t.common.bookCta}</a>
+    <!-- the landscape, whole, at the bottom right – and where its own inscription stood, Wang Wei's couplet
+         in the site's brush, right column first -->
+    <div class="hero-art">
+      <picture>
+        <source media={TALL} type="image/avif" srcset={tall.avif} sizes={tallSizes} />
+        <source media={TALL} type="image/webp" srcset={tall.webp} sizes={tallSizes} />
+        <source type="image/avif" srcset={wide.avif} sizes={wideSizes} />
+        <img
+          src={wide.fallback}
+          srcset={wide.webp}
+          sizes={wideSizes}
+          width={paintings.heroWide.image.width}
+          height={paintings.heroWide.image.height}
+          alt={t.home.heroAlt}
+          loading="eager"
+          fetchpriority="high"
+          decoding="async"
+          class="ink ink-in block h-full w-full"
+        />
+      </picture>
+      <div class="couplet" aria-hidden="true">
+        <Calligraphy text="行到水穷处" animate={false} size="var(--cp-size)" gap="calc(var(--cp-size) * 0.12)" />
+        <Calligraphy text="坐看云起时" animate={false} size="var(--cp-size)" gap="calc(var(--cp-size) * 0.12)" />
       </div>
     </div>
   </section>
 
-  <!-- 2 · 武德: the old saying, the lineage – under a temple on a cliff top, its foot in cloud -->
-  <section id="philosophy" class="relative isolate overflow-hidden pt-24 pb-20 sm:pt-32 sm:pb-28" aria-labelledby="philosophy-label">
-    <Painting
-      name="cliffTemple"
-      sizes="(min-width: 64rem) 30rem, (min-width: 48rem) 40vw, 78vw"
-      widths={[360, 540, 720, 900]}
-      class="cliff -z-10 h-auto"
-    />
-    <div class="wrap relative grid grid-cols-[minmax(0,1fr)] items-start gap-16 md:grid-cols-[minmax(0,1fr)_auto] md:gap-20">
+  <!-- 2 · 武德: the old saying, the lineage – beside a temple on a cliff top, its foot in cloud -->
+  <section id="philosophy" class="pt-24 pb-20 sm:pt-32 sm:pb-28" aria-labelledby="philosophy-label">
+    <div class="wrap grid grid-cols-[minmax(0,1fr)] items-start gap-14 md:grid-cols-[minmax(0,1fr)_auto] md:gap-16">
       <div>
         <SectionLabel id="philosophy-label" lang={lang} {...sections.philosophy} label={t.nav.philosophy} />
         <figure class="reveal mt-10">
           <blockquote>
             {
               zh ? (
-                <p class="font-display text-[clamp(1.9rem,4.6vw,3.4rem)] leading-[1.35]">{t.home.sayingText}</p>
+                <p class="font-display text-[clamp(1.9rem,4.2vw,3.2rem)] leading-[1.35]">{t.home.sayingText}</p>
               ) : (
-                <p class="font-display text-[clamp(2.1rem,5vw,4rem)] leading-[1.08] italic">“{t.home.sayingText}”</p>
+                <p class="font-display text-[clamp(2.1rem,4.4vw,3.5rem)] leading-[1.1] italic">“{t.home.sayingText}”</p>
               )
             }
           </blockquote>
@@ -105,16 +109,25 @@ const wideSizes = '(max-aspect-ratio: 12/7) calc((100vh - 4.5rem) * 1.72), 100vw
         <p class="reveal mt-14 max-w-xl text-lg text-ink-soft" style="--reveal-delay:120ms">{t.home.lineageText}</p>
       </div>
 
-      <!-- the saying as a vertical inscription beside the cliff, signed with a seal -->
-      <div class="inscription reveal justify-self-center md:justify-self-end" style="--reveal-delay:200ms" lang="zh-Hans" aria-hidden={zh ? 'true' : undefined}>
-        <p class="sr-only">{saying.join('，')}。</p>
-        <div class="flex flex-row-reverse items-start gap-7" aria-hidden="true">
-          <Calligraphy text={saying[0]} animate={false} size="clamp(2.5rem, 6vw, 2.9rem)" gap="0.35rem" />
-          <span class="flex flex-col items-center">
-            <Calligraphy text={saying[1]} animate={false} size="clamp(2.5rem, 6vw, 2.9rem)" gap="0.35rem" class="mt-12" />
-            <Seal text="德" style="zhu" size="sm" class="mt-6" />
-          </span>
+      <!-- Fan Qi's cliff, whole, and in the open paper beside it the saying as a vertical inscription, sealed –
+           next to the painting, never on its rocks -->
+      <div class="reveal flex items-start justify-end gap-5 sm:gap-7" style="--reveal-delay:200ms">
+        <div class="inscription shrink-0" lang="zh-Hans" aria-hidden={zh ? 'true' : undefined}>
+          <p class="sr-only">{saying.join('，')}。</p>
+          <div class="flex flex-row-reverse items-start gap-6" aria-hidden="true">
+            <Calligraphy text={saying[0]} animate={false} size="clamp(2.2rem, 5.5vw, 2.7rem)" gap="0.3rem" />
+            <span class="flex flex-col items-center">
+              <Calligraphy text={saying[1]} animate={false} size="clamp(2.2rem, 5.5vw, 2.7rem)" gap="0.3rem" class="mt-12" />
+              <Seal text="德" style="zhu" size="sm" class="mt-6" />
+            </span>
+          </div>
         </div>
+        <Painting
+          name="cliffTemple"
+          sizes="(min-width: 48rem) clamp(15rem, 24vw, 21rem), 56vw"
+          widths={[300, 450, 600, 900]}
+          class="cliff h-auto"
+        />
       </div>
     </div>
   </section>
@@ -138,57 +151,75 @@ const wideSizes = '(max-aspect-ratio: 12/7) calc((100vh - 4.5rem) * 1.72), 100vw
 </Base>
 
 <style>
-  /* the landscape fills the first screen below the header */
+  /* 1 · the first screen: the name in the mist on the left, the landscape at the bottom right */
   .hero {
-    min-height: calc(100svh - 4.5rem);
+    --hero-h: calc(100svh - 4.5rem);
+    display: flex;
+    flex-direction: column;
+    min-height: var(--hero-h);
   }
   .hero-inner {
-    min-height: calc(100svh - 4.5rem);
-    padding-top: max(3rem, 7svh);
-    padding-bottom: 2.5rem;
+    padding-top: max(2.5rem, 6svh);
+    padding-bottom: 1.5rem;
   }
-  /* the painting keeps its peaks, grove and figures (the right side) when the screen is narrower */
-  .hero-art {
-    object-position: 100% 100%;
-  }
-  /* portrait screens: the call follows the seal, above the grove and the figures on the bank;
-     landscape screens: it sits at the foot of the open water */
   .hero-call {
-    margin-top: 2.25rem;
+    margin-top: 1.75rem;
+    max-width: 22rem;
   }
-  @media (min-aspect-ratio: 4/5) {
-    .hero-call {
-      margin-top: auto;
-      padding-top: 2.5rem;
-    }
-  }
-
   :global(.hero-write) {
     margin-left: -0.15rem;
   }
 
-  /* Fan Qi's cliff: top right, the inscription stands at its misty foot */
-  :global(.cliff) {
-    position: absolute;
-    top: 1rem;
-    right: -1.5rem;
-    width: min(78vw, 30rem);
-    opacity: 0.95;
+  /* The landscape is never cropped.
+     Portrait screens – its right part (2916 × 2688): it follows the title, as wide as the screen.
+     Landscape screens – the whole picture (6336 × 2688): it stands at the bottom right, as wide as the screen
+     or as tall as the first screen, whichever is smaller; its left half is open mist, where the name stands. */
+  .hero-art {
+    position: relative;
+    z-index: -1;
+    container-type: inline-size;
+    align-self: flex-end;
+    width: min(100%, 40rem);
+    aspect-ratio: 2916 / 2688;
+    margin-top: auto;
+    /* the couplet, where the picture's own inscription stood (cqw: % of the picture's width) */
+    --cp-size: 3.4cqw;
+    --cp-top: 2.2cqw;
+    --cp-right: 2.4cqw;
   }
-  @media (max-width: 47.99rem) {
-    /* phones: the cliff stands behind the inscription, below the saying */
-    :global(.cliff) {
-      top: auto;
-      bottom: 3rem;
-      right: -3rem;
-      width: 82vw;
-      opacity: 0.85;
+  @media (min-aspect-ratio: 4/5) {
+    .hero-art {
+      position: absolute;
+      right: 0;
+      bottom: 0;
+      width: min(100%, calc(var(--hero-h) * 6336 / 2688));
+      aspect-ratio: 6336 / 2688;
+      --cp-size: 1.22cqw;
+      --cp-top: 1cqw;
+      --cp-right: 0.9cqw;
     }
+  }
+  .couplet {
+    position: absolute;
+    top: var(--cp-top);
+    right: var(--cp-right);
+    display: flex;
+    flex-direction: row-reverse;
+    gap: calc(var(--cp-size) * 0.55);
+  }
+
+  /* Fan Qi's cliff, inside the page; the inscription stands beside its lower half */
+  :global(.cliff) {
+    width: 56vw;
+    flex-shrink: 0;
   }
   @media (min-width: 48rem) {
-    .inscription {
-      padding-top: 17rem;
+    :global(.cliff) {
+      width: clamp(15rem, 24vw, 21rem);
     }
+  }
+  .inscription {
+    padding-top: 4rem;
   }
 
   .cta-big {

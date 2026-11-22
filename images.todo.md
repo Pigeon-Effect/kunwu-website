@@ -11,7 +11,7 @@ forwarded through WeChat) for every row marked "replace".**
 
 | File (`src/assets/photos/…`) | Size | Shows | Used in | Status |
 |---|---|---|---|---|
-| `gallery/shi-yantao-guandao-temple.jpg` | 2411×1280, 809 KB | 释延涛 with guandao before a temple hall | Home card Shi Yantao, /master portrait Shi Yantao, gallery | **replace**: soft; the only photo of Shi Yantao – a portrait would be welcome |
+| `gallery/shi-yantao-guandao-temple.jpg` | 2411×1280, 809 KB | 释延涛 with guandao before a temple hall | /master (small), gallery | **replace**: soft |
 | `gallery/shi-yansong-sword-bamboo.jpg` | 1921×1080, 1.0 MB | 释延淞 with two swords, bamboo | Home card Shi Yansong (4:5 crop), /master portrait, gallery | **replace**: soft. A vertical original would crop better. |
 | `gallery/shi-yansong-blue-robe.jpg` | 1080×1921, 1.0 MB | 释延淞 in a blue robe under indigo banners | /master (small), gallery | **replace**: softest of the master photos (shown small only) |
 | `gallery/shi-yansong-guandao-hall.jpg` | 1888×4096, 2.0 MB | 释延淞 kneeling with guandao, 武 calligraphy | /master (small), gallery | **replace**: soft despite the pixel count (upscaled before sending) |
@@ -23,9 +23,10 @@ forwarded through WeChat) for every row marked "replace".**
 | `gallery/guest-room.jpg` | 1080×748, 115 KB | Room with double bed | Gallery | **replace**: low resolution. Is this a student room? If yes, it belongs in "Where you live" on /daily-life. |
 | `gallery/banquet-room.jpg` | 1080×728, 183 KB | Private dining room, round table | Gallery | **replace**: low resolution |
 | `master/early-years.jpg` | 502×744 | 释延朋, early photograph | Nowhere (entry `shi-yanpeng` is `visible: false`) | keep |
-| `master/side-kick.jpg` | 3000×2250 | 释延朋, side kick | Nowhere (hidden entry) | keep |
-| `master/originals/shi-yanpeng-side-kick.jpeg` | 3968×2976 | 释延朋, side kick (original) | Source of the painted hero figure (`src/assets/ink/figure.webp`, abstract – not recognisable as a person) | keep |
-| `master/side-kick-portrait.jpg` | 1760×2200 | 4:5 crop of the above | Nowhere (was the old home hero) | can be deleted |
+| `master/side-kick.jpg` | 3000×2250 | 释延涛, side kick before a red wall | /master portrait Shi Yantao (4:5 crop) | keep (sharp) |
+| `master/originals/shi-yanpeng-side-kick.jpeg` | 3968×2976 | the side kick (original; the file name predates the attribution to 释延涛) | Nowhere | keep |
+| `master/side-kick-portrait.jpg` | 1760×2200 | 4:5 crop of the above | Nowhere | can be deleted |
+| `header/kungfu_landscape_4x.jpg` | 6336×2688 | Ink landscape, figure on a stone bridge | Source of the home landscape (`npm run paintings -- hero`) | keep |
 
 ## Ink artwork
 

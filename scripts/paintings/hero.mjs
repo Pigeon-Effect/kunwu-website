@@ -1,114 +1,102 @@
-// 山水 – the landscape on the home screen, after Ren Yu's Landscapes (1892, Cleveland Museum of Art 1915.97,
-// CC0). Built from his first scroll: the peak in mist, the grove, the rocks and the pavilion on stilts over the
-// water. A far range from the misty handscroll 1933.220 closes the horizon, the water takes its ripples from
-// Bian Shoumin's geese scroll, and on the open ground by the pavilion four small figures practise kung fu – painted by
-// figures.mjs in Ren Yu's figure manner (no source painting shows martial arts).
-// Two formats: wide (landscape screens) and tall (phones) – the same scene, rearranged.
-import { canvas, lay } from './compose.mjs';
-import { water } from './water.mjs';
-import { figures, ROBES } from './figures.mjs';
+// 山水 – the landscape on the home screen: src/assets/photos/header/kungfu_landscape_4x.jpg, the school's own
+// picture – misty peaks, an autumn tree, a figure in a bow stance on a stone bridge over a still river, and
+// open mist on the left that holds the site's name.
+// Like the painting excerpts, it is laid onto the site's paper: its own paper is divided out (white = nothing,
+// for mix-blend-mode: multiply), its edges dissolve like mist, and the pseudo-inscription in its top right
+// corner (malformed characters and an illegible seal, as image generators write them) is painted out – the
+// page writes Wang Wei's couplet there with the site's own brush instead (src/pages/[lang]/index.astro).
+// Two formats: wide (the whole picture, landscape screens) and tall (its right part, portrait screens).
+import { fileURLToPath } from 'node:url';
+import { blur, clamp01, fbm, load, luminance, maxFilter, smoothstep } from './lib.mjs';
 
-const REN = '1915.97_print.jpg';
-const MIST = '1933.220_print.jpg';
-// regions of the sources (source px)
-const PEAK = { left: 255, top: 230, width: 560, height: 1250 };
-const GROVE = { left: 20, top: 2050, width: 780, height: 900 };
-const RANGE = { left: 1700, top: 110, width: 950, height: 260 };
-const RANGE_FLAT = { paperScale: 400, inkRadius: 120, white: 0.95 };
-// Bian Shoumin's water: broad, dry ripple sweeps, between the reeds and the geese
-const BIAN = 'Bian_Shoumin_-_Geese_Descending_on_a_Sandbank_-_Google_Art_Project.jpg';
-const RIPPLES = { left: 1670, top: 5430, width: 780, height: 270 };
-const RIPPLE_FLAT = { paperScale: 300, inkRadius: 60, white: 0.93 };
-const ripple = (x, y, scale, { flip = false, opacity = 0.6, seed = 1 } = {}) => ({
-  src: BIAN,
-  extract: RIPPLES,
-  flat: RIPPLE_FLAT,
-  scale,
-  flip,
-  x,
-  y,
-  opacity,
-  tone: { lift: 0.8, sat: 0.35 },
-  mask: { fade: { top: 0.4, bottom: 0.4, left: 0.4, right: 0.4 }, mist: 0.7, seed },
-});
+const SRC = fileURLToPath(new URL('../../src/assets/photos/header/kungfu_landscape_4x.jpg', import.meta.url));
+/** the picture's paper (sRGB: its brightest mist) – divided out, so the site's paper shows instead */
+const PAPER = [244, 239, 228];
+/** the pseudo-inscription and its seal (px of the full picture, 6336 × 2688) */
+const INSCRIPTION = { x0: 6070, y0: 30, x1: 6300, y1: 610 };
 
-/** the practice: staff, kick and punch, the master watching (x offsets in figure heights) */
-const practice = (x, y, h) => [
-  { pose: 'staff', x: x, y: y + h * 0.02, h, face: 1, robe: ROBES.stone, sash: ROBES.cinnabar },
-  { pose: 'kick', x: x + h * 1.02, y: y - h * 0.01, h, face: -1, robe: ROBES.ochre, sash: ROBES.cinnabar },
-  { pose: 'punch', x: x + h * 1.78, y: y + h * 0.03, h, face: 1, robe: ROBES.celadon, sash: ROBES.cinnabar },
-  { pose: 'master', x: x + h * 2.62, y: y - h * 0.02, h: h * 1.02, face: -1, robe: ROBES.grey },
-];
-
-export const layouts = {
-  wide: {
-    w: 2400,
-    h: 1400,
-    layers: [
-      // water: three takes of Bian Shoumin's ripples, softly dissolved into the paper
-      ripple(380, 1010, 1.1, { seed: 31, opacity: 0.55 }),
-      ripple(1060, 1130, 0.95, { flip: true, seed: 33, opacity: 0.6 }),
-      ripple(80, 1210, 1.3, { flip: true, seed: 35, opacity: 0.7 }),
-      // the far range on the left horizon, pale, its foot in mist
-      { src: MIST, extract: RANGE, flat: RANGE_FLAT, scale: 1.25, x: 120, y: 640, tone: { lift: 0.5, sat: 0.7 }, mask: { fade: { bottom: 0.55, left: 0.35, right: 0.3, top: 0.05 }, seed: 11 } },
-      // a second peak behind the main one, paler, mirrored – depth
-      { src: REN, extract: PEAK, scale: 0.62, flip: true, x: 1080, y: 260, tone: { lift: 0.4, sat: 0.6 }, mask: { fade: { bottom: 0.55, left: 0.25, right: 0.18 }, seed: 3 } },
-      // the main peak
-      { src: REN, extract: PEAK, scale: 0.96, x: 1440, y: 40, mask: { fade: { bottom: 0.45, left: 0.12, right: 0.06, top: 0.02 }, seed: 5 } },
-      // grove, rocks, pavilion
-      { src: REN, extract: GROVE, scale: 1.1, x: 2400 - 858, y: 1400 - 990, mask: { fade: { top: 0.28, left: 0.16 }, mist: 0.6, seed: 9 } },
-    ],
-    water: {
-      x: 0,
-      y: 860,
-      w: 2400,
-      h: 540,
-      seed: 21,
-      ink: 1.2,
-      rows: [
-        // under the far shore: faint and short
-        { x: 300, y: 40, len: 260, ink: 0.13, width: 2.6 },
-        { x: 720, y: 58, len: 340, ink: 0.13, width: 2.6 },
-        { x: 1180, y: 34, len: 220, ink: 0.12, width: 2.4 },
-        { x: 1380, y: 180, len: 260, ink: 0.13 },
-      ],
-    },
-    figures: practice(2010, 1300, 58),
-  },
-  tall: {
-    w: 1200,
-    h: 2200,
-    layers: [
-      ripple(-60, 1330, 1.0, { seed: 31, opacity: 0.55 }),
-      ripple(260, 1560, 0.9, { flip: true, seed: 33, opacity: 0.6 }),
-      ripple(-120, 1760, 1.15, { seed: 35, opacity: 0.65 }),
-      { src: MIST, extract: RANGE, flat: RANGE_FLAT, scale: 0.95, x: -120, y: 1030, tone: { lift: 0.5, sat: 0.7 }, mask: { fade: { bottom: 0.55, left: 0.2, right: 0.3, top: 0.05 }, seed: 11 } },
-      { src: REN, extract: PEAK, scale: 0.7, flip: true, x: 300, y: 380, tone: { lift: 0.4, sat: 0.6 }, mask: { fade: { bottom: 0.55, left: 0.25, right: 0.18 }, seed: 3 } },
-      { src: REN, extract: PEAK, scale: 1.2, x: 530, y: 90, mask: { fade: { bottom: 0.42, left: 0.12, right: 0.04, top: 0.02 }, seed: 5 } },
-      { src: REN, extract: GROVE, scale: 1.3, x: 1200 - 1014, y: 2200 - 1170, mask: { fade: { top: 0.28, left: 0.2 }, mist: 0.6, seed: 9 } },
-    ],
-    water: {
-      x: 0,
-      y: 1240,
-      w: 1200,
-      h: 720,
-      seed: 22,
-      ink: 1.2,
-      rows: [
-        { x: 120, y: 50, len: 240, ink: 0.13, width: 2.6 },
-        { x: 470, y: 72, len: 200, ink: 0.12, width: 2.4 },
-        { x: 520, y: 260, len: 260, ink: 0.13 },
-      ],
-    },
-    figures: practice(560, 2075, 70),
-  },
+export const FORMATS = {
+  wide: { extract: { left: 0, top: 0, width: 6336, height: 2688 }, width: 3168, fade: { left: 0.08, top: 0.07, bottom: 0.11 }, seed: 71 },
+  tall: { extract: { left: 3420, top: 0, width: 2916, height: 2688 }, width: 1600, fade: { left: 0.2, top: 0.08, bottom: 0.11 }, seed: 73 },
 };
 
+/** paint out the dark strokes and the red seal inside a box: filled from the mist around them */
+function paintOut(im, box) {
+  const { w, h } = im;
+  const L = luminance(im);
+  const x0 = Math.max(0, box.x0);
+  const y0 = Math.max(0, box.y0);
+  const x1 = Math.min(w, box.x1);
+  const y1 = Math.min(h, box.y1);
+  // the mist behind the strokes: brightest nearby, smoothed
+  const r = Math.max(2, Math.round((box.x1 - box.x0) / 22));
+  const bg = blur(maxFilter(L, w, h, r), w, h, r);
+  const hole = new Float32Array(w * h);
+  for (let y = y0; y < y1; y++)
+    for (let x = x0; x < x1; x++) {
+      const i = y * w + x;
+      const red = im.d[i * 3] - (im.d[i * 3 + 1] + im.d[i * 3 + 2]) / 2;
+      hole[i] = Math.max(smoothstep(0.02, 0.08, bg[i] - L[i]), smoothstep(0.04, 0.12, red));
+    }
+  // a little wider than the strokes, so no dark rim stays
+  const grown = blur(hole, w, h, r * 0.6);
+  for (let i = 0; i < hole.length; i++) hole[i] = Math.max(hole[i], smoothstep(0.02, 0.15, grown[i]));
+  // fill: normalised convolution of what is left around the hole (a few passes, finer each time)
+  for (const sigma of [r * 5, r * 2.5, r * 1.2]) {
+    const keep = new Float32Array(w * h);
+    for (let i = 0; i < keep.length; i++) keep[i] = 1 - hole[i];
+    const wsum = blur(keep, w, h, sigma);
+    for (let k = 0; k < 3; k++) {
+      const ch = new Float32Array(w * h);
+      for (let i = 0; i < ch.length; i++) ch[i] = im.d[i * 3 + k] * keep[i];
+      const s = blur(ch, w, h, sigma);
+      for (let y = y0; y < y1; y++)
+        for (let x = x0; x < x1; x++) {
+          const i = y * w + x;
+          if (hole[i] <= 0) continue;
+          const fill = wsum[i] > 1e-3 ? s[i] / wsum[i] : 1;
+          im.d[i * 3 + k] = im.d[i * 3 + k] * (1 - hole[i]) + fill * hole[i];
+        }
+    }
+    for (let i = 0; i < hole.length; i++) hole[i] *= 0.35;
+  }
+}
+
+/** One format: { image (float RGB, paper = white), mask } */
 export async function hero(format) {
-  const L = layouts[format];
-  const c = canvas(L.w, L.h);
-  water(c, L.water);
-  for (const layer of L.layers) await lay(c, layer);
-  figures(c, L.figures);
-  return c;
+  const F = FORMATS[format];
+  const s = F.width / F.extract.width;
+  const im = await load(SRC, { extract: F.extract, resize: { width: F.width } });
+  const { w, h } = im;
+
+  // its paper → white: divide by the paper's colour, levels with a soft knee at the white point
+  const white = 0.965;
+  const knee = 0.05;
+  for (let i = 0; i < w * h; i++)
+    for (let k = 0; k < 3; k++) {
+      let t = im.d[i * 3 + k] / (PAPER[k] / 255) / white;
+      if (t > 1 - knee) t = 1 - knee + knee * smoothstep(1 - knee, 1 + knee, t);
+      im.d[i * 3 + k] = clamp01(t);
+    }
+
+  paintOut(im, {
+    x0: Math.round((INSCRIPTION.x0 - F.extract.left) * s),
+    y0: Math.round((INSCRIPTION.y0 - F.extract.top) * s),
+    x1: Math.round((INSCRIPTION.x1 - F.extract.left) * s),
+    y1: Math.round((INSCRIPTION.y1 - F.extract.top) * s),
+  });
+
+  // edges dissolve like mist (the right edge is the screen's edge: it stays)
+  const n = fbm(F.seed, 5);
+  const mask = new Float32Array(w * h);
+  for (let y = 0; y < h; y++)
+    for (let x = 0; x < w; x++) {
+      const wob = (n(x / 520, y / 180) - 0.5) * 0.9;
+      let v = 1;
+      if (F.fade.top) v *= smoothstep(0, 1, y / (F.fade.top * h) + wob);
+      if (F.fade.bottom) v *= smoothstep(0, 1, (h - 1 - y) / (F.fade.bottom * h) + wob);
+      if (F.fade.left) v *= smoothstep(0, 1, x / (F.fade.left * w) + (n(y / 180, x / 520) - 0.5) * 0.9);
+      mask[y * w + x] = clamp01(v);
+    }
+  return { image: im, mask };
 }

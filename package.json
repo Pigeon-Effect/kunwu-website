@@ -19,7 +19,8 @@
     "seal-glyphs": "node scripts/seal-glyphs.mjs",
     "ink": "node scripts/ink/paint.mjs",
     "calligraphy": "node scripts/ink/calligraphy.mjs",
-    "paintings": "node scripts/paintings/paint.mjs"
+    "paintings": "node scripts/paintings/paint.mjs",
+    "lacquer": "node scripts/lacquer/lacquer.mjs"
   },
   "dependencies": {
     "@astrojs/sitemap": "^3.7.5",

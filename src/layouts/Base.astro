@@ -38,7 +38,7 @@ const ogImage = new URL(asset('og-image.jpg'), Astro.site).href;
     <link rel="icon" href={asset('favicon.svg')} type="image/svg+xml" />
     <link rel="apple-touch-icon" href={asset('apple-touch-icon.png')} />
     <link rel="manifest" href={asset('site.webmanifest')} />
-    <meta name="theme-color" content="#4c4639" />
+    <meta name="theme-color" content="#7b2219" />
 
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content={t.site.name} />
@@ -96,6 +96,19 @@ const ogImage = new URL(asset('og-image.jpg'), Astro.site).href;
         menu?.addEventListener('toggle', () => menu.open && set(false));
       }
 
+      // What can wait: `later(ms, fn)` runs fn once the page has loaded, `ms` later, when the browser is idle –
+      // so it never competes with what the first screen needs.
+      const idle = (fn: () => void) => ('requestIdleCallback' in window ? requestIdleCallback(fn, { timeout: 1500 }) : setTimeout(fn, 1));
+      const later = (ms: number, fn: () => void) => {
+        const go = () => setTimeout(() => idle(fn), ms);
+        if (document.readyState === 'complete') go();
+        else window.addEventListener('load', go, { once: true });
+      };
+
+      // The paper at the photo's full resolution (global.css: html.paper-hd). Screens with one device pixel
+      // per CSS pixel keep the tile they already have.
+      later(2500, () => document.documentElement.classList.add('paper-hd'));
+
       // Mobile menu: close after choosing an item and on Escape.
       menu?.querySelectorAll('a').forEach((a) => a.addEventListener('click', () => (menu.open = false)));
       document.addEventListener('keydown', (e) => {
@@ -105,8 +118,9 @@ const ogImage = new URL(asset('og-image.jpg'), Astro.site).href;
         }
       });
 
-      // Calligraphy ink and paintings below the first screen load when they come near it – not during
-      // the first page load, so what is in view gets the bandwidth. A painting settles in like ink.
+      // Calligraphy ink and paintings marked deferred load when they come near the screen – starting a moment
+      // after the page has loaded, so what the first screen needs gets the bandwidth. A painting settles in
+      // like ink.
       const loadInk = (el: Element) =>
         el.querySelectorAll<SVGImageElement>('image[data-href]').forEach((img) => img.setAttribute('href', img.dataset.href!));
       const loadPainting = (pic: Element) => {
@@ -131,9 +145,9 @@ const ogImage = new URL(asset('og-image.jpg'), Astro.site).href;
           },
           { rootMargin: '500px 0px' },
         );
-        deferred.forEach((el) => near.observe(el));
+        later(800, () => deferred.forEach((el) => near.observe(el)));
       } else {
-        deferred.forEach(load);
+        later(800, () => deferred.forEach(load));
       }
 
       // Reveal on scroll: fade/translate in once; calligraphy (.write) starts writing. Without

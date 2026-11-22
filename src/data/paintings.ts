@@ -117,8 +117,9 @@ export interface Painting {
 }
 
 export const paintings = {
-  heroWide: { image: heroWide, from: ['renYu', 'miYouren', 'bianShoumin'] },
-  heroTall: { image: heroTall, from: ['renYu', 'miYouren', 'bianShoumin'] },
+  // the home landscape: the school's own picture (src/assets/photos/header/), nothing to credit
+  heroWide: { image: heroWide, from: [] },
+  heroTall: { image: heroTall, from: [] },
   cliffTemple: { image: cliffTemple, from: ['fanQi'] },
   range: { image: range, from: ['miYouren'] },
   pine: { image: pine, from: ['wangXuehao'] },

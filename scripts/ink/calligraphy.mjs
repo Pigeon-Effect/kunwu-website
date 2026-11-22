@@ -19,7 +19,19 @@ const DATA = new URL('node_modules/hanzi-writer-data/', root);
 
 /** Every text that is written in calligraphy on the site (titles, names, the inscription). */
 const { sections } = await import('../../src/config/sections.ts');
-const TEXTS = ['坤武功夫', '释延淞', '释延涛', '未曾学艺先学礼', '未曾习武先习德', ...Object.values(sections).map((s) => s.hanzi)];
+// (new texts go at the end: the brush's ink carries from one character to the next, so earlier characters
+// stay exactly as they are)
+const TEXTS = [
+  '坤武功夫',
+  '释延淞',
+  '释延涛',
+  '未曾学艺先学礼',
+  '未曾习武先习德',
+  ...Object.values(sections).map((s) => s.hanzi),
+  // Wang Wei, 终南别业 – inscribed over the home landscape
+  '行到水穷处',
+  '坐看云起时',
+];
 
 const P = 0.5; // paint scale: px per font unit (a character is painted at 512 px)
 const OUT = 256; // output size of one character in px

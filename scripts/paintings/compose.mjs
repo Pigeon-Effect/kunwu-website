@@ -1,19 +1,15 @@
-// Laying painting excerpts into a composition: each layer is a region of a source painting, flattened
-// (its paper → white), scaled, masked with a ragged, misty edge and multiplied into a white canvas –
-// the way a painter builds a landscape in transparent layers. White stays paper on the site.
+// Cutting painting excerpts: a region of a source painting, flattened (its paper → white), masked with a
+// ragged, misty edge, optionally lightened for distance. White stays paper on the site.
 import { fileURLToPath } from 'node:url';
 import {
   borderFade,
   clamp01,
   fbm,
   flatten,
-  flipX,
   img,
   load,
-  multiplyInto,
   polygon,
   ragged,
-  resizeImg,
   smoothstep,
 } from './lib.mjs';
 
@@ -65,21 +61,6 @@ export function mask(w, h, { keep = null, fade = {}, feather = 50, rag = 0.55, s
   return borderFade(m, w, h, 3);
 }
 
-/**
- * Lay one layer: { src, extract, flat?, scale?, flip?, x, y, opacity?, mask: {…} | (w,h) => plane }
- * x / y place the excerpt's top-left corner on the canvas (after scaling).
- */
-export async function lay(canvas, L) {
-  let f = await excerpt(L.src, L.extract, L.flat ?? FLAT);
-  const s = L.scale ?? 1;
-  if (s !== 1) f = await resizeImg(f, Math.round(f.w * s), Math.round(f.h * s));
-  if (L.flip) f = flipX(f);
-  if (L.tone) f = tone(f, L.tone);
-  const m = typeof L.mask === 'function' ? L.mask(f.w, f.h) : mask(f.w, f.h, L.mask ?? {});
-  multiplyInto(canvas, f, Math.round(L.x), Math.round(L.y), m, L.opacity ?? 1);
-  return { w: f.w, h: f.h };
-}
-
 /** Lighten (lift < 1 keeps that share of the ink) and desaturate an excerpt: distance in ink painting. */
 export function tone(f, { lift = 1, sat = 1 }) {
   const out = img(f.w, f.h, 3);
@@ -94,4 +75,3 @@ export function tone(f, { lift = 1, sat = 1 }) {
   return out;
 }
 
-export const canvas = (w, h) => img(w, h, 3, 1);
