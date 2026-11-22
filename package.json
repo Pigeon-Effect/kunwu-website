@@ -18,7 +18,8 @@
     "fonts": "node scripts/subset-fonts.mjs",
     "seal-glyphs": "node scripts/seal-glyphs.mjs",
     "ink": "node scripts/ink/paint.mjs",
-    "calligraphy": "node scripts/ink/calligraphy.mjs"
+    "calligraphy": "node scripts/ink/calligraphy.mjs",
+    "paintings": "node scripts/paintings/paint.mjs"
   },
   "dependencies": {
     "@astrojs/sitemap": "^3.7.5",
