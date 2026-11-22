@@ -1,5 +1,5 @@
 // Favicons, touch / manifest icons, the social preview image and logo exports – all from the seal
-// (src/lib/seal.ts) and the painted ink assets (src/assets/ink/).
+// (src/lib/seal.ts), the paper and the home page's landscape (src/assets/paper/, src/assets/paintings/).
 // Run: npm run icons   (outputs are committed; re-run when the seal or the art changes)
 import { readFile, writeFile, mkdir, rm } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
@@ -8,9 +8,9 @@ import { sealSVG } from '../src/lib/seal.ts';
 
 const root = new URL('../', import.meta.url);
 const pub = new URL('public/', root);
-const PAPER = '#f3ecdf';
+const PAPER = '#ddd8d4';
 const glyphs = JSON.parse(await readFile(new URL('src/data/seal-glyphs.json', root), 'utf8'));
-const ink = (name) => fileURLToPath(new URL(`src/assets/ink/${name}.webp`, root));
+const asset = (path) => fileURLToPath(new URL(`src/assets/${path}`, root));
 
 const logo = sealSVG(glyphs, { text: '坤武功夫', style: 'bai', id: 'logo' });
 const mark = sealSVG(glyphs, { text: '坤', style: 'bai', id: 'mark' });
@@ -53,18 +53,27 @@ await writeFile(new URL('icon-192.png', pub), await onPaper(logo, 192, 0.86));
 await writeFile(new URL('icon-512.png', pub), await onPaper(logo, 512, 0.86));
 await writeFile(new URL('icon-maskable-512.png', pub), await onPaper(logo, 512, 0.62));
 
-// Social preview (WeChat, WhatsApp …): peaks, the figure and the seal on paper – no text, works in both languages
+// Social preview (WeChat, WhatsApp …): the home page's landscape and the seal on the rice paper – no
+// text, works in both languages
 const W = 1200;
 const H = 630;
-const og = await sharp({ create: { width: W, height: H, channels: 4, background: PAPER } })
-  .composite([
-    { input: await sharp(ink('mountains')).resize(W * 1.15, null).extract({ left: 90, top: 0, width: W, height: 570 }).toBuffer(), top: 60, left: 0, blend: 'multiply' },
-    { input: await sharp(ink('figure')).resize(null, 470).toBuffer(), top: 110, left: 640, blend: 'multiply' },
-    { input: await render(logo, 210), top: 200, left: 190, blend: 'multiply' },
-  ])
-  .png({ compressionLevel: 9 })
+const paper = await sharp(asset('paper/rice-paper.webp')).extract({ left: 0, top: 0, width: W, height: H }).raw().toBuffer();
+// the painting is ink on a transparent ground: multiply it into the paper (pixel = paper × (1 − a(1 − c)))
+const PW = 1080;
+const art = await sharp(asset('paintings/hero-wide.webp')).resize(PW, H, { fit: 'cover', position: 'right bottom' }).ensureAlpha().raw().toBuffer();
+for (let y = 0; y < H; y++)
+  for (let x = 0; x < PW; x++) {
+    const a = art[(y * PW + x) * 4 + 3] / 255;
+    if (!a) continue;
+    const o = (y * W + x + (W - PW)) * 3;
+    for (let k = 0; k < 3; k++) paper[o + k] = Math.round(paper[o + k] * (1 - a * (1 - art[(y * PW + x) * 4 + k] / 255)));
+  }
+const og = await sharp(paper, { raw: { width: W, height: H, channels: 3 } })
+  .composite([{ input: await render(logo, 200), top: 215, left: 150, blend: 'multiply' }])
+  .jpeg({ quality: 84, mozjpeg: true })
   .toBuffer();
-await writeFile(new URL('og-image.png', pub), og);
+await rm(new URL('og-image.png', pub), { force: true });
+await writeFile(new URL('og-image.jpg', pub), og);
 
 // Logo exports for print / WeChat profile / messengers
 await rm(new URL('brand/', pub), { recursive: true, force: true });

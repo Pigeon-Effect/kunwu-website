@@ -4,6 +4,8 @@ import Base from '../../layouts/Base.astro';
 import PageHead from '../../components/PageHead.astro';
 import { getBooking, formatPrice } from '../../config/booking';
 import Seal from '../../components/Seal.astro';
+import Painting from '../../components/Painting.astro';
+import type { PaintingKey } from '../../data/paintings';
 import { fill, getLangStaticPaths, intlLocale, localePath, splitId, useT, weeksLabel, type Lang } from '../../i18n/utils';
 
 export const getStaticPaths = getLangStaticPaths;
@@ -13,6 +15,11 @@ const t = useT(lang);
 const entries = (await getCollection('programs', (e) => splitId(e.id).lang === lang)).sort(
   (a, b) => a.data.order - b.data.order,
 );
+// 翎毛 – animals: a wild goose over the page; beside each program a creature – the mantis (螳螂拳, mantis
+// boxing, comes from Shandong), Bada Shanren's watchful bird for Tai Chi, a dragonfly, two crabs grappling
+const animals: Record<string, PaintingKey> = { shaolin: 'mantis', taichi: 'bird', wingchun: 'dragonfly', mma: 'crabs' };
+const animalOf = (program: string): PaintingKey | undefined => animals[program];
+
 const programs = await Promise.all(
   entries.map(async (entry) => ({
     data: entry.data,
@@ -22,8 +29,14 @@ const programs = await Promise.all(
 );
 ---
 
-<Base lang={lang} title={t.meta.training.title} description={t.meta.training.description} route="training">
-  <PageHead lang={lang} section="programs" title={t.training.title} lede={t.training.lede}>
+<Base
+  lang={lang}
+  title={t.meta.training.title}
+  description={t.meta.training.description}
+  route="training"
+  paintings={['goose', ...entries.map((e) => animalOf(e.data.program)).filter((a): a is PaintingKey => !!a)]}
+>
+  <PageHead lang={lang} section="programs" title={t.training.title} lede={t.training.lede} art="goose" artStyle="--art-w:clamp(14rem,26vw,24rem);--art-top:2.5rem">
     <nav aria-label={t.book.jumpLabel} class="mt-10">
       <ul class="flex flex-wrap gap-x-8 gap-y-3">
         {programs.map((p) => <li><a href={`#${p.data.program}`} class="more">{p.data.title}</a></li>)}
@@ -64,7 +77,15 @@ const programs = await Promise.all(
             </ul>
           </div>
 
-          <aside class="lg:pt-24">
+          <aside class="lg:pt-6">
+            {animalOf(data.program) && (
+              <Painting
+                name={animalOf(data.program)!}
+                sizes="(min-width: 64rem) 18rem, 60vw"
+                widths={[300, 450, 600]}
+                class:list={['animal mb-8 h-auto', `animal-${data.program}`]}
+              />
+            )}
             <div>
               <h3 class="text-2xl">{t.training.durationsTitle}</h3>
               <table class="mt-4 w-full text-left">
@@ -96,3 +117,20 @@ const programs = await Promise.all(
     ))
   }
 </Base>
+
+<style>
+  /* each program's creature sits above its prices, as if it had settled on the page */
+  :global(.animal) {
+    display: block;
+    width: min(60vw, 18rem);
+    margin-left: auto;
+  }
+  :global(.animal-taichi) {
+    width: min(42vw, 12rem);
+  }
+  @media (min-width: 64rem) {
+    :global(.animal) {
+      margin-left: 0;
+    }
+  }
+</style>

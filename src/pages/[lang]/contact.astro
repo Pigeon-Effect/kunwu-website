@@ -12,8 +12,16 @@ const lang = Astro.params.lang as Lang;
 const t = useT(lang);
 ---
 
-<Base lang={lang} title={t.meta.contact.title} description={t.meta.contact.description} route="contact">
-  <PageHead lang={lang} section="contact" title={t.contact.title} lede={t.contact.lede} />
+<!-- 海 – the sea: waves and a fishing boat from a Suzhou woodblock print -->
+<Base lang={lang} title={t.meta.contact.title} description={t.meta.contact.description} route="contact" paintings={['waves']}>
+  <PageHead
+    lang={lang}
+    section="contact"
+    title={t.contact.title}
+    lede={t.contact.lede}
+    art="waves"
+    artStyle="--art-w:clamp(15rem,31vw,29rem);--art-top:5rem;--art-w-sm:94vw"
+  />
 
   <div class="wrap grid gap-12 pb-20 sm:pb-28 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,0.85fr)] lg:gap-16">
     <div class="space-y-12">

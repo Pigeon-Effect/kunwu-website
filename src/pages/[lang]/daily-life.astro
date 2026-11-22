@@ -31,8 +31,16 @@ const life = [
 ];
 ---
 
-<Base lang={lang} title={t.meta.dailyLife.title} description={t.meta.dailyLife.description} route="dailyLife">
-  <PageHead lang={lang} section="dailyLife" title={t.daily.title} lede={t.daily.lede} />
+<!-- 人物 – people: children kicking a jianzi under a pine (the shuttlecock game is footwork training too) -->
+<Base lang={lang} title={t.meta.dailyLife.title} description={t.meta.dailyLife.description} route="dailyLife" paintings={['jianzi']}>
+  <PageHead
+    lang={lang}
+    section="dailyLife"
+    title={t.daily.title}
+    lede={t.daily.lede}
+    art="jianzi"
+    artStyle="--art-w:clamp(12rem,20vw,18rem);--art-w-sm:62vw"
+  />
 
   <section class="border-t border-ink/10 bg-paper-deep py-20 sm:py-28" aria-labelledby="schedule-title">
     <div class="wrap">

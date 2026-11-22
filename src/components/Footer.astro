@@ -1,15 +1,22 @@
 ---
+/**
+ * 地头 – the footer is the bottom of the hanging scroll: the border strip (隔水), the same mounting silk as
+ * the header, and the roller (地杆) with its knobs (轴头) at both ends. It also credits the paintings
+ * the page shows (src/data/paintings.ts).
+ */
 import Seal from './Seal.astro';
-import InkArt from './InkArt.astro';
 import { address } from '../config/site';
+import { sourcesOf, type PaintingKey } from '../data/paintings';
 import { localePath, useT, type Lang, type RouteKey } from '../i18n/utils';
 
 interface Props {
   lang: Lang;
+  paintings?: PaintingKey[];
 }
 
-const { lang } = Astro.props;
+const { lang, paintings = [] } = Astro.props;
 const t = useT(lang);
+const zh = lang === 'zh';
 const pages: { key: RouteKey; label: string }[] = [
   { key: 'master', label: t.nav.masters },
   { key: 'dailyLife', label: t.nav.dailyLife },
@@ -19,36 +26,165 @@ const pages: { key: RouteKey; label: string }[] = [
 ];
 const year = new Date().getFullYear();
 const otherName = lang === 'en' ? '坤武功夫国际交流中心' : 'Kunwu International Kung Fu Training Center';
+const credits = sourcesOf(paintings);
 ---
 
-<footer class="mt-auto">
-  <!-- distant peaks above the footer, as on the edge of a scroll -->
-  <InkArt name="mountainsStrip" sizes="100vw" widths={[640, 960, 1280, 1600]} class="block h-auto w-full opacity-90" />
-  <div class="wrap grid gap-10 py-14 text-sm md:grid-cols-[1.4fr_1fr] md:items-start">
-    <div class="flex items-start gap-4">
-      <Seal text="坤武" style="zhu" size="sm" />
-      <div>
-        <p class="text-ink">{t.site.fullName}</p>
-        <p class="mt-1 text-ink-soft" lang={lang === 'en' ? 'zh-Hans' : 'en'}>{otherName}</p>
-        <p class="mt-3 text-ink-soft">{(lang === 'zh' ? address.zhLines : address.enLines).slice(-2).join(lang === 'zh' ? '' : ', ')}</p>
+<footer class="scroll-foot mt-auto">
+  <div class="foot-silk">
+    <div class="wrap grid gap-10 pt-14 pb-10 text-sm md:grid-cols-[1.4fr_1fr] md:items-start">
+      <div class="flex items-start gap-4">
+        <span class="slip"><Seal text="坤武" style="zhu" size="sm" /></span>
+        <div>
+          <p>{t.site.fullName}</p>
+          <p class="mt-1 opacity-75" lang={lang === 'en' ? 'zh-Hans' : 'en'}>{otherName}</p>
+          <p class="mt-3 opacity-75">{(zh ? address.zhLines : address.enLines).slice(-2).join(zh ? '' : ', ')}</p>
+        </div>
       </div>
+
+      <nav aria-label={t.footer.pages}>
+        <ul class="flex flex-wrap gap-x-7 gap-y-2 md:justify-end">
+          {
+            pages.map((p) => (
+              <li>
+                <a href={localePath(lang, p.key)} class="foot-link">
+                  {p.label}
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </nav>
     </div>
 
-    <nav aria-label={t.footer.pages}>
-      <ul class="flex flex-wrap gap-x-7 gap-y-2 md:justify-end">
-        {
-          pages.map((p) => (
-            <li>
-              <a href={localePath(lang, p.key)} class="text-ink-soft no-underline transition-colors hover:text-ink">
-                {p.label}
-              </a>
-            </li>
-          ))
-        }
-      </ul>
-    </nav>
+    {
+      credits.length > 0 && (
+        <div class="wrap pb-8">
+          <h2 class="credits-title">{t.footer.paintings}</h2>
+          <ul class="credits mt-2">
+            {credits.map((c) => (
+              <li>
+                <a href={c.url} rel="noopener" class="foot-link">
+                  {c.artist[lang]}
+                  {zh ? '，' : ', '}
+                  <cite>{c.title[lang]}</cite>
+                  {zh ? '，' : ', '}
+                  {c.date[lang]}
+                </a>
+                <span class="opacity-75">
+                  {zh ? '　' : ' · '}
+                  {c.collection[lang]}
+                </span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )
+    }
+
+    <div class="wrap pb-9">
+      <p class="text-xs opacity-75">© {year} {t.site.fullName}. {t.footer.rights}</p>
+    </div>
   </div>
-  <div class="wrap pb-10">
-    <p class="text-xs text-ink-soft">© {year} {t.site.fullName}. {t.footer.rights}</p>
-  </div>
+  <!-- 地杆 – the roller, its two knobs at the ends -->
+  <div class="roller" aria-hidden="true"></div>
 </footer>
+
+<style>
+  .scroll-foot {
+    position: relative;
+    color: var(--color-rice);
+  }
+  .foot-silk {
+    position: relative;
+    padding-top: 9px; /* the border strip */
+    background-color: var(--color-silk);
+    background-image: var(--silk);
+  }
+  /* 隔水 – the border strip between the paper and the silk */
+  .foot-silk::before {
+    content: '';
+    position: absolute;
+    inset: 0 0 auto;
+    height: 9px;
+    border-top: 1px solid rgb(20 14 8 / 0.45);
+    border-bottom: 1px solid rgb(20 14 8 / 0.5);
+    background-color: var(--color-silk-light);
+    background-image: var(--fret);
+    background-size: 12px 7px;
+    transform: scaleY(-1); /* the fret faces the paper, as on the header */
+  }
+  /* the seal stamped on a small slip of paper glued to the silk */
+  .slip {
+    flex-shrink: 0;
+    padding: 0.3rem;
+    line-height: 0;
+    background: var(--color-paper) url('../assets/paper/rice-paper.webp') repeat 71% 13%;
+    box-shadow:
+      inset 0 0 10px rgb(120 95 60 / 0.16),
+      0 1px 2px rgb(0 0 0 / 0.45);
+  }
+  .foot-link {
+    text-decoration: none;
+    opacity: 0.85;
+    transition: opacity 200ms ease;
+  }
+  .foot-link:hover {
+    opacity: 1;
+    text-decoration: underline;
+    text-decoration-color: var(--color-silk-light);
+  }
+  .scroll-foot :global(:focus-visible) {
+    outline-color: var(--color-rice);
+  }
+  .credits-title {
+    font-family: var(--font-sans);
+    font-size: 0.7rem;
+    font-weight: 500;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    opacity: 0.75;
+  }
+  :global(:lang(zh-Hans)) .credits-title {
+    font-size: 0.8rem;
+    letter-spacing: 0.2em;
+  }
+  .credits {
+    font-size: 0.78rem;
+    line-height: 1.6;
+  }
+  .credits cite {
+    font-style: italic;
+  }
+  :global(:lang(zh-Hans)) .credits cite {
+    font-style: normal;
+  }
+
+  /* 地杆 – a round wooden roller, lit from above, with bone-coloured knobs (轴头) at both ends */
+  .roller {
+    position: relative;
+    height: 15px;
+    background: linear-gradient(to bottom, #2a1c13 0%, #6b4c35 22%, #8c6a4c 38%, #5a3f2c 62%, #2b1d14 100%);
+    box-shadow: 0 6px 10px -4px rgb(30 22 10 / 0.55);
+  }
+  .roller::before,
+  .roller::after {
+    content: '';
+    position: absolute;
+    top: -3px;
+    width: 22px;
+    height: 21px;
+    border-radius: 3px 3px 3px 3px / 6px 6px 6px 6px;
+    background: linear-gradient(to bottom, #8f8571 0%, #ece3cf 30%, #f6efe0 42%, #cfc3a8 70%, #8a7f68 100%);
+    box-shadow: 0 2px 3px rgb(0 0 0 / 0.35);
+  }
+  .roller::before {
+    left: 0;
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+  }
+  .roller::after {
+    right: 0;
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+  }
+</style>

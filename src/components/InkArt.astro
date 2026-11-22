@@ -1,16 +1,12 @@
 ---
 /**
- * One of the painted ink assets (src/assets/ink/, made by `npm run ink`), multiplied into the paper.
- * Decorative unless `alt` is given.
+ * A painted ink asset (src/assets/ink/, made by `npm run ink`) – the dry brush stroke of BrushRule –
+ * multiplied into the paper. Decorative unless `alt` is given. (The paintings are in Painting.astro.)
  */
 import { Picture } from 'astro:assets';
-import figure from '../assets/ink/figure.webp';
-import mountains from '../assets/ink/mountains.webp';
-import mountainsStrip from '../assets/ink/mountains-strip.webp';
 import stroke from '../assets/ink/stroke.webp';
-import plum from '../assets/ink/plum.webp';
 
-const art = { figure, mountains, mountainsStrip, stroke, plum };
+const art = { stroke };
 
 interface Props {
   name: keyof typeof art;

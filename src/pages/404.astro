@@ -2,6 +2,7 @@
 import Base from '../layouts/Base.astro';
 import SectionLabel from '../components/SectionLabel.astro';
 import Calligraphy from '../components/Calligraphy.astro';
+import Painting from '../components/Painting.astro';
 import { sections } from '../config/sections';
 import { localePath, useT } from '../i18n/utils';
 
@@ -9,8 +10,10 @@ const en = useT('en');
 const zh = useT('zh');
 ---
 
-<Base lang="en" title={en.meta.notFound.title} description={en.meta.notFound.description}>
-  <section class="wrap grid min-h-[70vh] content-center gap-14 py-24 md:grid-cols-2">
+<Base lang="en" title={en.meta.notFound.title} description={en.meta.notFound.description} paintings={['range']}>
+  <section class="wrap relative isolate grid min-h-[70vh] content-center gap-14 py-24 md:grid-cols-2">
+    <!-- lost in Mi Youren's cloudy mountains -->
+    <Painting name="range" sizes="100vw" widths={[640, 960, 1280, 1600]} class="pointer-events-none absolute inset-x-0 bottom-0 -z-10 h-auto w-full opacity-80" />
     <div>
       <SectionLabel as="p" decorative lang="en" {...sections.notFound} label="404" />
       <h1 class="mt-6 text-5xl sm:text-6xl">{en.notFound.title}</h1>

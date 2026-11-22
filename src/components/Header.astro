@@ -1,32 +1,33 @@
 ---
 /**
- * Fixed header. Four items + language switch + Book.
- * overlay=true (home): transparent over the hero, solid ink once the page scrolls
- * (a few lines in Base.astro set data-scrolled). Without JavaScript it is always solid.
- * Mobile: a full-screen menu from a native <details> – works without JavaScript.
+ * 天头 – the header is the top of a hanging scroll's mounting: a wooden rod (天杆), a band of mounting silk
+ * with a woven cloud damask and a little sheen, a narrow border strip (隔水) with a key-fret (回纹), and the
+ * shadow it casts on the paper below.
+ * It slides away while the page scrolls down and comes back at once when it scrolls up (Base.astro);
+ * without JavaScript it simply stays.
+ * Four pages + language switch + Book. Mobile: a full-screen menu from a native <details>, opening below
+ * the band like the paper of the scroll – works without JavaScript.
  */
 import Seal from './Seal.astro';
-import InkArt from './InkArt.astro';
+import Painting from './Painting.astro';
 import { localePath, switchLangPath, htmlLang, useT, type Lang, type RouteKey } from '../i18n/utils';
 
 interface Props {
   lang: Lang;
   route?: RouteKey | undefined;
-  overlay?: boolean;
 }
 
-const { lang, route, overlay = false } = Astro.props;
+const { lang, route } = Astro.props;
 const t = useT(lang);
 const onHome = route === 'home';
 const other: Lang = lang === 'en' ? 'zh' : 'en';
 const switchHref = switchLangPath(Astro.url.pathname, other);
 
-/** Anchors on the home page, real pages everywhere else (philosophy only exists on home). */
-const items: { label: string; href: string; key?: RouteKey }[] = [
-  { label: t.nav.philosophy, href: onHome ? '#philosophy' : localePath(lang, 'home', 'philosophy') },
-  { label: t.nav.masters, href: onHome ? '#masters' : localePath(lang, 'master'), key: 'master' },
-  { label: t.nav.programs, href: onHome ? '#programs' : localePath(lang, 'training'), key: 'training' },
-  { label: t.nav.contact, href: onHome ? '#contact' : localePath(lang, 'contact'), key: 'contact' },
+const items: { label: string; key: RouteKey }[] = [
+  { label: t.nav.masters, key: 'master' },
+  { label: t.nav.dailyLife, key: 'dailyLife' },
+  { label: t.nav.programs, key: 'training' },
+  { label: t.nav.contact, key: 'contact' },
 ];
 const current = (key?: RouteKey) => (key && key === route ? 'page' : undefined);
 const langs: { code: Lang; label: string }[] = [
@@ -35,127 +36,177 @@ const langs: { code: Lang; label: string }[] = [
 ];
 ---
 
-<header class="site-header" data-overlay={overlay ? '' : undefined} data-header>
-  <div class="wrap flex h-[4.5rem] items-center gap-5 lg:gap-10">
-    <a href={localePath(lang)} class="mr-auto flex items-center gap-3 no-underline" aria-current={onHome ? 'page' : undefined}>
-      <Seal text="坤武功夫" size="sm" />
-      {
-        lang === 'zh' ? (
-          <span class="font-hanzi text-[1.15rem] tracking-[0.2em]">{t.site.name}</span>
-        ) : (
-          <span class="font-display text-[1.3rem] tracking-[0.02em]">{t.site.name}</span>
-        )
-      }
-    </a>
-
-    <nav aria-label={t.nav.label} class="hidden lg:block">
-      <ul class="flex items-center gap-9">
+<header class="site-header" data-header>
+  <div class="band">
+    <span class="rod" aria-hidden="true"></span>
+    <div class="wrap flex h-full items-center gap-5 lg:gap-9">
+      <!-- 题签: the title slip, a strip of paper glued onto the silk -->
+      <a href={localePath(lang)} class="title-slip mr-auto flex items-center gap-3 no-underline" aria-current={onHome ? 'page' : undefined}>
+        <Seal text="坤武功夫" size="sm" />
         {
-          items.map((item) => (
-            <li>
-              <a href={item.href} class="nav-link" aria-current={current(item.key)}>
-                {item.label}
-              </a>
-            </li>
+          lang === 'zh' ? (
+            <span class="font-hanzi text-[1.15rem] tracking-[0.2em]">{t.site.name}</span>
+          ) : (
+            <span class="font-display text-[1.3rem] tracking-[0.02em]">{t.site.name}</span>
+          )
+        }
+      </a>
+
+      <nav aria-label={t.nav.label} class="hidden lg:block">
+        <ul class="flex items-center gap-8 xl:gap-10">
+          {
+            items.map((item) => (
+              <li>
+                <a href={localePath(lang, item.key)} class="nav-link" aria-current={current(item.key)}>
+                  {item.label}
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </nav>
+
+      <div class="hidden items-center gap-2 text-[0.8rem] tracking-[0.12em] sm:flex" role="group" aria-label={t.nav.languageLabel}>
+        {
+          langs.map((l, i) => (
+            <>
+              {i > 0 && (
+                <span aria-hidden="true" class="opacity-50">
+                  /
+                </span>
+              )}
+              {l.code === lang ? (
+                <span lang={htmlLang[l.code]}>{l.label}</span>
+              ) : (
+                <a href={switchHref} hreflang={htmlLang[l.code]} lang={htmlLang[l.code]} aria-label={t.nav.switchToLabel} class="lang-link">
+                  {l.label}
+                </a>
+              )}
+            </>
           ))
         }
-      </ul>
-    </nav>
-
-    <div class="hidden items-center gap-2 text-[0.8rem] tracking-[0.12em] sm:flex" role="group" aria-label={t.nav.languageLabel}>
-      {
-        langs.map((l, i) => (
-          <>
-            {i > 0 && (
-              <span aria-hidden="true" class="text-ink-soft">
-                /
-              </span>
-            )}
-            {l.code === lang ? (
-              <span class="text-ink" lang={htmlLang[l.code]}>
-                {l.label}
-              </span>
-            ) : (
-              <a
-                href={switchHref}
-                hreflang={htmlLang[l.code]}
-                lang={htmlLang[l.code]}
-                aria-label={t.nav.switchToLabel}
-                class="text-ink-soft no-underline transition-colors hover:text-ink"
-              >
-                {l.label}
-              </a>
-            )}
-          </>
-        ))
-      }
-    </div>
-
-    <a href={localePath(lang, 'book')} class="btn btn-ghost hidden !min-h-0 !px-5 !py-2.5 md:inline-flex" aria-current={current('book')}>
-      {t.nav.book}
-    </a>
-
-    <!-- Mobile: full-screen menu -->
-    <details class="menu lg:hidden" data-menu>
-      <summary class="relative z-[60] -mr-2 flex h-11 w-11 list-none items-center justify-center [&::-webkit-details-marker]:hidden">
-        <span aria-hidden="true" class="burger"><span></span><span></span></span>
-        <span class="sr-only">{t.nav.menu}</span>
-      </summary>
-      <div class="menu-panel">
-        <InkArt name="mountainsStrip" sizes="100vw" widths={[640, 1280]} class="pointer-events-none absolute inset-x-0 bottom-0 h-auto w-full opacity-80" />
-        <nav aria-label={t.nav.label} class="wrap relative flex min-h-full flex-col pt-28 pb-10">
-          <ul class="flex flex-col gap-1">
-            {
-              items.map((item) => (
-                <li>
-                  <a href={item.href} aria-current={current(item.key)} class="menu-link">
-                    {item.label}
-                  </a>
-                </li>
-              ))
-            }
-          </ul>
-          <div class="mt-auto pt-12">
-            <a href={localePath(lang, 'book')} class="btn w-full">{t.common.bookCta}</a>
-            <p class="mt-8 flex items-center gap-3 text-sm tracking-[0.12em]">
-              <span class="text-ink-soft">{t.nav.languageLabel}</span>
-              <a href={switchHref} hreflang={htmlLang[other]} lang={htmlLang[other]} aria-label={t.nav.switchToLabel}>
-                {langs.find((l) => l.code === other)?.label}
-              </a>
-            </p>
-          </div>
-        </nav>
       </div>
-    </details>
+
+      <a href={localePath(lang, 'book')} class="btn hidden !min-h-0 !px-5 !py-2.5 md:inline-flex" aria-current={current('book')}>
+        {t.nav.book}
+      </a>
+
+      <!-- Mobile: full-screen menu below the band -->
+      <details class="menu lg:hidden" data-menu>
+        <summary class="relative -mr-2 flex h-11 w-11 list-none items-center justify-center [&::-webkit-details-marker]:hidden">
+          <span aria-hidden="true" class="burger"><span></span><span></span></span>
+          <span class="sr-only">{t.nav.menu}</span>
+        </summary>
+        <div class="menu-panel">
+          <Painting name="range" sizes="100vw" widths={[640, 960, 1280]} class="pointer-events-none absolute inset-x-0 bottom-0 h-auto w-full opacity-90" />
+          <nav aria-label={t.nav.label} class="wrap relative flex min-h-full flex-col pt-10 pb-10">
+            <ul class="flex flex-col gap-1">
+              <li>
+                <a href={localePath(lang)} aria-current={onHome ? 'page' : undefined} class="menu-link">
+                  {t.nav.home}
+                </a>
+              </li>
+              {
+                items.map((item) => (
+                  <li>
+                    <a href={localePath(lang, item.key)} aria-current={current(item.key)} class="menu-link">
+                      {item.label}
+                    </a>
+                  </li>
+                ))
+              }
+            </ul>
+            <div class="mt-auto pt-12 pb-[max(4rem,18vw)]">
+              <a href={localePath(lang, 'book')} class="btn w-full">{t.common.bookCta}</a>
+              <p class="mt-8 flex items-center gap-3 text-sm tracking-[0.12em]">
+                <span class="text-ink-soft">{t.nav.languageLabel}</span>
+                <a href={switchHref} hreflang={htmlLang[other]} lang={htmlLang[other]} aria-label={t.nav.switchToLabel}>
+                  {langs.find((l) => l.code === other)?.label}
+                </a>
+              </p>
+            </div>
+          </nav>
+        </div>
+      </details>
+    </div>
   </div>
 </header>
 
 <style>
   .site-header {
+    --band: 4.5rem; /* rod + silk + border strip */
     position: fixed;
     inset: 0 0 auto;
     z-index: 50;
-    color: var(--color-ink);
-  }
-  /* background on a pseudo-element: a backdrop-filter on the header itself would trap the
-     fixed full-screen menu inside the header box */
-  .site-header::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    z-index: -1;
-    background: rgb(243 236 223 / 0.9);
-    -webkit-backdrop-filter: blur(10px);
-    backdrop-filter: blur(10px);
-    border-bottom: 1px solid rgb(31 28 24 / 0.08);
-    transition:
-      opacity 400ms ease,
-      border-color 400ms ease;
-  }
-  :global(.js) .site-header[data-overlay]:not([data-scrolled])::before {
-    opacity: 0;
+    height: var(--band);
+    color: var(--color-rice);
   }
 
+  /* ------------------------------------------------ the mounting */
+  .band {
+    position: relative;
+    height: 100%;
+    padding-top: 6px; /* the rod */
+    padding-bottom: 9px; /* the border strip */
+    background-color: var(--color-silk);
+    background-image: var(--silk);
+    box-shadow:
+      0 1px 0 rgb(0 0 0 / 0.25),
+      0 12px 18px -12px rgb(30 22 10 / 0.6);
+    translate: none;
+    /* back at once when scrolling up; away more slowly when scrolling down */
+    transition: translate 240ms var(--ease-out-soft);
+  }
+  /* 天杆 – the wooden rod the scroll hangs from: a round section, lit from above */
+  .rod {
+    position: absolute;
+    inset: 0 0 auto;
+    height: 6px;
+    background: linear-gradient(to bottom, #6b4c35 0%, #8a6649 28%, #4d3425 62%, #2a1c13 100%);
+    box-shadow: 0 1px 1.5px rgb(0 0 0 / 0.45);
+  }
+  /* 隔水 – the narrow border strip of a lighter silk with a key-fret (回纹), edged in dark */
+  .band::after {
+    content: '';
+    position: absolute;
+    inset: auto 0 0;
+    height: 9px;
+    border-top: 1px solid rgb(20 14 8 / 0.5);
+    border-bottom: 1px solid rgb(20 14 8 / 0.45);
+    background-color: var(--color-silk-light);
+    background-image: var(--fret);
+    background-size: 12px 7px;
+    pointer-events: none;
+  }
+
+  /* slides away while scrolling down; JS sets data-hidden */
+  .site-header[data-hidden] .band {
+    translate: 0 calc(-100% - 1.5rem);
+    transition-duration: 420ms;
+  }
+
+  /* 题签 – the title slip: paper glued onto the silk, its edges a little lifted */
+  .title-slip {
+    padding: 0.32rem 0.85rem 0.32rem 0.4rem;
+    color: var(--color-ink);
+    background: var(--color-paper) url('../assets/paper/rice-paper.webp') repeat 37% 61%;
+    box-shadow:
+      inset 0 0 0 1px rgb(60 45 25 / 0.18),
+      inset 0 0 12px rgb(120 95 60 / 0.16),
+      0 1px 2px rgb(0 0 0 / 0.45);
+    transition: box-shadow 250ms ease;
+  }
+  .title-slip:hover {
+    box-shadow:
+      inset 0 0 0 1px rgb(176 57 42 / 0.5),
+      inset 0 0 12px rgb(120 95 60 / 0.16),
+      0 1px 2px rgb(0 0 0 / 0.45);
+  }
+  .band .title-slip:focus-visible {
+    outline-color: var(--color-rice);
+  }
+
+  /* ------------------------------------------------ links on the silk */
   .nav-link {
     position: relative;
     font-size: 0.78rem;
@@ -164,6 +215,9 @@ const langs: { code: Lang; label: string }[] = [
     text-transform: uppercase;
     text-decoration: none;
     padding-block: 0.5rem;
+    color: var(--color-rice);
+    opacity: 0.88;
+    transition: opacity 200ms ease;
   }
   :global(:lang(zh-Hans)) .nav-link {
     font-size: 0.95rem;
@@ -173,19 +227,38 @@ const langs: { code: Lang; label: string }[] = [
     content: '';
     position: absolute;
     left: 0;
-    right: 0;
-    bottom: 0;
+    right: 0.2em;
+    bottom: 0.05rem;
     height: 1px;
-    background: var(--color-vermilion);
+    background: var(--color-silk-light);
     transform: scaleX(0);
     transform-origin: left;
     transition: transform 300ms var(--ease-out-soft);
+  }
+  .nav-link:hover,
+  .nav-link[aria-current='page'] {
+    opacity: 1;
   }
   .nav-link:hover::after,
   .nav-link[aria-current='page']::after {
     transform: scaleX(1);
   }
+  .lang-link {
+    text-decoration: none;
+    opacity: 0.72;
+    transition: opacity 200ms ease;
+  }
+  .lang-link:hover {
+    opacity: 1;
+  }
+  .band :global(:focus-visible) {
+    outline-color: var(--color-rice);
+  }
+  .menu-panel :global(:focus-visible) {
+    outline-color: var(--color-vermilion);
+  }
 
+  /* ------------------------------------------------ mobile menu */
   .burger {
     position: relative;
     display: block;
@@ -217,18 +290,20 @@ const langs: { code: Lang; label: string }[] = [
     transform: rotate(-45deg);
   }
 
+  /* the panel unrolls below the band: the scroll's paper */
   .menu-panel {
     position: fixed;
-    inset: 0;
-    z-index: 55;
+    inset: var(--band) 0 0;
+    z-index: -1;
     overflow-y: auto;
-    background: var(--color-paper);
+    color: var(--color-ink);
+    background: var(--color-paper) url('../assets/paper/rice-paper.webp') repeat 50% 0;
   }
   .menu-link {
     display: block;
-    padding-block: 0.55rem;
+    padding-block: 0.5rem;
     font-family: var(--font-display);
-    font-size: 2.6rem;
+    font-size: 2.5rem;
     line-height: 1.15;
     text-decoration: none;
   }
@@ -237,11 +312,14 @@ const langs: { code: Lang; label: string }[] = [
   }
   @media (prefers-reduced-motion: no-preference) {
     .menu[open] .menu-panel {
-      animation: menu-in 400ms var(--ease-out-soft);
+      animation: unroll 450ms var(--ease-out-soft);
     }
-    @keyframes menu-in {
+    @keyframes unroll {
       from {
-        opacity: 0;
+        clip-path: inset(0 0 100% 0);
+      }
+      to {
+        clip-path: inset(0 0 0 0);
       }
     }
   }

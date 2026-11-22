@@ -16,18 +16,24 @@
 }
 
 /* ------------------------------------------------------------------
-   Palette – old rice paper, ink, cinnabar.
-     宣 paper       #F3ECDF  background (aged xuan paper, with fibres and a soft vignette)
-     宣 paper-deep  #E8DDC8  mounts, quiet sections
-     墨 ink         #1F1C18  text (15:1 on paper)
-     淡墨 ink-soft  #5A5348  secondary text (6.4:1 on paper)
+   Palette – rice paper, ink, cinnabar, mounting silk.
+     宣 paper       #DDD8D4  the paper's mean tone (the page itself shows the real sheet:
+                             src/assets/paper/rice-paper.webp, a seamless tile – `npm run paintings`)
+     宣 paper-deep  a deeper, translucent shade of the same sheet: mounts, quiet sections
+     米 rice        #FAF6EF  text on cinnabar and on the mounting silk
+     墨 ink         #1F1C18  text (12:1 on the paper)
+     淡墨 ink-soft  #5A5348  secondary text (5.4:1 on the paper)
      淡墨 ink-faint #8C8376  hairlines and ornaments only – never text
-     朱 vermilion   #B0392A  seals, the primary button, hover marks (5.2:1 with paper)
+     朱 vermilion   #B0392A  seals, the primary button, hover marks
+     绫 silk        #4C4639  the mounting silk of the header and footer (天头 / 地头)
    ------------------------------------------------------------------ */
 @theme {
   --color-*: initial;
-  --color-paper: #f3ecdf;
-  --color-paper-deep: #e8ddc8;
+  --color-paper: #ddd8d4;
+  --color-paper-deep: rgb(96 80 58 / 0.075);
+  --color-rice: #faf6ef;
+  --color-silk: #4c4639;
+  --color-silk-light: #b9ae93;
   --color-ink: #1f1c18;
   --color-ink-soft: #5a5348;
   --color-ink-faint: #8c8376;
@@ -49,14 +55,33 @@
   --ease-out-soft: cubic-bezier(0.2, 0.7, 0.2, 1);
 }
 
+/* The mounting silk of the header and footer (天头 / 地头): sheen, a woven ruyi-cloud damask, fine
+   horizontal threads – and the key-fret (回纹) of the narrow border strip (隔水). */
+:root {
+  --silk:
+    /* sheen: silk catches the light along its upper part */
+    linear-gradient(to bottom, rgb(255 246 225 / 0.1), rgb(255 246 225 / 0) 45%, rgb(0 0 0 / 0.08)),
+    /* woven damask: small ruyi clouds on a diagonal lattice, tone on tone */
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='40'%3E%3Cg fill='%23e8dcc0' fill-opacity='.075'%3E%3Cpath id='c' d='M4 15c-2.6 0-2.6-4 .4-4 0-3.2 4.4-4 5.6-1.4 1-3.4 6.6-3.4 6.8.6 3.4-1 5 2.6 2.8 4.6-1 2-4.2 1.4-4.4.2-1 2-5 2-5.6.2-1.8 1.8-4.6 1.4-5.6-.2z'/%3E%3Cuse href='%23c' x='28' y='20'/%3E%3C/g%3E%3Cg fill='none' stroke='%23e8dcc0' stroke-opacity='.09' stroke-width='.8'%3E%3Cpath id='s' d='M10.4 10.6c.8 1.8 3.6 1.6 3.4-.4'/%3E%3Cuse href='%23s' x='28' y='20'/%3E%3C/g%3E%3C/svg%3E"),
+    /* the weave: fine horizontal threads */
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='120'%3E%3Cfilter id='w'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9 .03' numOctaves='2' seed='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 .95 0 0 0 0 .85 0 0 0 .09 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23w)'/%3E%3C/svg%3E");
+  --fret: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='7'%3E%3Cpath d='M.5 6.5V.5h8v4h-5v-2h3M0 6.5h12' fill='none' stroke='%233c3122' stroke-opacity='.42' stroke-width='.9'/%3E%3C/svg%3E");
+}
+
 @layer base {
   html {
     -webkit-text-size-adjust: 100%;
     text-size-adjust: 100%;
     scroll-padding-top: 5rem;
     background-color: var(--color-paper);
-    /* paper fibres: fine, slightly stretched noise */
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='p'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.55 .09' numOctaves='3' seed='4' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .42 0 0 0 0 .36 0 0 0 0 .27 0 0 0 .13 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23p)'/%3E%3C/svg%3E");
+    /* the sheet: a seamless tile of real rice paper (no visible repeat, no seams), moving with the
+       page like paper under the ink, 1 image px = 1 CSS px – and over it the paper's finest grain, which
+       image compression loses, as a small SVG noise */
+    background-image:
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.95' numOctaves='2' seed='7' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .38 0 0 0 0 .33 0 0 0 0 .27 0 0 0 1.6 -.72'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E"),
+      url('../assets/paper/rice-paper.webp');
+    background-repeat: repeat;
+    background-position: 0 0, 50% 0;
     color-scheme: light;
   }
 
@@ -67,7 +92,7 @@
     inset: 0;
     z-index: -1;
     pointer-events: none;
-    background: radial-gradient(ellipse 120% 90% at 50% 40%, transparent 55%, rgb(150 120 70 / 0.13) 100%);
+    background: radial-gradient(ellipse 120% 90% at 50% 40%, transparent 58%, rgb(120 100 70 / 0.1) 100%);
   }
 
   @media (prefers-reduced-motion: no-preference) {
@@ -139,7 +164,7 @@
 
   ::selection {
     background: var(--color-vermilion);
-    color: var(--color-paper);
+    color: var(--color-rice);
   }
 
   summary {
@@ -248,7 +273,7 @@
     padding: 0.9em 1.9em;
     border-radius: 1px;
     background: var(--color-vermilion);
-    color: var(--color-paper);
+    color: var(--color-rice);
     font-family: var(--font-sans);
     font-size: 0.8rem;
     font-weight: 600;
@@ -321,7 +346,7 @@
     background:
       url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .45 0 0 0 0 .38 0 0 0 0 .28 0 0 0 .32 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),
       radial-gradient(ellipse at center, transparent 60%, rgb(90 70 40 / 0.28) 100%),
-      rgb(243 236 223 / var(--aged-wash, 0.12));
+      rgb(221 216 212 / var(--aged-wash, 0.12));
   }
 
   /* Mounted like a hanging scroll: a mat of deeper paper and a hairline */
@@ -333,11 +358,15 @@
       0 18px 30px -24px rgb(60 40 10 / 0.45);
   }
 
-  /* Ink artwork (transparent WebP) sits on the paper as if painted on it */
+  /* Ink artwork and paintings (transparent images) sit on the paper as if painted on it */
   .ink {
     mix-blend-mode: multiply;
     pointer-events: none;
     user-select: none;
+  }
+  /* a painting that loads on approach (Painting.astro): without JavaScript its <noscript> copy shows */
+  html:not(.js) picture[data-defer] {
+    display: none;
   }
 
   /* Placeholders: impossible to miss, easy to grep */
@@ -389,15 +418,16 @@
     transform: none;
   }
 
-  /* ink settling into the paper: the hero art fades in slowly, once */
+  /* ink settling into the paper: a painting comes into focus slowly, once (it is visible from the first
+     frame – never hidden, so it paints at once) */
   .ink-in {
-    animation: ink-in 2.4s var(--ease-out-soft) both;
+    animation: ink-in 2.2s var(--ease-out-soft) both;
     animation-delay: var(--ink-delay, 0ms);
   }
   @keyframes ink-in {
     from {
-      opacity: 0;
-      filter: blur(6px);
+      opacity: 0.35;
+      filter: blur(5px);
     }
   }
 }

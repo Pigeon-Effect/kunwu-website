@@ -131,7 +131,7 @@ const halfAnnulus = `M${-R_OUT} 0A${R_OUT} ${R_OUT} 0 0 0 ${R_OUT} 0L${R_IN} 0A$
     <!-- "now" marker, positioned by script -->
     <g data-ring-marker class="hidden">
       <line x1="0" y1={-(R_IN - 10)} x2="0" y2={-(R_OUT + 2)} stroke="var(--color-vermilion)" stroke-width="1.5"></line>
-      <circle cy={-R_MID} r="7" fill="var(--color-vermilion)" stroke="var(--color-paper)" stroke-width="2"></circle>
+      <circle cy={-R_MID} r="7" fill="var(--color-vermilion)" stroke="var(--color-rice)" stroke-width="2"></circle>
     </g>
   </svg>
 
@@ -158,7 +158,7 @@ const halfAnnulus = `M${-R_OUT} 0A${R_OUT} ${R_OUT} 0 0 0 ${R_OUT} 0L${R_IN} 0A$
               {b.label[lang]}
               <span class="sr-only"> ({t.ring.kinds[b.kind]})</span>
             </span>
-            <span class="hidden rounded-sm bg-vermilion px-2 py-0.5 text-xs font-medium text-paper group-data-now:inline">
+            <span class="hidden rounded-sm bg-vermilion px-2 py-0.5 text-xs font-medium text-rice group-data-now:inline">
               {t.ring.now}
             </span>
           </li>

@@ -10,6 +10,8 @@ import Photo from '../../components/Photo.astro';
 import Seal from '../../components/Seal.astro';
 import RichText from '../../components/RichText.astro';
 import MasterPortraitPending from '../../components/MasterPortraitPending.astro';
+import Painting from '../../components/Painting.astro';
+import type { PaintingKey } from '../../data/paintings';
 import { visibleMasters, masterPhoto } from '../../data/masters';
 import { photos } from '../../data/photos';
 import { getLangStaticPaths, localePath, useT, type Lang } from '../../i18n/utils';
@@ -19,10 +21,15 @@ export const getStaticPaths = getLangStaticPaths;
 const lang = Astro.params.lang as Lang;
 const t = useT(lang);
 const zh = lang === 'zh';
+
+// 花木 – plants and trees: the pine over the page (it keeps its needles through the winter); beside each
+// master a flower – the peony, Heze's own flower, and chrysanthemums leaning out from a rock
+const plants: PaintingKey[] = ['peony', 'chrysanthemum'];
+const plantOf = (i: number): PaintingKey => plants[i % plants.length]!;
 ---
 
-<Base lang={lang} title={t.meta.master.title} description={t.meta.master.description} route="master">
-  <PageHead lang={lang} section="masters" title={t.master.title} lede={t.master.lede}>
+<Base lang={lang} title={t.meta.master.title} description={t.meta.master.description} route="master" paintings={['pine', ...visibleMasters.map((_, i) => plantOf(i))]}>
+  <PageHead lang={lang} section="masters" title={t.master.title} lede={t.master.lede} art="pine" artMode="behind" artStyle="--art-w:min(44vw,34rem);--art-top:0;--art-right:-2rem">
     <nav aria-label={t.master.title} class="mt-10">
       <ul class="flex flex-wrap gap-x-10 gap-y-3">
         {
@@ -42,8 +49,9 @@ const zh = lang === 'zh';
   </PageHead>
 
   {
-    visibleMasters.map((m) => {
+    visibleMasters.map((m, i) => {
       const portrait = masterPhoto(m.image);
+      const plant = plantOf(i);
       const notes = m.footnotes?.[lang] ?? {};
       return (
         <article id={m.slug} class="scroll-mt-24 border-t border-ink/10 py-20 sm:py-28" aria-labelledby={`${m.slug}-name`}>
@@ -86,7 +94,13 @@ const zh = lang === 'zh';
 
             <!-- text -->
             <div class="min-w-0">
-              <header>
+              <header class="relative isolate">
+                <Painting
+                  name={plant}
+                  sizes={plant === 'chrysanthemum' ? '(min-width: 48rem) 10rem, 7rem' : '(min-width: 48rem) 22rem, 46vw'}
+                  widths={plant === 'chrysanthemum' ? [160, 240, 320, 480] : [320, 480, 640, 880]}
+                  class:list={['master-plant -z-10 h-auto', `plant-${plant}`]}
+                />
                 <h2 id={`${m.slug}-name`}>
                   <span class="sr-only" lang="zh-Hans">{m.hanzi}</span>
                   <Calligraphy text={m.hanzi} vertical={false} size="clamp(3.4rem, 10vw, 5.8rem)" gap="0.02em" speed={1.3} class="-ml-2" />
@@ -182,3 +196,26 @@ const zh = lang === 'zh';
     </div>
   </section>
 </Base>
+
+<style>
+  /* a flower beside each master's name, at the top right of the text */
+  :global(.master-plant) {
+    position: absolute;
+    pointer-events: none;
+  }
+  :global(.plant-peony) {
+    top: -2.5rem;
+    right: -1rem;
+    width: min(46vw, 22rem);
+  }
+  :global(.plant-chrysanthemum) {
+    top: -3rem;
+    right: 0;
+    width: min(26vw, 10rem);
+  }
+  @media (max-width: 47.99rem) {
+    :global(.master-plant) {
+      opacity: 0.8;
+    }
+  }
+</style>

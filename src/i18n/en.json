@@ -62,7 +62,7 @@
   },
   "home": {
     "tagline": "Shaolin kung fu, lived every day.",
-    "heroAlt": "Ink painting: a martial artist in a high side kick, sandstone peaks in the mist behind.",
+    "heroAlt": "Landscape after Ren Yu: a peak in the mist, a grove and a pavilion by the water. On the ground in front of it four small figures practise kung fu – with a staff, a side kick and a punch – while their master watches.",
     "sayingText": "Before learning the art, learn courtesy. Before learning to fight, learn virtue.",
     "sayingSource": "An old saying of the martial arts",
     "lineageText": "Both of our masters belong to the lineage of Meihua Quan (Plum Blossom Fist), a national intangible cultural heritage of China, and both are lay disciples of the Shaolin Temple.",
@@ -177,7 +177,8 @@
   },
   "footer": {
     "pages": "Pages",
-    "rights": "All rights reserved."
+    "rights": "All rights reserved.",
+    "paintings": "Paintings on this page"
   },
   "notFound": {
     "title": "This page does not exist.",

@@ -1,20 +1,15 @@
-// Paints the site's ink-wash artwork into src/assets/ink/ (committed; re-run only to change the art).
-//   npm run ink [-- figure mountains mountains-strip stroke plum]
+// Paints the site's own ink artwork into src/assets/ink/ (committed; re-run only to change the art):
+// the dry brush stroke used as a divider. (The paintings come from real scrolls: npm run paintings.)
+//   npm run ink [-- stroke]
 import { mkdir, writeFile } from 'node:fs/promises';
 import sharp from 'sharp';
-import { paintFigure } from './figure.mjs';
-import { heroMountains, stripMountains } from './mountains.mjs';
-import { paintPlum, paintStroke } from './details.mjs';
+import { paintStroke } from './details.mjs';
 
 const out = new URL('../../src/assets/ink/', import.meta.url);
 await mkdir(out, { recursive: true });
 
 const jobs = {
-  figure: async () => paintFigure(),
-  mountains: heroMountains,
-  'mountains-strip': stripMountains,
   stroke: paintStroke,
-  plum: paintPlum,
 };
 
 const wanted = process.argv.slice(2).length ? process.argv.slice(2) : Object.keys(jobs);

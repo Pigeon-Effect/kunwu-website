@@ -1,76 +1,92 @@
 ---
-import { getCollection } from 'astro:content';
+/**
+ * Home – 山水, landscape. One painted landscape fills the first screen (after Ren Yu, with small figures
+ * practising on the ground by the pavilion), then the school's 武德 under Fan Qi's temple on the cliff,
+ * then the way to the booking. Masters, programs, daily life and contact each have their own page.
+ */
+import { getImage } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
 import Base from '../../layouts/Base.astro';
-import Photo from '../../components/Photo.astro';
 import Seal from '../../components/Seal.astro';
 import SectionLabel from '../../components/SectionLabel.astro';
-import MasterCard from '../../components/MasterCard.astro';
-import InkArt from '../../components/InkArt.astro';
+import Painting from '../../components/Painting.astro';
 import BrushRule from '../../components/BrushRule.astro';
 import Calligraphy from '../../components/Calligraphy.astro';
 import { sections } from '../../config/sections';
-import { address, contact, mapLink } from '../../config/site';
-import { fromPrice, formatPrice } from '../../config/booking';
-import { visibleMasters } from '../../data/masters';
-import { getLangStaticPaths, intlLocale, localePath, splitId, useT, type Lang } from '../../i18n/utils';
+import { paintings } from '../../data/paintings';
+import { getLangStaticPaths, localePath, useT, type Lang } from '../../i18n/utils';
 
 export const getStaticPaths = getLangStaticPaths;
 
 const lang = Astro.params.lang as Lang;
 const t = useT(lang);
 const zh = lang === 'zh';
-const programs = (await getCollection('programs', (e) => splitId(e.id).lang === lang)).sort(
-  (a, b) => a.data.order - b.data.order,
-);
 const saying = ['未曾学艺先学礼', '未曾习武先习德'] as const;
 const sayingEn = useT('en').home.sayingText;
+
+// the hero painting, art-directed: a tall composition for portrait screens, a wide one otherwise
+const TALL = '(max-aspect-ratio: 4/5)';
+const art = async (image: ImageMetadata, widths: number[]) => {
+  // soft ink painting: a low AVIF quality looks the same on screen at a third of the size
+  const opts = { src: image, widths, quality: 38 };
+  const [avif, webp] = await Promise.all([getImage({ ...opts, format: 'avif' }), getImage({ ...opts, format: 'webp' })]);
+  return { avif: avif.srcSet.attribute, webp: webp.srcSet.attribute, fallback: webp.src };
+};
+const tall = await art(paintings.heroTall.image, [480, 640, 800, 1000, 1200]);
+const wide = await art(paintings.heroWide.image, [960, 1280, 1600, 2000, 2400]);
+// The image covers the screen. A soft ink painting needs no more than ~1.5 image px per CSS px, so the
+// sizes ask for a little less than the full device resolution on dense phone screens.
+const tallSizes = '(min-aspect-ratio: 6/11) 76vw, calc((100vh - 4.5rem) * 0.42)';
+const wideSizes = '(max-aspect-ratio: 12/7) calc((100vh - 4.5rem) * 1.72), 100vw';
 ---
 
-<Base lang={lang} title={t.meta.home.title} description={t.meta.home.description} route="home" overlayHeader>
-  <!-- 1 · Hero: a painting – peaks in the mist, one figure, the title written down the side and sealed -->
-  <section class="hero relative isolate min-h-[100svh] overflow-hidden" aria-labelledby="hero-title">
-    <InkArt
-      name="mountains"
-      sizes="(max-width: 40rem) 220vw, 100vw"
-      widths={[800, 1200, 1600, 2400]}
-      eager
-      class="ink-in absolute inset-x-0 bottom-0 -z-10 h-[78%] w-full object-cover object-[88%_100%] md:object-[50%_100%]"
-    />
-    <InkArt
-      name="figure"
-      alt={t.home.heroAlt}
-      sizes="(min-width: 48rem) 46rem, 90vw"
-      widths={[480, 720, 960, 1180]}
-      eager
-      class="hero-figure ink-in absolute -z-10 h-auto"
-      style="--ink-delay:300ms"
-    />
+<Base lang={lang} title={t.meta.home.title} description={t.meta.home.description} route="home" paintings={['heroWide', 'cliffTemple']}>
+  <!-- 1 · 山水: the landscape – the title written down the left like an inscription, sealed -->
+  <section class="hero relative isolate overflow-hidden" aria-labelledby="hero-title">
+    <picture>
+      <source media={TALL} type="image/avif" srcset={tall.avif} sizes={tallSizes} />
+      <source media={TALL} type="image/webp" srcset={tall.webp} sizes={tallSizes} />
+      <source type="image/avif" srcset={wide.avif} sizes={wideSizes} />
+      <img
+        src={wide.fallback}
+        srcset={wide.webp}
+        sizes={wideSizes}
+        width={paintings.heroWide.image.width}
+        height={paintings.heroWide.image.height}
+        alt={t.home.heroAlt}
+        loading="eager"
+        fetchpriority="high"
+        decoding="async"
+        class="ink ink-in hero-art absolute inset-0 -z-10 h-full w-full object-cover"
+      />
+    </picture>
 
-    <div class="wrap flex min-h-[100svh] flex-col pt-[max(6.5rem,13svh)] pb-10">
-      <div class="flex items-start gap-6 sm:gap-10">
-        <h1 id="hero-title" class="flex items-start gap-5 sm:gap-8">
-          <span class="sr-only" lang="zh-Hans">坤武功夫</span>
-          <Calligraphy text="坤武功夫" size="clamp(3.9rem, 10vw, 7.4rem)" gap="-0.02em" delay={600} speed={1.7} eager class="hero-write" />
-          <span class="mt-2 block max-w-[13rem] font-display text-[clamp(1.4rem,3vw,2.1rem)] leading-[1.1] tracking-[0.06em] sm:max-w-none" lang="en">
-            Kunwu<br />Kung Fu
-          </span>
-        </h1>
-      </div>
+    <div class="hero-inner wrap flex flex-col">
+      <h1 id="hero-title" class="flex items-start gap-5 sm:gap-8">
+        <span class="sr-only" lang="zh-Hans">坤武功夫</span>
+        <Calligraphy text="坤武功夫" size="clamp(3.6rem, 9vw, 6.8rem)" gap="-0.02em" delay={700} speed={1.7} eager class="hero-write" />
+        <span class="mt-2 block font-display text-[clamp(1.4rem,3vw,2.1rem)] leading-[1.1] tracking-[0.06em]" lang="en">
+          Kunwu<br />Kung Fu
+        </span>
+      </h1>
       <Seal text="坤武功夫" size="lg" class="mt-6 ml-1" />
 
-      <div class="mt-auto max-w-sm pt-10">
+      <div class="hero-call max-w-sm">
         <p class="text-lg text-ink-soft">{t.home.tagline}</p>
         <a href={localePath(lang, 'book')} class="btn mt-6">{t.common.bookCta}</a>
       </div>
     </div>
   </section>
 
-  <BrushRule class="py-6" />
-
-  <!-- 2 · 武德 Philosophy: the old saying, the lineage, a plum branch reaching in from the corner -->
-  <section id="philosophy" class="relative overflow-hidden py-24 sm:py-36" aria-labelledby="philosophy-label">
-    <InkArt name="plum" sizes="(min-width: 54rem) 28rem, 52vw" widths={[400, 640, 900]} class="plum absolute -z-10 h-auto" />
-    <div class="wrap relative grid grid-cols-[minmax(0,1fr)] items-start gap-16 md:grid-cols-[minmax(0,1fr)_auto] md:gap-24">
+  <!-- 2 · 武德: the old saying, the lineage – under a temple on a cliff top, its foot in cloud -->
+  <section id="philosophy" class="relative isolate overflow-hidden pt-24 pb-20 sm:pt-32 sm:pb-28" aria-labelledby="philosophy-label">
+    <Painting
+      name="cliffTemple"
+      sizes="(min-width: 64rem) 30rem, (min-width: 48rem) 40vw, 78vw"
+      widths={[360, 540, 720, 900]}
+      class="cliff -z-10 h-auto"
+    />
+    <div class="wrap relative grid grid-cols-[minmax(0,1fr)] items-start gap-16 md:grid-cols-[minmax(0,1fr)_auto] md:gap-20">
       <div>
         <SectionLabel id="philosophy-label" lang={lang} {...sections.philosophy} label={t.nav.philosophy} />
         <figure class="reveal mt-10">
@@ -89,8 +105,8 @@ const sayingEn = useT('en').home.sayingText;
         <p class="reveal mt-14 max-w-xl text-lg text-ink-soft" style="--reveal-delay:120ms">{t.home.lineageText}</p>
       </div>
 
-      <!-- the saying as a vertical inscription, signed with a seal -->
-      <div class="reveal justify-self-center md:justify-self-end md:pt-56" style="--reveal-delay:200ms" lang="zh-Hans" aria-hidden={zh ? 'true' : undefined}>
+      <!-- the saying as a vertical inscription beside the cliff, signed with a seal -->
+      <div class="inscription reveal justify-self-center md:justify-self-end" style="--reveal-delay:200ms" lang="zh-Hans" aria-hidden={zh ? 'true' : undefined}>
         <p class="sr-only">{saying.join('，')}。</p>
         <div class="flex flex-row-reverse items-start gap-7" aria-hidden="true">
           <Calligraphy text={saying[0]} animate={false} size="clamp(2.5rem, 6vw, 2.9rem)" gap="0.35rem" />
@@ -105,154 +121,74 @@ const sayingEn = useT('en').home.sayingText;
 
   <BrushRule />
 
-  <!-- 3 · 师资 Masters -->
-  <section id="masters" class="py-24 sm:py-36" aria-labelledby="masters-label">
+  <!-- 3 · 报名: the way in -->
+  <section class="pt-20 pb-24 sm:pt-28 sm:pb-32" aria-labelledby="book-label">
     <div class="wrap">
-      <div class="flex items-start justify-between gap-6">
-        <div class="min-w-0">
-          <SectionLabel id="masters-label" lang={lang} {...sections.masters} label={t.nav.masters} />
-          <p class="reveal mt-6 font-display text-[clamp(2.4rem,6vw,4.5rem)]">{t.home.mastersIntro}</p>
-        </div>
-        <Calligraphy text={sections.masters.hanzi} size="clamp(2.7rem, 6.5vw, 4.4rem)" gap="-0.04em" class="shrink-0" />
-      </div>
-      <div class="mt-16 grid gap-20 sm:mt-20 md:grid-cols-2 md:gap-12 lg:gap-24">
-        {visibleMasters.map((m, i) => <MasterCard master={m} lang={lang} delay={i * 140} />)}
-      </div>
-    </div>
-  </section>
-
-  <BrushRule />
-
-  <!-- 4 · 课程 Programs: four rows -->
-  <section id="programs" class="py-24 sm:py-36" aria-labelledby="programs-label">
-    <div class="wrap">
-      <div class="flex items-start justify-between gap-6">
-        <div class="min-w-0">
-          <SectionLabel id="programs-label" lang={lang} {...sections.programs} label={t.nav.programs} />
-          <p class="reveal mt-6 font-display text-[clamp(2.4rem,6vw,4.5rem)]">{t.home.programsTitle}</p>
-          <p class="mt-4 text-ink-soft">{t.home.programsNote}</p>
-        </div>
-        <Calligraphy text={sections.programs.hanzi} size="clamp(2.7rem, 6.5vw, 4.4rem)" gap="-0.04em" class="shrink-0" />
-      </div>
-
-      <ul class="mt-14 border-t border-ink/15">
-        {
-          programs.map((p) => {
-            const price = fromPrice(p.data.program);
-            return (
-              <li class="border-b border-ink/15">
-                <a
-                  href={localePath(lang, 'training', p.data.program)}
-                  class="program-row group grid grid-cols-[auto_1fr_auto] items-center gap-x-5 gap-y-2 py-7 no-underline sm:gap-x-8 md:grid-cols-[auto_minmax(0,15rem)_minmax(0,1fr)_auto_auto] md:py-9"
-                >
-                  <Seal text={p.data.seal} style="zhu" size="xs" class="row-span-2 md:row-span-1" />
-                  <span class="font-display text-[1.9rem] leading-tight sm:text-4xl">{p.data.title}</span>
-                  <span class="col-start-2 text-[0.97rem] text-ink-soft md:col-start-auto">{p.data.summary}</span>
-                  <span class="col-start-2 text-sm whitespace-nowrap text-ink-soft md:col-start-auto">
-                    {price !== null ? `${t.common.from} ${formatPrice(price, intlLocale[lang])}` : t.training.pricePh}
-                  </span>
-                  <span
-                    class="col-start-3 row-span-2 row-start-1 text-xl text-ink-soft transition-transform duration-300 group-hover:translate-x-1 group-hover:text-vermilion md:col-start-auto md:row-span-1 md:row-start-auto"
-                    aria-hidden="true"
-                  >
-                    →
-                  </span>
-                </a>
-              </li>
-            );
-          })
-        }
-      </ul>
-      <p class="mt-10">
-        <a href={localePath(lang, 'training')} class="more">{t.home.programsLink} <span aria-hidden="true">→</span></a>
+      <SectionLabel id="book-label" lang={lang} {...sections.book} label={t.nav.book} />
+      <a href={localePath(lang, 'book')} class="cta-big group mt-8 inline-flex flex-wrap items-baseline gap-x-6 no-underline">
+        <span class="font-display">{t.common.bookCta}</span>
+        <span class="cta-arrow text-vermilion" aria-hidden="true">→</span>
+      </a>
+      <p class="mt-6 max-w-xl text-lg text-ink-soft">
+        {t.home.contactLede}
+        <a href={localePath(lang, 'contact')} class="ml-1 whitespace-nowrap text-ink">{t.nav.contact} →</a>
       </p>
-
-      <!-- one line on daily life; the full timetable lives on /daily-life -->
-      <p class="mt-24 max-w-2xl text-lg text-ink-soft">
-        {t.home.dayTeaser}
-        <a href={localePath(lang, 'dailyLife')} class="ml-1 whitespace-nowrap text-ink">{t.home.dayLink} →</a>
-      </p>
-    </div>
-  </section>
-
-  <BrushRule />
-
-  <!-- 5 · 联系 Contact -->
-  <section id="contact" class="pt-24 pb-20 sm:pt-36 sm:pb-28" aria-labelledby="contact-label">
-    <div class="wrap">
-      <div class="flex items-start justify-between gap-6">
-        <div class="min-w-0">
-          <SectionLabel id="contact-label" lang={lang} {...sections.contact} label={t.nav.contact} />
-          <a href={localePath(lang, 'book')} class="cta-big group mt-8 inline-flex flex-wrap items-baseline gap-x-6 no-underline">
-            <span class="font-display">{t.common.bookCta}</span>
-            <span class="cta-arrow text-vermilion" aria-hidden="true">→</span>
-          </a>
-          <p class="mt-6 max-w-xl text-lg text-ink-soft">{t.home.contactLede}</p>
-        </div>
-        <Calligraphy text={sections.contact.hanzi} size="clamp(2.7rem, 6.5vw, 4.4rem)" gap="-0.04em" class="shrink-0" />
-      </div>
-
-      <div class="mt-20 grid gap-14 border-t border-ink/15 pt-12 sm:grid-cols-2 lg:grid-cols-[auto_1fr_1.2fr] lg:gap-20">
-        <div>
-          <h3 class="label !text-[0.72rem]">{t.contact.wechatTitle}</h3>
-          <div class="mt-5 w-36">
-            <Photo src={contact.wechatQr} alt={contact.wechatQr ? t.contact.wechatQrAlt : t.contact.wechatQrPh} ratio="1/1" sizes="9rem" widths={[288]} />
-          </div>
-          <p class="mt-4 text-sm">{t.contact.wechatId}: {contact.wechatId ?? t.contact.wechatIdPh}</p>
-        </div>
-        <div>
-          <h3 class="label !text-[0.72rem]">{t.contact.emailTitle}</h3>
-          <p class="mt-5 text-lg">{contact.email ? <a href={`mailto:${contact.email}`}>{contact.email}</a> : t.contact.emailPh}</p>
-        </div>
-        <div>
-          <h3 class="label !text-[0.72rem]">{t.contact.addressTitle}</h3>
-          <address class="mt-5 not-italic">
-            {(zh ? address.zhLines : address.enLines).map((l) => <span class="block">{l}</span>)}
-          </address>
-          {!address.confirmed && <p class="mt-3 text-sm">{t.contact.toConfirm}</p>}
-          <p class="mt-5">
-            <a href={mapLink()} rel="noopener" class="text-sm">{t.contact.mapLink} ↗</a>
-          </p>
-        </div>
-      </div>
     </div>
   </section>
 </Base>
 
 <style>
-  /* title written top to bottom, like the inscription on a painting */
-  :global(.hero-write) {
-    margin-left: -0.15rem;
+  /* the landscape fills the first screen below the header */
+  .hero {
+    min-height: calc(100svh - 4.5rem);
   }
-  /* the figure stands in the right half, feet near the bottom of the screen */
-  /* small in the landscape, as figures are in shanshui painting */
-  :global(.hero-figure) {
-    right: 0;
-    bottom: calc(10.5rem + 2svh);
-    width: min(62vw, 38svh);
+  .hero-inner {
+    min-height: calc(100svh - 4.5rem);
+    padding-top: max(3rem, 7svh);
+    padding-bottom: 2.5rem;
   }
-  @media (min-width: 48rem) {
-    :global(.hero-figure) {
-      right: max(6vw, calc(50vw - 30rem));
-      bottom: 10svh;
-      width: min(38vw, 56svh, 34rem);
+  /* the painting keeps its peaks, grove and figures (the right side) when the screen is narrower */
+  .hero-art {
+    object-position: 100% 100%;
+  }
+  /* portrait screens: the call follows the seal, above the grove and the figures on the bank;
+     landscape screens: it sits at the foot of the open water */
+  .hero-call {
+    margin-top: 2.25rem;
+  }
+  @media (min-aspect-ratio: 4/5) {
+    .hero-call {
+      margin-top: auto;
+      padding-top: 2.5rem;
     }
   }
 
-  /* the branch reaches in from the top-right corner, above the inscription */
-  :global(.plum) {
-    top: 0;
-    right: -0.5rem;
-    width: min(56vw, 28rem);
-    opacity: 0.9;
-    transform: scaleX(-1); /* base off the right edge, the branch grows in from outside the frame */
+  :global(.hero-write) {
+    margin-left: -0.15rem;
   }
 
-  .program-row :global(.seal) {
-    transition: transform 400ms var(--ease-out-soft);
+  /* Fan Qi's cliff: top right, the inscription stands at its misty foot */
+  :global(.cliff) {
+    position: absolute;
+    top: 1rem;
+    right: -1.5rem;
+    width: min(78vw, 30rem);
+    opacity: 0.95;
   }
-  .program-row:hover :global(.seal) {
-    transform: rotate(-4deg);
+  @media (max-width: 47.99rem) {
+    /* phones: the cliff stands behind the inscription, below the saying */
+    :global(.cliff) {
+      top: auto;
+      bottom: 3rem;
+      right: -3rem;
+      width: 82vw;
+      opacity: 0.85;
+    }
+  }
+  @media (min-width: 48rem) {
+    .inscription {
+      padding-top: 17rem;
+    }
   }
 
   .cta-big {

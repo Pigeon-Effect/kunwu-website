@@ -3,6 +3,7 @@ import '../styles/global.css';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import { asset, htmlLang, locales, switchLangPath, useT, type Lang, type RouteKey } from '../i18n/utils';
+import type { PaintingKey } from '../data/paintings';
 
 interface Props {
   lang: Lang;
@@ -10,16 +11,16 @@ interface Props {
   description: string;
   /** which nav item is active */
   route?: RouteKey;
-  /** the page starts with a full-bleed hero: header is transparent until the page scrolls */
-  overlayHeader?: boolean;
+  /** the painting excerpts this page shows – credited in the footer */
+  paintings?: PaintingKey[];
 }
 
-const { lang, title, description, route, overlayHeader = false } = Astro.props;
+const { lang, title, description, route, paintings = [] } = Astro.props;
 const t = useT(lang);
 const pathname = Astro.url.pathname;
 const canonical = new URL(pathname, Astro.site);
 const alternate = (l: Lang) => new URL(switchLangPath(pathname, l), Astro.site).href;
-const ogImage = new URL(asset('og-image.png'), Astro.site).href;
+const ogImage = new URL(asset('og-image.jpg'), Astro.site).href;
 ---
 
 <!doctype html>
@@ -37,7 +38,7 @@ const ogImage = new URL(asset('og-image.png'), Astro.site).href;
     <link rel="icon" href={asset('favicon.svg')} type="image/svg+xml" />
     <link rel="apple-touch-icon" href={asset('apple-touch-icon.png')} />
     <link rel="manifest" href={asset('site.webmanifest')} />
-    <meta name="theme-color" content="#f3ecdf" />
+    <meta name="theme-color" content="#4c4639" />
 
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content={t.site.name} />
@@ -54,26 +55,48 @@ const ogImage = new URL(asset('og-image.png'), Astro.site).href;
   <body class="flex min-h-dvh flex-col">
     <a
       href="#main"
-      class="sr-only z-[70] bg-ink px-4 py-2 text-paper focus:not-sr-only focus:fixed focus:top-3 focus:left-3"
+      class="sr-only z-[70] bg-ink px-4 py-2 text-rice focus:not-sr-only focus:fixed focus:top-3 focus:left-3"
       >{t.nav.skip}</a
     >
-    <Header lang={lang} route={route} overlay={overlayHeader} />
-    <main id="main" class:list={['flex-1', !overlayHeader && 'pt-[4.5rem]']} tabindex="-1">
+    <Header lang={lang} route={route} />
+    <main id="main" class="flex-1 pt-[4.5rem]" tabindex="-1">
       <slot />
     </main>
-    <Footer lang={lang} />
+    <Footer lang={lang} paintings={paintings} />
 
     <script>
-      // Header: solid once the page has scrolled a little.
+      // The header (the scroll's mounting) slides away while the page scrolls down and comes back the
+      // moment it scrolls up. It stays while the menu is open, near the top, and while it has focus.
       const header = document.querySelector<HTMLElement>('[data-header]');
-      if (header?.hasAttribute('data-overlay')) {
-        const update = () => header.toggleAttribute('data-scrolled', window.scrollY > 24);
-        update();
-        window.addEventListener('scroll', update, { passive: true });
+      const menu = document.querySelector<HTMLDetailsElement>('[data-menu]');
+      if (header) {
+        let lastY = Math.max(0, window.scrollY);
+        let queued = false;
+        const set = (hidden: boolean) => header.toggleAttribute('data-hidden', hidden);
+        const update = () => {
+          queued = false;
+          const y = Math.max(0, window.scrollY);
+          const dy = y - lastY;
+          lastY = y;
+          if (menu?.open || y < header.offsetHeight || header.contains(document.activeElement)) set(false);
+          else if (dy > 3) set(true);
+          else if (dy < 0) set(false);
+        };
+        window.addEventListener(
+          'scroll',
+          () => {
+            if (!queued) {
+              queued = true;
+              requestAnimationFrame(update);
+            }
+          },
+          { passive: true },
+        );
+        header.addEventListener('focusin', () => set(false));
+        menu?.addEventListener('toggle', () => menu.open && set(false));
       }
 
-      // Mobile menu: close after choosing an item (anchors stay on the page) and on Escape.
-      const menu = document.querySelector<HTMLDetailsElement>('[data-menu]');
+      // Mobile menu: close after choosing an item and on Escape.
       menu?.querySelectorAll('a').forEach((a) => a.addEventListener('click', () => (menu.open = false)));
       document.addEventListener('keydown', (e) => {
         if (e.key === 'Escape' && menu?.open) {
@@ -82,25 +105,35 @@ const ogImage = new URL(asset('og-image.png'), Astro.site).href;
         }
       });
 
-      // Calligraphy ink loads when its title comes near the screen.
-      const lazyInk = document.querySelectorAll<HTMLElement>('.write[data-lazy]');
+      // Calligraphy ink and paintings below the first screen load when they come near it – not during
+      // the first page load, so what is in view gets the bandwidth. A painting settles in like ink.
       const loadInk = (el: Element) =>
         el.querySelectorAll<SVGImageElement>('image[data-href]').forEach((img) => img.setAttribute('href', img.dataset.href!));
+      const loadPainting = (pic: Element) => {
+        pic.querySelectorAll<HTMLSourceElement>('source[data-srcset]').forEach((s) => (s.srcset = s.dataset.srcset!));
+        const img = pic.querySelector<HTMLImageElement>('img[data-src]');
+        if (!img) return;
+        img.addEventListener('load', () => img.classList.add('ink-in'), { once: true });
+        img.srcset = img.dataset.srcset!;
+        img.src = img.dataset.src!;
+      };
+      const deferred = [...document.querySelectorAll('.write[data-lazy], picture[data-defer] > img')];
+      const load = (el: Element) => (el.matches('img') ? loadPainting(el.parentElement!) : loadInk(el));
       if ('IntersectionObserver' in window) {
         const near = new IntersectionObserver(
           (entries) => {
             for (const entry of entries) {
               if (entry.isIntersecting) {
-                loadInk(entry.target);
+                load(entry.target);
                 near.unobserve(entry.target);
               }
             }
           },
-          { rootMargin: '900px 0px' },
+          { rootMargin: '500px 0px' },
         );
-        lazyInk.forEach((el) => near.observe(el));
+        deferred.forEach((el) => near.observe(el));
       } else {
-        lazyInk.forEach(loadInk);
+        deferred.forEach(load);
       }
 
       // Reveal on scroll: fade/translate in once; calligraphy (.write) starts writing. Without

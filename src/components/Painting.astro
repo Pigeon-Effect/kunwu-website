@@ -1,0 +1,65 @@
+---
+/**
+ * An excerpt of a traditional painting (src/data/paintings.ts, made by `npm run paintings`): ink and colour
+ * on a transparent ground, multiplied into the site's paper as if painted on it. Decorative unless `alt`.
+ *
+ * AVIF (WebP fallback). These are soft ink paintings: AVIF at a low quality setting looks the same as a high
+ * one on screen and is a third of the size.
+ *   load="eager"  above the fold, always shown: loads at once
+ *   load="lazy"   above the fold but hidden on some screens by CSS (a browser never loads a hidden lazy image)
+ *   load="defer"  (default) below the fold: loads when it comes near the screen (Base.astro) – not during
+ *                 the first page load, so what is in view gets the bandwidth. Without JavaScript the
+ *                 <noscript> copy loads lazily.
+ */
+import { getImage } from 'astro:assets';
+import { paintings, type PaintingKey } from '../data/paintings';
+
+interface Props {
+  name: PaintingKey;
+  alt?: string;
+  sizes: string;
+  widths?: number[];
+  load?: 'eager' | 'lazy' | 'defer';
+  class?: string;
+  style?: string;
+}
+
+const { name, alt = '', sizes, widths = [320, 480, 640, 960], load = 'defer', class: className = '', style } = Astro.props;
+const src = paintings[name].image;
+const usable = [...new Set([...widths.filter((w) => w < src.width), Math.min(src.width, Math.max(...widths))])].sort((a, b) => a - b);
+const [avif, webp] = await Promise.all([
+  getImage({ src, widths: usable, format: 'avif', quality: 42 }),
+  getImage({ src, widths: usable, format: 'webp', quality: 72 }),
+]);
+const img = {
+  width: src.width,
+  height: src.height,
+  alt,
+  decoding: 'async' as const,
+  'aria-hidden': alt ? undefined : ('true' as const),
+  class: `ink ${className}`,
+  style,
+};
+---
+
+{
+  load !== 'defer' ? (
+    <picture>
+      <source type="image/avif" srcset={avif.srcSet.attribute} sizes={sizes} />
+      <img {...img} src={webp.src} srcset={webp.srcSet.attribute} sizes={sizes} loading={load} />
+    </picture>
+  ) : (
+    <>
+      <picture data-defer>
+        <source type="image/avif" data-srcset={avif.srcSet.attribute} sizes={sizes} />
+        <img {...img} data-src={webp.src} data-srcset={webp.srcSet.attribute} sizes={sizes} />
+      </picture>
+      <noscript>
+        <picture>
+          <source type="image/avif" srcset={avif.srcSet.attribute} sizes={sizes} />
+          <img {...img} src={webp.src} srcset={webp.srcSet.attribute} sizes={sizes} loading="lazy" />
+        </picture>
+      </noscript>
+    </>
+  )
+}
