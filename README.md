@@ -13,6 +13,7 @@ Astro 7 · Tailwind CSS 4 · TypeScript (strict). Zero external requests – see
 | `npm run preview` | serve `dist/` |
 | `npm run placeholders` | list all missing content (`[PLACEHOLDER: …]`) |
 | `npm run ink` | repaint the ink artwork in `src/assets/ink/` (figure, peaks, brush stroke, plum branch) – `npm run ink -- figure` for one |
+| `npm run calligraphy` | paint the calligraphy strokes for the titles into `src/assets/calligraphy/` (`-- --sheet file.png` for a proof sheet) |
 | `npm run seal-glyphs` | extract outlines for new seal characters into `src/data/seal-glyphs.json` |
 | `npm run icons` | regenerate favicons, touch icons, the social image and logo exports from the seal and the ink art |
 | `npm run fonts` | rebuild the Chinese display-font subset from the built pages (run after `npm run build` when Chinese headings, names or labels change, then build again; the build warns when glyphs are missing) |
@@ -69,12 +70,17 @@ Bright, antique, calm – like a Chinese ink painting on old rice paper. Tokens 
 - `stroke` – a dry brush stroke (`BrushRule`, between sections and under page titles)
 - `plum` – a plum branch (梅, for Meihua Quan) in the philosophy section
 
-**Calligraphy** – `Calligraphy` / `src/lib/calligraphy.ts`: titles in brush calligraphy (楷书), written stroke by stroke
-in the correct stroke order when they scroll into view (CSS only; finished at once without JS or with reduced motion).
-Hero 坤武功夫, the home section titles, inner page heads and the master names; the 未曾学艺先学礼 inscription in the same hand,
-unanimated. Stroke outlines, centre lines and order come from [Make Me a Hanzi](https://github.com/skishore/makemeahanzi)
-via the `hanzi-writer-data` package (dev dependency, read at build time – nothing is loaded at runtime). The outlines are
-derived from Arphic PL KaitiM GB, © Arphic Technology, under the Arphic Public License (copy shipped as `public/licenses/ARPHICPL.TXT`).
+**Calligraphy** – `Calligraphy`: titles in brush calligraphy, written stroke by stroke in the correct stroke order when
+they scroll into view (an SVG mask follows each stroke's centre line; CSS only; finished at once without JS or with
+reduced motion). Hero 坤武功夫, the home section titles, inner page heads and the master names; the 未曾学艺先学礼
+inscription in the same hand, unanimated. Every stroke is painted ink, not a font: `npm run calligraphy`
+(`scripts/ink/calligraphy.mjs`) paints each character stroke by stroke – a slight hand wobble, ink pooling where the
+brush presses in, dry-brush streaks (飞白) on fast strokes and tails, bleed into the paper, the brush re-dipped every few
+strokes – into one small sprite per character (`src/assets/calligraphy/`, ~6 KB each) plus `src/data/calligraphy.json`.
+To write a new character, add the text in that script and re-run (`npm run calligraphy -- --sheet proof.png` writes a
+proof sheet). Stroke shapes, centre lines and order come from [Make Me a Hanzi](https://github.com/skishore/makemeahanzi)
+via the `hanzi-writer-data` package (dev dependency). The outlines are derived from Arphic PL KaitiM GB, © Arphic
+Technology, under the Arphic Public License (copy shipped as `public/licenses/ARPHICPL.TXT`).
 
 **Seals** – `Seal` / `src/lib/seal.ts`: worn hand-stamped seals from glyph outlines (Noto Serif SC Black).
 白文 for names (logo 坤武功夫, masters 淞 · 涛), 朱文 for all other marks (programs, 住 · 食 · 休, 德).

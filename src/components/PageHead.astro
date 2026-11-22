@@ -29,7 +29,7 @@ const written = title === s.hanzi;
         written ? (
           <h1 class="mt-6">
             <span class="sr-only">{title}</span>
-            <Calligraphy text={title} vertical={false} size="clamp(3.6rem, 10vw, 6rem)" delay={300} class="-ml-2" />
+            <Calligraphy text={title} vertical={false} size="clamp(3.6rem, 10vw, 6rem)" delay={300} eager class="-ml-2" />
           </h1>
         ) : (
           <h1 class="mt-6 max-w-4xl text-[3rem] sm:text-7xl lg:text-[5.5rem]">{title}</h1>
@@ -38,7 +38,7 @@ const written = title === s.hanzi;
       <BrushRule align="start" class="mt-5 -ml-2" />
       {lede && <p class="mt-6 max-w-2xl text-lg text-ink-soft sm:text-xl">{lede}</p>}
     </div>
-    {!written && <Calligraphy text={s.hanzi} size="clamp(3rem, 8vw, 5.6rem)" gap="-0.04em" delay={300} class="shrink-0 sm:mr-[4%]" />}
+    {!written && <Calligraphy text={s.hanzi} size="clamp(3rem, 8vw, 5.6rem)" gap="-0.04em" delay={300} eager class="shrink-0 sm:mr-[4%]" />}
   </div>
   <slot />
 </header>

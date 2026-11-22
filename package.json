@@ -17,7 +17,8 @@
     "astro": "astro",
     "fonts": "node scripts/subset-fonts.mjs",
     "seal-glyphs": "node scripts/seal-glyphs.mjs",
-    "ink": "node scripts/ink/paint.mjs"
+    "ink": "node scripts/ink/paint.mjs",
+    "calligraphy": "node scripts/ink/calligraphy.mjs"
   },
   "dependencies": {
     "@astrojs/sitemap": "^3.7.5",
