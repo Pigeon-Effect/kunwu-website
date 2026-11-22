@@ -1,0 +1,161 @@
+---
+/**
+ * 书法 – a title written in brush calligraphy (楷书), stroke by stroke in the correct stroke order
+ * (data: src/lib/calligraphy.ts). Each stroke is a thick round brush moving along the stroke's
+ * centre line, clipped to the stroke's outline; once it has passed, the outline itself stays.
+ *
+ * Writing starts when the element scrolls into view (`.write` → `.is-in`, Base.astro). Without
+ * JavaScript, or with reduced motion, the characters are simply there. Decorative: the same words
+ * are always present as real text (heading, label or sr-only).
+ */
+import { strokesOf } from '../lib/calligraphy';
+
+interface Props {
+  text: string;
+  /** written top to bottom (default) or left to right */
+  vertical?: boolean;
+  /** size of one character, any CSS length */
+  size?: string;
+  /** space between characters, any CSS length */
+  gap?: string;
+  /** ms before the first stroke */
+  delay?: number;
+  /** >1 writes faster */
+  speed?: number;
+  /** false: no writing, just the finished characters */
+  animate?: boolean;
+  class?: string;
+}
+
+const { text, vertical = true, size = '4rem', gap = '0rem', delay = 0, speed = 1, animate = true, class: className = '' } = Astro.props;
+
+// one counter per build: every instance gets its own clip / filter ids
+const g = globalThis as { __writeCount?: number };
+g.__writeCount = (g.__writeCount ?? 0) + 1;
+const uid = `w${g.__writeCount}`;
+
+/** small, stable variation (ink load per stroke, brush wobble per character) */
+const rand = (n: number) => {
+  const x = Math.sin(n * 12.9898 + g.__writeCount! * 78.233) * 43758.5453;
+  return x - Math.floor(x);
+};
+
+let clock = delay;
+const chars = [...text].map((ch, ci) => {
+  const strokes = strokesOf(ch).map((s, si) => {
+    // a brush is quick on long strokes and lingers a little on short ones
+    const dur = Math.round(Math.min(820, Math.max(170, (s.length + 260) / (3 * speed))));
+    const stroke = {
+      ...s,
+      start: clock,
+      dur,
+      // dash offset that keeps even the round tip hidden before the stroke starts
+      hide: +(1 + 120 / s.length).toFixed(3),
+      ink: +(0.84 + rand(ci * 31 + si) * 0.14).toFixed(2),
+    };
+    clock += dur + Math.round(80 / speed);
+    return stroke;
+  });
+  clock += Math.round(240 / speed);
+  return { ch, strokes, seed: Math.round(rand(ci + 7) * 90) + 1 };
+});
+---
+
+<span
+  class:list={['write', !animate && 'write-still', className]}
+  data-vertical={vertical ? '' : undefined}
+  style={`--cs:${size};--cg:${gap}`}
+  aria-hidden="true"
+>
+  {
+    chars.map(({ strokes, seed }, ci) => (
+      <svg class="write-ch" viewBox="0 0 1024 1024" focusable="false">
+        <defs>
+          {/* brush on rice paper: edges wobble a little and bleed */}
+          <filter id={`${uid}f${ci}`} filterUnits="userSpaceOnUse" x="-60" y="-60" width="1144" height="1144">
+            <feTurbulence type="fractalNoise" baseFrequency="0.022" numOctaves="2" seed={seed} result="n" />
+            <feMorphology in="SourceGraphic" operator="dilate" radius="6" result="m" />
+            <feDisplacementMap in="m" in2="n" scale="18" xChannelSelector="R" yChannelSelector="G" result="d" />
+            <feGaussianBlur in="d" stdDeviation="2.2" result="b" />
+            <feComponentTransfer in="b">
+              <feFuncA type="table" tableValues="0 0.15 0.85 1 1" />
+            </feComponentTransfer>
+          </filter>
+          {animate &&
+            strokes.map((s, si) => (
+              <clipPath id={`${uid}c${ci}-${si}`}>
+                <path d={s.outline} />
+              </clipPath>
+            ))}
+        </defs>
+        <g filter={`url(#${uid}f${ci})`}>
+          <g transform="translate(0 900) scale(1 -1)">
+            {strokes.map((s, si) => (
+              <g opacity={s.ink} style={`--d:${s.start}ms;--t:${s.dur}ms;--o:${s.hide}`}>
+                {animate && <path class="write-brush" d={s.median} pathLength="1" clip-path={`url(#${uid}c${ci}-${si})`} />}
+                <path class="write-stroke" d={s.outline} />
+              </g>
+            ))}
+          </g>
+        </g>
+      </svg>
+    ))
+  }
+</span>
+
+<style>
+  .write {
+    display: inline-flex;
+    gap: var(--cg);
+    color: var(--color-ink);
+    line-height: 0;
+    mix-blend-mode: multiply;
+  }
+  .write[data-vertical] {
+    flex-direction: column;
+  }
+  .write-ch {
+    width: var(--cs);
+    height: var(--cs);
+    overflow: visible;
+  }
+  .write-stroke {
+    fill: currentColor;
+  }
+  .write-brush {
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 230;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-dasharray: 1 calc(var(--o) + 1);
+    stroke-dashoffset: 0;
+  }
+
+  /* Writing: only with JS (the observer adds .is-in) and only when motion is welcome */
+  @media (prefers-reduced-motion: no-preference) {
+    :global(.js) .write:not(.write-still) .write-brush {
+      stroke-dashoffset: var(--o);
+    }
+    :global(.js) .write:not(.write-still) .write-stroke {
+      opacity: 0;
+    }
+    :global(.js) .write.is-in:not(.write-still) .write-brush {
+      animation: write-brush var(--t) cubic-bezier(0.45, 0.05, 0.3, 1) var(--d) forwards;
+    }
+    /* the brush has passed: the stroke's own outline takes over (identical, so nothing jumps) */
+    :global(.js) .write.is-in:not(.write-still) .write-stroke {
+      animation: write-set 1ms linear calc(var(--d) + var(--t)) forwards;
+    }
+  }
+  @keyframes write-brush {
+    to {
+      stroke-dashoffset: 0;
+    }
+  }
+  @keyframes write-set {
+    to {
+      opacity: 1;
+    }
+  }
+</style>

@@ -82,8 +82,9 @@ const ogImage = new URL(asset('og-image.png'), Astro.site).href;
         }
       });
 
-      // Reveal on scroll: fade/translate in once. Without IntersectionObserver everything shows.
-      const items = document.querySelectorAll<HTMLElement>('.reveal');
+      // Reveal on scroll: fade/translate in once; calligraphy (.write) starts writing. Without
+      // IntersectionObserver everything shows.
+      const items = document.querySelectorAll<HTMLElement>('.reveal, .write');
       if ('IntersectionObserver' in window) {
         const io = new IntersectionObserver(
           (entries) => {
